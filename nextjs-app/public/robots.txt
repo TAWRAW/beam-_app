@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /.git/
+Disallow: /.vscode/
+Disallow: /.github/
+Allow: /
+
+Sitemap: https://www.beamo.fr/sitemap.xml
