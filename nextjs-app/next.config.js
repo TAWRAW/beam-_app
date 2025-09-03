@@ -12,6 +12,8 @@ const nextConfig = {
       { source: '/offre/offres.html', destination: '/offres', permanent: true },
       { source: '/landing-page/index.html', destination: '/', permanent: true },
       { source: '/index.html', destination: '/', permanent: true },
+      // Generic: any ".html" → same path without extension
+      { source: '/:path*.html', destination: '/:path*', permanent: true },
     ]
   }
 }
