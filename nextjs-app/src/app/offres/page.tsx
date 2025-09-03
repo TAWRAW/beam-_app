@@ -2,6 +2,7 @@ export const metadata = {
   title: 'Offres de Syndic de Copropriété à Vernon, Evreux, Les Andelys | Beamô',
   description:
     'Découvrez nos offres de syndic de copropriété à Vernon, Evreux et Les Andelys. Services transparents et réactifs adaptés à vos besoins. Changez facilement de syndic.',
+  alternates: { canonical: '/offres' },
 }
 
 export default function OffresPage() {

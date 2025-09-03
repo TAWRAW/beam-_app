@@ -4,6 +4,7 @@ export const metadata = {
   title: 'Contactez Beamô - Le Syndic Hybride Nouvelle Génération',
   description:
     "Contactez BEAMÔ, votre syndic hybride alliant digitalisation et expertise humaine. Nous répondons à toutes vos questions sur la gestion de votre copropriété.",
+  alternates: { canonical: '/ressources/contact' },
 }
 
 export default function ContactPage() {
