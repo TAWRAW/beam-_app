@@ -4,6 +4,8 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { Poppins } from 'next/font/google'
 import { avenirBlack } from './fonts'
+import Script from 'next/script'
+import GA from '@/components/analytics/GA'
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400','500','600','700'] })
 
@@ -33,6 +35,43 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${poppins.className} ${avenirBlack.variable}`}>
+        {/* Prefer GTM if provided; otherwise fall back to direct GA4 */}
+        {process.env.NEXT_PUBLIC_GTM_ID ? (
+          <>
+            <Script id="gtm-init" strategy="afterInteractive">
+              {`
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');
+            `}
+            </Script>
+            <noscript
+              dangerouslySetInnerHTML={{
+                __html: `
+                <iframe src="https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}"
+                        height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+              }}
+            />
+          </>
+        ) : process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);} 
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}', { send_page_view: false });
+            `}
+            </Script>
+            <GA />
+          </>
+        ) : null}
         <Header />
         {/* Spacer to offset the fixed header height so content isn't hidden underneath */}
         <div aria-hidden className="h-20 md:h-24" />
