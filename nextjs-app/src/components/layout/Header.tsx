@@ -30,17 +30,25 @@ export default function Header() {
               <button
                 ref={btnRef}
                 onClick={() => setOpen((v) => !v)}
-                className="text-neutral hover:text-primary"
+                className="inline-flex items-center gap-1 text-neutral hover:text-primary"
                 aria-haspopup="menu"
                 aria-expanded={open}
               >
                 Ressources
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
               </button>
               {open && (
                 <div
                   ref={menuRef}
                   role="menu"
-                  className="absolute right-0 mt-3 w-56 rounded-2xl border border-black/10 bg-white p-2 shadow-lg"
+                  className="absolute left-0 top-full mt-3 w-56 rounded-2xl border border-black/10 bg-white p-2 shadow-lg"
                 >
                   <Link
                     href="/ressources"

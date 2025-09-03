@@ -152,6 +152,7 @@ Notes:
 - [ ] Turnstile (client + serveur)
 - [ ] Bascule formulaire → API (fallback temporaire)
 - [ ] 404/500 custom
+- [x] 404/500 custom (404: fond jaune, GIF, bouton Contact, texte ajusté)
 - [ ] SEO avancé (OG per‑page, sitemap, robots)
 - [ ] GA4 + Vercel Analytics
 - [ ] Audit redirections (logs + tests)
