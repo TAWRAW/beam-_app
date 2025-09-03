@@ -1,9 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react'
-
-declare global {
-  interface Window { emailjs?: any }
-}
+import emailjs from '@emailjs/browser'
 
 const PUB_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
@@ -13,8 +10,8 @@ export default function ContactForm() {
   const [status, setStatus] = useState<null | { ok: boolean; message: string }>(null)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.emailjs && PUB_KEY) {
-      try { window.emailjs.init(PUB_KEY) } catch {}
+    if (PUB_KEY) {
+      try { emailjs.init(PUB_KEY) } catch {}
     }
   }, [])
 
@@ -40,13 +37,13 @@ export default function ContactForm() {
       to_email: process.env.NEXT_PUBLIC_EMAIL_TO || 'tom.lemeille@beamô.fr',
     }
 
-    if (!window.emailjs || !PUB_KEY || !SERVICE_ID || !TEMPLATE_ID) {
+    if (!PUB_KEY || !SERVICE_ID || !TEMPLATE_ID) {
       setStatus({ ok: false, message: 'Configuration EmailJS manquante. Merci de réessayer plus tard.' })
       return
     }
 
     try {
-      await window.emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
       setStatus({ ok: true, message: 'Votre message a été envoyé avec succès !' })
       form.reset()
     } catch (err: any) {
