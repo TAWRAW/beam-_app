@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { trackEvent } from '@/components/analytics/GA'
 import emailjs from '@emailjs/browser'
 
 const PUB_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
@@ -8,6 +10,7 @@ const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
 
 export default function ContactForm() {
   const [status, setStatus] = useState<null | { ok: boolean; message: string }>(null)
+  const router = useRouter()
 
   useEffect(() => {
     if (PUB_KEY) {
@@ -46,6 +49,10 @@ export default function ContactForm() {
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
       setStatus({ ok: true, message: 'Votre message a été envoyé avec succès !' })
       form.reset()
+      // Analytics event (if GA enabled)
+      trackEvent('contact_submit_success', { location: 'contact_page' })
+      // Redirect to thank you page after a short delay
+      setTimeout(() => router.push('/merci'), 300)
     } catch (err: any) {
       let message = "Une erreur est survenue lors de l'envoi de votre message."
       const status = err?.status

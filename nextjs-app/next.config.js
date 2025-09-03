@@ -5,6 +5,14 @@ const nextConfig = {
   experimental: {
     typedRoutes: true
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'worthy-basketball-cc30a2b320.strapiapp.com',
+      },
+    ],
+  },
   async redirects() {
     return [
       // Legacy HTML URLs → new routes
