@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import MobileQuickNav from '@/components/layout/MobileQuickNav'
 import { Poppins } from 'next/font/google'
 import { avenirBlack } from './fonts'
 import Script from 'next/script'
@@ -73,10 +74,12 @@ export default function RootLayout({
           </>
         ) : null}
         <Header />
-        {/* Spacer to offset the fixed header height so content isn't hidden underneath */}
-        <div aria-hidden className="h-20 md:h-24" />
-        {children}
+        {/* Offset content for the fixed header using padding instead of a separate spacer */}
+        <div className="pt-20 md:pt-24 min-h-screen">
+          {children}
+        </div>
         <Footer />
+        <MobileQuickNav />
       </body>
     </html>
   )

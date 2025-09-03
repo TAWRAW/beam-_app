@@ -3,14 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #ffffff; /* Revenir à un fond neutre pour éviter les artéfacts de grande hauteur */
   --foreground: #111827;
   --ratio: 1.618;
   --base: 1rem; /* 16px base */
 }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
+  height: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling on small screens */
+  overscroll-behavior-y: none; /* Avoid rubber-banding creating visual gaps */
 }
 
 body {
@@ -75,3 +78,8 @@ h2, h3, h4, h5, h6, p, a, li, button, input, textarea, label, span {
   transition: all .3s ease;
 }
 .scroll-arrow:hover { background: rgba(255,195,0,0.8); color: #222; transform: translateX(-50%) translateY(-3px); }
+
+/* Viewport-height helper to avoid iOS browser chrome issues */
+.hero-viewport {
+  height: 100svh; /* small viewport height when supported */
+}

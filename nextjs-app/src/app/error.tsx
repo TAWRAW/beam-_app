@@ -5,7 +5,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   return (
     <html>
       <body>
-        <main className="section">
+        <main className="section bg-primary">
           <div className="container">
             <div className="card p-10 text-center">
               <h1 className="h1">Une erreur est survenue</h1>
@@ -22,4 +22,3 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     </html>
   )
 }
-

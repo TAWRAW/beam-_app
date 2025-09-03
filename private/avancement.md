@@ -158,6 +158,20 @@ Notes:
 - [ ] Audit redirections (logs + tests)
 - [ ] Monitoring (Sentry) – option
 
+Mise à jour UI globale
+- Fond de page par défaut: jaune `#FFC300` (remplace le blanc visible derrière la navbar et au-dessus du footer)
+- Spacer sous navbar coloré (assure un bandeau jaune sous la barre fixe)
+- 500 harmonisée (fond jaune)
+- Landing: héros vidéo plein écran (md+: h-screen), typo responsive (mobile→desktop), centrage vertical
+- Header spacer annulé sur desktop uniquement (md:-mt-24) pour supprimer la barre en haut sans casser le mobile
+- Correctif scroll horizontal mobile/tablette: `overflow-x: hidden` global + wrap du titre (break-words)
+- Fond global: retour au blanc; remplacement du spacer coloré par padding-top dans le layout (supprime la barre/artefact jaune)
+- Fin de page: suppression du scroll après footer (html/body min-height, overscroll-behavior; wrapper min-h-screen)
+- Mobile/Tablet: ajout d'une barre de raccourcis (Accueil/Offres/Histoire/Plus) fixe en bas, avec bottom-sheet pour Contact/Extranet/Ressources
+- Navbar: fond blanc plein écran (barre carrée, largeur de l’appareil), ombre légère
+ - Navbar (mobile): bouton "Nous Contacter" raccourci en "Contacter" + taille réduite (text-sm, padding réduit)
+ - Héros: mot « syndic » mis en jaune (#FFC300)
+
 ---
 
 ## 🛰️ Suivi DNS/OVH (en attente)
