@@ -1,6 +1,13 @@
 import { z } from 'zod'
 
 export const MandatSchema = z.object({
+  // Identité copropriété
+  COPRO__NOM_USAGE: z.string().min(1, 'Requis'),
+  COPRO__ADRESSE: z.string().min(1, 'Requis'),
+  COPRO__CP: z.string().regex(/^\d{5}$/, 'Code postal à 5 chiffres'),
+  COPRO__VILLE: z.string().min(1, 'Requis'),
+  COPRO__NUMERO_RNC: z.string().min(1, 'Requis'),
+
   AG__DATE: z.string().date().or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)),
   MANDAT__DUREE: z.coerce.number().int().positive(),
   MANDAT__DATE_DEBUT: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -40,4 +47,3 @@ export function computeTTC(ht: number, tvaRate: number | null) {
   const ttc = ht * (1 + tvaRate / 100)
   return Math.round(ttc * 100) / 100
 }
-

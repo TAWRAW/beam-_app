@@ -9,6 +9,11 @@ const TVA_RATE = Number(process.env.NEXT_PUBLIC_TVA_TAUX ?? '0')
 export default function MandatsPage() {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), [])
   const defaults: Partial<MandatInput> = {
+    COPRO__NOM_USAGE: '',
+    COPRO__ADRESSE: '',
+    COPRO__CP: '',
+    COPRO__VILLE: '',
+    COPRO__NUMERO_RNC: '',
     AG__DATE: today,
     MANDAT__DUREE: 12,
     MANDAT__DATE_DEBUT: today,
@@ -112,6 +117,18 @@ export default function MandatsPage() {
     <div>
       <h1 className="text-2xl font-semibold mb-4">Mandats</h1>
       <form onSubmit={onSubmit} className="grid md:grid-cols-2 gap-4">
+        {/* Identité copropriété */}
+        <div className="md:col-span-2">
+          <h2 className="text-lg font-medium mb-2">Informations copropriété</h2>
+        </div>
+        {field('COPRO__NOM_USAGE', 'Nom d’usage de la copropriété', { type: 'text', placeholder: 'Ex: Résidence Les Tilleuls' })}
+        {field('COPRO__NUMERO_RNC', 'Numéro RNC', { type: 'text', placeholder: 'Ex: RNC-123456' })}
+        {field('COPRO__ADRESSE', 'Adresse', { type: 'text', placeholder: 'N° et voie' })}
+        {field('COPRO__CP', 'Code postal', { type: 'text', inputMode: 'numeric', pattern: '\\d{5}', placeholder: '75001' })}
+        {field('COPRO__VILLE', 'Ville', { type: 'text', placeholder: 'Paris' })}
+
+        <div className="md:col-span-2 h-2" />
+
         {field('AG__DATE', 'AG__DATE', { type: 'date' })}
         {field('MANDAT__DUREE', 'MANDAT__DUREE (mois)', { type: 'number', min: 1, onBlur: tryComputeFin })}
         {field('MANDAT__DATE_DEBUT', 'MANDAT__DATE_DEBUT', { type: 'date', onBlur: tryComputeFin })}
