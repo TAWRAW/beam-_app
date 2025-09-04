@@ -57,9 +57,18 @@ export default function MandatsPage() {
     if (start && end) setValue('AG__DUREE', computeDureeHeures(start, end))
   }
   function tryComputeTTC() {
-    if (typeof ht !== 'undefined') {
-      const ttc = computeTTC(Number(ht), isNaN(TVA_RATE) ? null : TVA_RATE)
+    if (typeof ht !== 'undefined' && !isNaN(TVA_RATE)) {
+      const ttc = computeTTC(Number(ht), TVA_RATE)
       if (typeof ttc !== 'undefined') setValue('SYNDIC__HONORAIRES_TTC', ttc)
+    }
+  }
+
+  function tryComputeHT() {
+    const ttc = watch('SYNDIC__HONORAIRES_TTC')
+    if (typeof ttc !== 'undefined' && !isNaN(TVA_RATE)) {
+      const rate = 1 + TVA_RATE / 100
+      const htVal = Math.round((Number(ttc) / rate) * 100) / 100
+      if (isFinite(htVal)) setValue('SYNDIC__HONORAIRES_HT', htVal)
     }
   }
 
@@ -72,8 +81,21 @@ export default function MandatsPage() {
       MANDAT__DATE_FIN: form.MANDAT__DATE_FIN || computeDateFin(form.MANDAT__DATE_DEBUT, Number(form.MANDAT__DUREE)),
       AG__DUREE: form.AG__DUREE ?? computeDureeHeures(form.AG__PLAGE_HORAIRE_DEBUT, form.AG__PLAGE_HORAIRE_FIN),
       SYNDIC__HONORAIRES_TTC:
-        form.SYNDIC__HONORAIRES_TTC ?? computeTTC(Number(form.SYNDIC__HONORAIRES_HT), isNaN(TVA_RATE) ? null : TVA_RATE),
+        typeof form.SYNDIC__HONORAIRES_TTC !== 'undefined'
+          ? form.SYNDIC__HONORAIRES_TTC
+          : computeTTC(Number(form.SYNDIC__HONORAIRES_HT), isNaN(TVA_RATE) ? null : TVA_RATE),
     } as MandatInput
+
+    // If TTC provided but HT missing, back-compute HT
+    if (
+      typeof payload.SYNDIC__HONORAIRES_TTC !== 'undefined' &&
+      typeof payload.SYNDIC__HONORAIRES_HT === 'undefined' &&
+      !isNaN(TVA_RATE)
+    ) {
+      const rate = 1 + TVA_RATE / 100
+      const htVal = Math.round((Number(payload.SYNDIC__HONORAIRES_TTC) / rate) * 100) / 100
+      if (isFinite(htVal)) (payload as any).SYNDIC__HONORAIRES_HT = htVal
+    }
 
     try {
       const res = await fetch('/api/mandats/generate', {
@@ -113,6 +135,84 @@ export default function MandatsPage() {
     </label>
   )
 
+  // Presets (configurations) for horaires / réunions
+  type PresetValues = Pick<
+    MandatInput,
+    | 'COPRO__NOMBRE_VISITE'
+    | 'COPRO__DUREE__VISITE'
+    | 'AG__PLAGE_HORAIRE_DEBUT'
+    | 'AG__PLAGE_HORAIRE_FIN'
+    | 'AG__DUREE'
+    | 'CS__NOMBRE_REUNIONS'
+    | 'CS__DUREE_REUNIONS'
+    | 'CS__HEURE_DEBUT'
+    | 'CS__HEURE_FIN'
+  >
+  type Preset = { name: string; values: Partial<PresetValues> }
+  const [presets, setPresets] = useState<Preset[]>([])
+  const [presetName, setPresetName] = useState('')
+  const [selectedPreset, setSelectedPreset] = useState('')
+
+  function loadPresets() {
+    try {
+      const raw = localStorage.getItem('mandat_presets')
+      if (raw) setPresets(JSON.parse(raw))
+    } catch {}
+  }
+  function savePresets(next: Preset[]) {
+    setPresets(next)
+    try { localStorage.setItem('mandat_presets', JSON.stringify(next)) } catch {}
+  }
+
+  // initial load
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useMemo(() => { loadPresets(); return null }, [])
+
+  function collectCurrentValues(): Partial<PresetValues> {
+    const names: (keyof PresetValues)[] = [
+      'COPRO__NOMBRE_VISITE',
+      'COPRO__DUREE__VISITE',
+      'AG__PLAGE_HORAIRE_DEBUT',
+      'AG__PLAGE_HORAIRE_FIN',
+      'AG__DUREE',
+      'CS__NOMBRE_REUNIONS',
+      'CS__DUREE_REUNIONS',
+      'CS__HEURE_DEBUT',
+      'CS__HEURE_FIN',
+    ]
+    const out: Partial<PresetValues> = {}
+    for (const n of names) (out as any)[n] = watch(n)
+    return out
+  }
+
+  function onSavePreset() {
+    const name = presetName.trim()
+    if (!name) return
+    const values = collectCurrentValues()
+    const existingIdx = presets.findIndex((p) => p.name === name)
+    const next = [...presets]
+    if (existingIdx >= 0) next[existingIdx] = { name, values }
+    else next.push({ name, values })
+    savePresets(next)
+    setSelectedPreset(name)
+  }
+
+  function onApplyPreset(name: string) {
+    const p = presets.find((x) => x.name === name)
+    if (!p) return
+    const v = p.values
+    ;(Object.keys(v) as (keyof PresetValues)[]).forEach((k) => {
+      // @ts-ignore
+      if (typeof v[k] !== 'undefined') setValue(k as any, v[k] as any)
+    })
+  }
+
+  function onDeletePreset(name: string) {
+    const next = presets.filter((p) => p.name !== name)
+    savePresets(next)
+    if (selectedPreset === name) setSelectedPreset('')
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">Mandats</h1>
@@ -148,11 +248,43 @@ export default function MandatsPage() {
           min: 0,
           onBlur: tryComputeTTC,
         })}
-        {field('SYNDIC__HONORAIRES_TTC', 'SYNDIC__HONORAIRES_TTC', { type: 'number', step: '0.01', min: 0 })}
+        {field('SYNDIC__HONORAIRES_TTC', 'SYNDIC__HONORAIRES_TTC', { type: 'number', step: '0.01', min: 0, onBlur: tryComputeHT })}
 
         <div className="md:col-span-2 flex gap-3 pt-2">
           <button type="submit" disabled={loading} className="rounded bg-black text-white px-4 py-2 disabled:opacity-50">
             {loading ? 'Génération…' : 'Générer le mandat'}
+          </button>
+          {/* Presets controls */}
+          <div className="flex items-center gap-2 ml-auto">
+            <input
+              type="text"
+              value={presetName}
+              onChange={(e) => setPresetName(e.target.value)}
+              placeholder="Nom de configuration"
+              className="rounded border px-3 py-2"
+            />
+            <button type="button" className="rounded border px-3 py-2" onClick={onSavePreset}>
+              Enregistrer la configuration
+            </button>
+          </div>
+        </div>
+
+        <div className="md:col-span-2 flex items-center gap-2">
+          <select
+            className="rounded border px-3 py-2"
+            value={selectedPreset}
+            onChange={(e) => setSelectedPreset(e.target.value)}
+          >
+            <option value="">Sélectionner une configuration…</option>
+            {presets.map((p) => (
+              <option key={p.name} value={p.name}>{p.name}</option>
+            ))}
+          </select>
+          <button type="button" className="rounded border px-3 py-2" onClick={() => onApplyPreset(selectedPreset)} disabled={!selectedPreset}>
+            Appliquer
+          </button>
+          <button type="button" className="rounded border px-3 py-2" onClick={() => onDeletePreset(selectedPreset)} disabled={!selectedPreset}>
+            Supprimer
           </button>
         </div>
       </form>
