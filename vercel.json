@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "builds": [
+    { "src": "nextjs-app/package.json", "use": "@vercel/next" }
+  ],
+  "installCommand": "cd nextjs-app && npm ci",
+  "buildCommand": "cd nextjs-app && npm run build",
+  "outputDirectory": "nextjs-app/.next",
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
+}
+
