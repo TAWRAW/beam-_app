@@ -74,8 +74,15 @@ export default function MandatsPage() {
       const res = await fetch('/api/mandats/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload),
       })
+      if (res.status === 401) {
+        // Session absente/expirée: redirige vers login avec retour sur cette page
+        const back = encodeURIComponent(window.location.pathname + window.location.search)
+        window.location.href = `/login?redirect=${back}`
+        return
+      }
       const data = await res.json()
       if (!res.ok) throw new Error(data?.error || 'Erreur serveur')
       setResult(data)
