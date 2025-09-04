@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
       headers['Authorization'] = `Bearer ${token}`
     }
 
+    const authMode = basicUser && basicPass ? 'basic' : token ? 'bearer' : 'none'
     const res = await fetch(webhookUrl, {
       method: 'POST',
       headers,
@@ -62,12 +63,21 @@ export async function POST(req: NextRequest) {
       }),
     })
 
-    const out = await res.json().catch(() => ({}))
+    // Try to parse JSON, otherwise capture text for debugging
+    const text = await res.text()
+    let out: any
+    try { out = JSON.parse(text) } catch { out = null }
     if (!res.ok) {
-      return NextResponse.json({ error: out?.error || 'Webhook error' }, { status: 502 })
+      return NextResponse.json(
+        {
+          error: (out && out.error) || 'Webhook error',
+          upstream: { status: res.status, body: out ?? text, auth: authMode },
+        },
+        { status: 502 },
+      )
     }
 
-    return NextResponse.json(out)
+    return NextResponse.json(out ?? { ok: true })
   } catch (e: any) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
