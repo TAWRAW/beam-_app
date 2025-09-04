@@ -40,11 +40,12 @@ Dernière mise à jour: plan de durcissement formulaire + SEO/Analytics avant st
 - En-têtes de sécurité et compression/expiration statique
 
 ## 🎯 Prochaines étapes
-1) Finaliser métadonnées (titles/descriptions OG) par page
-2) Ajuster Tailwind aux couleurs/typo Beamô (#FFC300, Poppins)
-3) Parité visuelle des sections (spacing/typo/icônes)
-4) Contact: validations renforcées + Turnstile (anti‑spam)
-5) Préparer/compléter redirections équivalentes (Next/Vercel)
+1) Bascule Auth → Auth.js (email)
+2) Finaliser métadonnées (titles/descriptions OG) par page
+3) Ajuster Tailwind aux couleurs/typo Beamô (#FFC300, Poppins)
+4) Parité visuelle des sections (spacing/typo/icônes)
+5) Contact: validations renforcées + Turnstile (anti‑spam)
+6) Préparer/compléter redirections équivalentes (Next/Vercel)
 
 ---
 
@@ -97,6 +98,53 @@ Dernière mise à jour: plan de durcissement formulaire + SEO/Analytics avant st
 
 ---
 
+## 🔐 Bascule Auth → Auth.js (Email via OVH SMTP)
+
+Objectif: Remplacer Supabase Auth par Auth.js (NextAuth) avec Magic Link (email) contrôlé, pour maîtriser les redirections et simplifier l’UX.
+
+Étapes (P0)
+1) Env NextAuth
+- NEXTAUTH_URL (local/prod) + NEXTAUTH_SECRET
+- EMAIL_SERVER_* (OVH SMTP 465/587) + EMAIL_FROM
+
+2) Route NextAuth
+- Créer `src/app/api/auth/[...nextauth]/route.ts` (App Router) avec Provider Email.
+- Adapter en-têtes/subject d’email.
+
+3) Middleware `/apps/*`
+- Remplacer la vérification Supabase par NextAuth (`getToken`) dans `src/middleware.ts`.
+- Rediriger vers `/login?redirect=…` si non authentifié.
+
+4) Login/Logout
+- `src/app/login/page.tsx`: utiliser `signIn('email', { callbackUrl })`.
+- `src/app/logout/route.ts`: redirection vers `/api/auth/signout`.
+
+5) API Mandats
+- `src/app/api/mandats/generate/route.ts`: lire la session via `getServerSession`, attacher `user.email` comme `userId` (ou hash stable), puis relayer à n8n.
+
+6) Nettoyage
+- Retirer logique Supabase Auth; garder Supabase si besoin data ultérieure.
+- Mettre à jour docs/env; QA sur `/apps` + `/apps/mandats`.
+
+Acceptation
+- Accès `/apps/*` bloqué hors session; login par email; redirection `redirect` respectée.
+- Mandat généré avec `userId` issu de NextAuth.
+
+ENV à ajouter
+- NEXTAUTH_URL=http://localhost:3002 (dev) / https://www.xn--beam-yqa.fr (prod)
+- NEXTAUTH_SECRET=<openssl rand -base64 32>
+- EMAIL_SERVER_HOST=ssl0.ovh.net
+- EMAIL_SERVER_PORT=465
+- EMAIL_SERVER_USER=tom.lemeille@xn--beam-yqa.fr
+- EMAIL_SERVER_PASSWORD=<app_password>
+- EMAIL_FROM="Beamô <tom.lemeille@xn--beam-yqa.fr>"
+
+Notes
+- Conserver temporairement les env Supabase jusqu’à fin de bascule.
+- UX Login identique (lien magique).
+
+---
+
 ## 🔐 Variables d’environnement à ajouter (proposition)
 
 SMTP (OVH) – pour `/api/contact`:
@@ -121,10 +169,12 @@ Notes:
 ---
 
 ## ⏱️ Ordonnancement (proposé)
-- J+0–1: (1) Merci + tracking, (2) API contact SMTP.
-- J+1: (3) Turnstile + bascule progressive (4).
-- J+2: (5) 404/500, (6) SEO, (7) Analytics.
-- J+3: (8) Audit redirections, (9) Monitoring (option).
+- J+0–0.5: Auth.js (env + route + middleware + login/logout)
+- J+0.5–1: Adapter API Mandats, QA auth et redirections
+- J+1–2: (1) Merci + tracking, (2) API contact SMTP
+- J+2: (3) Turnstile + bascule progressive (4)
+- J+3: (5) 404/500, (6) SEO, (7) Analytics
+- J+4: (8) Audit redirections, (9) Monitoring (option)
 
 ## 📝 Décisions courantes
 - Strapi: non prioritaire pour l’instant
@@ -149,6 +199,10 @@ Notes:
 
 - [x] Page `/merci` + event GA4 (gtag prêt)
 - [x] API `/api/contact` (SMTP OVH + Zod + rate‑limit)
+- [x] Espace Applications `/apps` (layout + sidebar)
+- [ ] Auth.js (NextAuth) implémenté (middleware + login/logout)
+- [x] Page `/apps/mandats` (formulaire + calculs client)
+- [ ] API `/api/mandats/generate` (proxy n8n, validations, userId via NextAuth)
 - [ ] Turnstile (client + serveur)
 - [ ] Bascule formulaire → API (fallback temporaire)
 - [ ] 404/500 custom
@@ -185,3 +239,57 @@ Mise à jour UI globale
   - À faire dès réponse OVH: supprimer totalement `beamô.fr` et `www.beamô.fr` des Multisites (tous hébergements), puis re‑vérifier.
 - Après déblocage: vérifier Vercel Domains (Valid apex + www), définir `xn--beam-yqa.fr` en domaine primaire, revalider Tag Manager.
 - Statut: en attente support OVH.
+
+---
+
+## 🔐 Auth temporaire simple (email + mot de passe env)
+
+Objectif: restreindre l’accès à `/apps/*` à un seul compte (tom.lemeille@xn--beam-yqa.fr) via formulaire email+mot de passe, sans dépendance externe. Remplacera plus tard Auth.js/Google.
+
+Implémentation
+- Session HMAC signée en cookie httpOnly (`SESSION_SECRET`).
+- `POST /api/auth/login` vérifie `ADMIN_EMAIL`/`ADMIN_PASSWORD` (env) et émet la session.
+- `src/middleware.ts` vérifie le cookie; redirige vers `/login?redirect=…` si absent/expiré.
+- `/logout` efface la session.
+- `/api/mandats/generate` attache `userId=email` depuis la session.
+
+ENV
+- ADMIN_EMAIL, ADMIN_PASSWORD, SESSION_SECRET (ajoutés dans `.env.local.example`).
+
+Statut
+- En place côté code; à compléter par la mise en env (prod) et tests.
+
+---
+
+## 🛠️ Session du jour — Diagnostic page blanche + Auth
+
+Contexte et symptômes
+- Page blanche perçue sur certaines routes; démarrage local en erreur sur `:3000`.
+
+Causes identifiées
+- Port `3000` déjà occupé par un process Node (EADDRINUSE).
+- Auth serveur non configurée → `/api/auth/login` renvoyait `500 Server auth not configured` (variables d’environnement manquantes).
+
+Actions réalisées
+- Libération du port 3000 et démarrage de l’app (sinon utilisation `--port 3001`).
+- Ajout des variables d’auth côté local (sans commit): `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `SESSION_SECRET`.
+- Correction UI du formulaire de login: champ mot de passe contrôlé (state React) au lieu d’un accès DOM (`getElementById`).
+- Vérification API: `/api/auth/login` → `200` + `Set-Cookie: app_session=…` puis redirection `redirect`.
+- Vérification middleware `/apps/*`: redirige vers `/login?redirect=…` si cookie absent/invalid.
+
+Résultats
+- La connexion fonctionne; si déjà connecté, le bouton “Connexion” n’exige plus d’identifiants (cookie déjà présent). Après déconnexion (`/logout`), le formulaire réapparaît.
+
+Sécurité / Git
+- Aucun secret n’a été commité. Le fichier `nextjs-app/.env.local` est ignoré par Git (cf. `.gitignore`).
+- L’exemple d’environnement reste dans `nextjs-app/.env.local.example` (placeholders).
+
+Prochaines étapes
+- Rediriger automatiquement `/login` → `/apps` quand une session valide existe (amélioration UX).
+- Connecter n8n pour le workflow “Mandats”: utiliser `N8N_MANDAT_WEBHOOK_URL` + `N8N_MANDAT_TOKEN` (déjà prévus dans `.env.local.example`).
+- Envisager Auth.js (email) à moyen terme pour simplifier l’auth et préparer multi‑utilisateurs.
+
+Runbook rapide (local)
+- Démarrer: `cd nextjs-app && npm run dev` (ou `--port 3001`).
+- Login: `/login` → entrer l’email autorisé et le mot de passe local.
+- Logout: `/logout`.
