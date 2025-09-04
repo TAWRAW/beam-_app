@@ -37,16 +37,23 @@ export async function POST(req: NextRequest) {
 
     const webhookUrl = process.env.N8N_MANDAT_WEBHOOK_URL
     const token = process.env.N8N_MANDAT_TOKEN
-    if (!webhookUrl || !token) {
+    const basicUser = process.env.N8N_MANDAT_BASIC_USER
+    const basicPass = process.env.N8N_MANDAT_BASIC_PASS
+    if (!webhookUrl) {
       return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 })
+    }
+
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (basicUser && basicPass) {
+      const b64 = Buffer.from(`${basicUser}:${basicPass}`).toString('base64')
+      headers['Authorization'] = `Basic ${b64}`
+    } else if (token) {
+      headers['Authorization'] = `Bearer ${token}`
     }
 
     const res = await fetch(webhookUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
       body: JSON.stringify({
         source: 'site-app',
         userId: session.email,
