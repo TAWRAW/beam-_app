@@ -242,13 +242,54 @@ export default function MandatsPage() {
         {field('CS__DUREE_REUNIONS', 'CS__DUREE_REUNIONS (heures)', { type: 'number', step: '0.25', min: 0 })}
         {field('CS__HEURE_DEBUT', 'CS__HEURE_DEBUT', { type: 'time' })}
         {field('CS__HEURE_FIN', 'CS__HEURE_FIN', { type: 'time' })}
-        {field('SYNDIC__HONORAIRES_HT', 'SYNDIC__HONORAIRES_HT', {
-          type: 'number',
-          step: '0.01',
-          min: 0,
-          onBlur: tryComputeTTC,
-        })}
-        {field('SYNDIC__HONORAIRES_TTC', 'SYNDIC__HONORAIRES_TTC', { type: 'number', step: '0.01', min: 0, onBlur: tryComputeHT })}
+        <label className="block">
+          <span className="text-sm">SYNDIC__HONORAIRES_HT</span>
+          <input
+            type="number"
+            step="0.01"
+            min={0}
+            className="mt-1 w-full rounded border px-3 py-2"
+            aria-label="SYNDIC__HONORAIRES_HT"
+            aria-invalid={errors['SYNDIC__HONORAIRES_HT'] ? 'true' : 'false'}
+            {...register('SYNDIC__HONORAIRES_HT', {
+              onChange: (e) => {
+                const val = parseFloat(e.target.value)
+                if (!isNaN(val) && !isNaN(TVA_RATE)) {
+                  const ttc = computeTTC(val, TVA_RATE)
+                  if (typeof ttc !== 'undefined') setValue('SYNDIC__HONORAIRES_TTC', ttc)
+                }
+              },
+            })}
+          />
+          {errors['SYNDIC__HONORAIRES_HT'] && (
+            <span className="text-xs text-red-600">{String(errors['SYNDIC__HONORAIRES_HT']?.message || 'Champ invalide')}</span>
+          )}
+        </label>
+
+        <label className="block">
+          <span className="text-sm">SYNDIC__HONORAIRES_TTC</span>
+          <input
+            type="number"
+            step="0.01"
+            min={0}
+            className="mt-1 w-full rounded border px-3 py-2"
+            aria-label="SYNDIC__HONORAIRES_TTC"
+            aria-invalid={errors['SYNDIC__HONORAIRES_TTC'] ? 'true' : 'false'}
+            {...register('SYNDIC__HONORAIRES_TTC', {
+              onChange: (e) => {
+                const val = parseFloat(e.target.value)
+                if (!isNaN(val) && !isNaN(TVA_RATE)) {
+                  const rate = 1 + TVA_RATE / 100
+                  const htVal = Math.round((val / rate) * 100) / 100
+                  if (isFinite(htVal)) setValue('SYNDIC__HONORAIRES_HT', htVal)
+                }
+              },
+            })}
+          />
+          {errors['SYNDIC__HONORAIRES_TTC'] && (
+            <span className="text-xs text-red-600">{String(errors['SYNDIC__HONORAIRES_TTC']?.message || 'Champ invalide')}</span>
+          )}
+        </label>
 
         <div className="md:col-span-2 flex gap-3 pt-2">
           <button type="submit" disabled={loading} className="rounded bg-black text-white px-4 py-2 disabled:opacity-50">
