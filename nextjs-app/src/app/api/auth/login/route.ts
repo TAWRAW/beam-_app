@@ -36,12 +36,15 @@ export async function POST(req: NextRequest) {
   const token = signSession(ADMIN_EMAIL)
   const location = redirect && typeof redirect === 'string' ? redirect : '/apps'
   const res = NextResponse.json({ ok: true, redirect: location })
+  const host = new URL(req.url).hostname
+  const apex = host.replace(/^www\./, '')
   // Set cookie explicitly on the response to ensure browsers store it
   res.cookies.set('app_session', token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     path: '/',
+    domain: `.${apex}`,
     maxAge: 60 * 60 * 24 * 7,
   })
   return res
