@@ -47,6 +47,14 @@ export async function POST(req: NextRequest) {
     domain: `.${apex}`,
     maxAge: 60 * 60 * 24 * 7,
   })
+  // Also set host-only cookie for maximum compatibility on some browsers
+  res.cookies.set('app_session', token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  })
   // Non-HttpOnly probe to help verify cookie storage in browser devtools
   res.cookies.set('app_session_probe', '1', {
     httpOnly: false,
@@ -54,6 +62,13 @@ export async function POST(req: NextRequest) {
     secure: process.env.NODE_ENV === 'production',
     path: '/',
     domain: `.${apex}`,
+    maxAge: 60 * 60 * 24 * 7,
+  })
+  res.cookies.set('app_session_probe', '1', {
+    httpOnly: false,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
     maxAge: 60 * 60 * 24 * 7,
   })
   return res
