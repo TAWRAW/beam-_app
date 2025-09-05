@@ -12,6 +12,9 @@ export const MandatSchema = z.object({
   COPRO__CP: z.string().regex(/^\d{5}$/, 'Code postal à 5 chiffres'),
   COPRO__VILLE: z.string().min(1, 'Requis'),
   COPRO__NUMERO_RNC: z.string().min(1, 'Requis'),
+  COPRO__NB_LOT: z.coerce.number().int().min(0),
+  COPRO__NB_LOGT_BRX: z.coerce.number().int().min(0),
+  COPRO__NB_AUTRE: z.coerce.number().int().min(0),
 
   AG__DATE: optionalDate,
   MANDAT__DUREE: z.coerce.number().int().positive(),

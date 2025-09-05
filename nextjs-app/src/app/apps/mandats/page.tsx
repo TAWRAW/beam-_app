@@ -14,6 +14,9 @@ export default function MandatsPage() {
     COPRO__CP: '',
     COPRO__VILLE: '',
     COPRO__NUMERO_RNC: '',
+    COPRO__NB_LOT: 0,
+    COPRO__NB_LOGT_BRX: 0,
+    COPRO__NB_AUTRE: 0,
     AG__DATE: today,
     MANDAT__DUREE: 12,
     MANDAT__DATE_DEBUT: today,
@@ -227,6 +230,10 @@ export default function MandatsPage() {
         {field('COPRO__ADRESSE', 'Adresse', { type: 'text', placeholder: 'N° et voie' })}
         {field('COPRO__CP', 'Code postal', { type: 'text', inputMode: 'numeric', pattern: '\\d{5}', placeholder: '75001' })}
         {field('COPRO__VILLE', 'Ville', { type: 'text', placeholder: 'Paris' })}
+
+        {field('COPRO__NB_LOT', 'Nombre de lots', { type: 'number', min: 0 })}
+        {field('COPRO__NB_LOGT_BRX', 'Nombre de logements + bureaux', { type: 'number', min: 0 })}
+        {field('COPRO__NB_AUTRE', 'Nombre d’autres lots', { type: 'number', min: 0 })}
 
         <div className="md:col-span-2 h-2" />
 
