@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
     const tvaRate = Number(process.env.NEXT_PUBLIC_TVA_TAUX ?? '0')
     const normalized = {
       ...data,
-      MANDAT__DATE_FIN: data.MANDAT__DATE_FIN || computeDateFin(data.MANDAT__DATE_DEBUT, Number(data.MANDAT__DUREE)),
+      MANDAT__DATE_FIN:
+        data.MANDAT__DATE_FIN || (data.MANDAT__DATE_DEBUT ? computeDateFin(data.MANDAT__DATE_DEBUT, Number(data.MANDAT__DUREE)) : undefined),
       AG__DUREE: data.AG__DUREE ?? computeDureeHeures(data.AG__PLAGE_HORAIRE_DEBUT, data.AG__PLAGE_HORAIRE_FIN),
       SYNDIC__HONORAIRES_TTC:
         data.SYNDIC__HONORAIRES_TTC ?? computeTTC(Number(data.SYNDIC__HONORAIRES_HT), isNaN(tvaRate) ? null : tvaRate),

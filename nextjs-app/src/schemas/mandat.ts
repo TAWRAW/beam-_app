@@ -1,5 +1,10 @@
 import { z } from 'zod'
 
+const optionalDate = z.preprocess((v) => {
+  if (typeof v === 'string' && v.trim() === '') return undefined
+  return v
+}, z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional())
+
 export const MandatSchema = z.object({
   // Identité copropriété
   COPRO__NOM_USAGE: z.string().min(1, 'Requis'),
@@ -8,10 +13,10 @@ export const MandatSchema = z.object({
   COPRO__VILLE: z.string().min(1, 'Requis'),
   COPRO__NUMERO_RNC: z.string().min(1, 'Requis'),
 
-  AG__DATE: z.string().date().or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)),
+  AG__DATE: optionalDate,
   MANDAT__DUREE: z.coerce.number().int().positive(),
-  MANDAT__DATE_DEBUT: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  MANDAT__DATE_FIN: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  MANDAT__DATE_DEBUT: optionalDate,
+  MANDAT__DATE_FIN: optionalDate,
   COPRO__NOMBRE_VISITE: z.coerce.number().int().min(0),
   COPRO__DUREE__VISITE: z.coerce.number().min(0),
   AG__PLAGE_HORAIRE_DEBUT: z.string().regex(/^\d{2}:\d{2}$/),

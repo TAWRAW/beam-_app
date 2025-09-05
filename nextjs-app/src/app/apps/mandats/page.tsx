@@ -78,7 +78,8 @@ export default function MandatsPage() {
     // Compute missing derived fields
     const payload: MandatInput = {
       ...form,
-      MANDAT__DATE_FIN: form.MANDAT__DATE_FIN || computeDateFin(form.MANDAT__DATE_DEBUT, Number(form.MANDAT__DUREE)),
+      MANDAT__DATE_FIN:
+        form.MANDAT__DATE_FIN || (form.MANDAT__DATE_DEBUT ? computeDateFin(form.MANDAT__DATE_DEBUT, Number(form.MANDAT__DUREE)) : undefined),
       AG__DUREE: form.AG__DUREE ?? computeDureeHeures(form.AG__PLAGE_HORAIRE_DEBUT, form.AG__PLAGE_HORAIRE_FIN),
       SYNDIC__HONORAIRES_TTC:
         typeof form.SYNDIC__HONORAIRES_TTC !== 'undefined'
