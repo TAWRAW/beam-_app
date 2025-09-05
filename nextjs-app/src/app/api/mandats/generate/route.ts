@@ -1,6 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { MandatSchema, computeDateFin, computeDureeHeures, computeTTC } from '@/schemas/mandat'
 import { getSessionFromCookies } from '@/lib/auth/session'
@@ -11,7 +12,9 @@ export async function POST(req: NextRequest) {
   // Auth check
   const session = getSessionFromCookies()
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const hasCookie = Boolean(cookies().get('app_session')?.value)
+    const secretSet = Boolean(process.env.SESSION_SECRET)
+    return NextResponse.json({ error: 'Unauthorized', hasCookie, secretSet }, { status: 401 })
   }
 
   try {
