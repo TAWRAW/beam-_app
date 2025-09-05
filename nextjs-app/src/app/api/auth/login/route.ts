@@ -2,7 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'node:crypto'
-import { signSession, setSessionCookie } from '@/lib/auth/session'
+import { signSession } from '@/lib/auth/session'
 
 function tsEqual(a: string, b: string) {
   const ba = Buffer.from(a)
@@ -34,9 +34,15 @@ export async function POST(req: NextRequest) {
   }
 
   const token = signSession(ADMIN_EMAIL)
-  setSessionCookie(token)
-
   const location = redirect && typeof redirect === 'string' ? redirect : '/apps'
-  return NextResponse.json({ ok: true, redirect: location })
+  const res = NextResponse.json({ ok: true, redirect: location })
+  // Set cookie explicitly on the response to ensure browsers store it
+  res.cookies.set('app_session', token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  })
+  return res
 }
-
