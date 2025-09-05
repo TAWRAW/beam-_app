@@ -13,8 +13,23 @@ export async function GET(req: NextRequest) {
     path: '/',
     maxAge: 0,
   })
+  res.cookies.set('app_session_probe', '', {
+    httpOnly: false,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 0,
+  })
   res.cookies.set('app_session', '', {
     httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    domain: `.${apex}`,
+    maxAge: 0,
+  })
+  res.cookies.set('app_session_probe', '', {
+    httpOnly: false,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     path: '/',
