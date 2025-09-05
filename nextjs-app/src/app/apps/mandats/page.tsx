@@ -108,7 +108,14 @@ export default function MandatsPage() {
         body: JSON.stringify(payload),
       })
       if (res.status === 401) {
-        // Session absente/expirée: redirige vers login avec retour sur cette page
+        // Mode debug: ne pas rediriger, afficher le corps (hasCookie/secretSet)
+        const sp = new URLSearchParams(window.location.search)
+        if (sp.get('debug') === '1') {
+          const data = await res.json().catch(() => ({}))
+          setResult({ error: `401 Unauthorized: ${JSON.stringify(data)}` })
+          return
+        }
+        // Sinon redirige vers login avec retour
         const back = encodeURIComponent(window.location.pathname + window.location.search)
         window.location.href = `/login?redirect=${back}`
         return
