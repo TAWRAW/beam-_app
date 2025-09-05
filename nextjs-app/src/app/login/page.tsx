@@ -21,6 +21,8 @@ function LoginContent() {
         headers: { 'Content-Type': 'application/json' },
         // use controlled state to avoid DOM lookup timing issues
         body: JSON.stringify({ email, password, redirect }),
+        // ensure Set-Cookie from the response is stored by the browser
+        credentials: 'include',
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data?.error || 'Connexion refusée')
