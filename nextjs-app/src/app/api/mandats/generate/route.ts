@@ -4,15 +4,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { MandatSchema, computeDateFin, computeDureeHeures, computeTTC } from '@/schemas/mandat'
-import { getSessionFromCookies } from '@/lib/auth/session'
+import { verifySession } from '@/lib/auth/session'
 
 const InputSchema = MandatSchema
 
 export async function POST(req: NextRequest) {
   // Auth check
-  const session = getSessionFromCookies()
+  const token = req.cookies.get('app_session')?.value
+  const session = verifySession(token)
   if (!session) {
-    const hasCookie = Boolean(cookies().get('app_session')?.value)
+    const jar = cookies()
+    const hasCookie = Boolean(jar.get('app_session')?.value) || Boolean(token)
     const secretSet = Boolean(process.env.SESSION_SECRET)
     return NextResponse.json({ error: 'Unauthorized', hasCookie, secretSet }, { status: 401 })
   }
