@@ -1,5 +1,5 @@
 "use client"
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { MandatSchema, type MandatInput, computeDateFin, computeDureeHeures, computeTTC } from '@/schemas/mandat'
@@ -7,7 +7,6 @@ import { MandatSchema, type MandatInput, computeDateFin, computeDureeHeures, com
 const TVA_RATE = Number(process.env.NEXT_PUBLIC_TVA_TAUX ?? '0')
 
 export default function MandatsPage() {
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), [])
   const defaults: Partial<MandatInput> = {
     COPRO__NOM_USAGE: '',
     COPRO__ADRESSE: '',
@@ -17,9 +16,9 @@ export default function MandatsPage() {
     COPRO__NB_LOT: 0,
     COPRO__NB_LOGT_BRX: 0,
     COPRO__NB_AUTRE: 0,
-    AG__DATE: today,
+    AG__DATE: undefined as any,
     MANDAT__DUREE: 12,
-    MANDAT__DATE_DEBUT: today,
+    MANDAT__DATE_DEBUT: undefined as any,
     AG__PLAGE_HORAIRE_DEBUT: '18:00',
     AG__PLAGE_HORAIRE_FIN: '20:00',
     COPRO__NOMBRE_VISITE: 0,
@@ -168,9 +167,8 @@ export default function MandatsPage() {
     try { localStorage.setItem('mandat_presets', JSON.stringify(next)) } catch {}
   }
 
-  // initial load
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useMemo(() => { loadPresets(); return null }, [])
+  // Charger les presets côté client uniquement après hydratation
+  useEffect(() => { loadPresets() }, [])
 
   function collectCurrentValues(): Partial<PresetValues> {
     const names: (keyof PresetValues)[] = [
