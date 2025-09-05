@@ -3,5 +3,15 @@
   "framework": "nextjs",
   "env": {
     "NEXT_TELEMETRY_DISABLED": "1"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        { "type": "host", "value": "xn--beam-yqa.fr" }
+      ],
+      "destination": "https://www.xn--beam-yqa.fr/:path*",
+      "permanent": true
+    }
+  ]
 }
