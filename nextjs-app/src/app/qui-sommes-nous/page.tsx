@@ -156,20 +156,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Engagements mesurables */}
-      <section className="section bg-gray-50">
-        <div className="container">
-          <h2 className="h2 font-semibold text-neutral">Nos engagements mesurables</h2>
-          <ol className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 list-decimal pl-6">
-            <li className="card p-4">Réponse en 48h ouvrées aux sollicitations du conseil syndical.</li>
-            <li className="card p-4">Calendrier des actions partagé après chaque AG (qui fait quoi, pour quand).</li>
-            <li className="card p-4">Reporting trimestriel: travaux, sinistres, impayés, budget, décisions.</li>
-            <li className="card p-4">Documents accessibles 24/7 (contrat, annexes, devis, PV, appels de fonds).</li>
-            <li className="card p-4">Transparence tarifaire: pas de frais « surprise », tout est écrit.</li>
-            <li className="card p-4">Interlocuteur dédié et back‑up clairement nommé.</li>
-          </ol>
-        </div>
-      </section>
+      {/* (Section "Nos engagements mesurables" supprimée à la demande) */}
 
       {/* (Section fondateur déplacée ci‑dessus, à côté du portrait) */}
 
