@@ -8,7 +8,7 @@ export const metadata = {
 export default function OffresPage() {
   return (
     <main className="bg-primary">
-      <section className="section">
+      <section className="section relative -mt-20 md:-mt-24 pt-20 md:pt-24">
         <div className="container">
           <header className="text-center">
             <h1 className="h1">Nos Offres</h1>

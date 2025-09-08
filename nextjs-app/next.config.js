@@ -24,6 +24,8 @@ const nextConfig = {
       { source: '/landing-page', destination: '/', permanent: true },
       { source: '/index.html', destination: '/', permanent: true },
       { source: '/index', destination: '/', permanent: true },
+      // Old city pages → new dynamic city route
+      { source: '/syndic/syndic-:slug', destination: '/ville/:slug', permanent: true },
       // Generic: any ".html" → same path without extension
       { source: '/:path*.html', destination: '/:path*', permanent: true },
     ]

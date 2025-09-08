@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <main className="section bg-primary">
+    <main className="section bg-primary relative -mt-20 md:-mt-24 pt-20 md:pt-24">
       <div className="container">
         <div className="card p-10 text-center">
           <h1 className="h1">404 — Page introuvable</h1>

@@ -1,4 +1,12 @@
-export default function Carousel() {
+type CarouselProps = {
+  title?: string
+  subtitle?: string
+  cityLabel?: string
+  cityPrep?: string
+}
+
+export default function Carousel({ title, subtitle, cityLabel, cityPrep }: CarouselProps) {
+  const hasCity = Boolean(cityLabel)
   return (
     // Cancel the global header spacer so the hero starts at the very top (mobile + desktop)
     <section className="relative -mt-20 md:-mt-24">
@@ -19,9 +27,19 @@ export default function Carousel() {
         <div className="relative z-10 mx-auto flex h-full max-w-5xl items-center px-4 sm:px-6 text-white">
           <div>
             <h1 className="drop-shadow text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight break-words">
-              Le <span className="text-primary">syndic</span> local et efficace.
+              {hasCity ? (
+                <>
+                  Le <span className="text-primary">syndic</span> local et efficace {cityPrep ?? 'à'} {cityLabel}.
+                </>
+              ) : (
+                <>
+                  {title ?? (
+                    <>Le <span className="text-primary">syndic</span> local et efficace.</>
+                  )}
+                </>
+              )}
             </h1>
-            <h2 className="mt-4 drop-shadow text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold">Une réponse en 48h garantie.</h2>
+            <h2 className="mt-4 drop-shadow text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold">{subtitle ?? 'Une réponse en 48h garantie.'}</h2>
           </div>
         </div>
         <a href="#features" className="scroll-arrow" aria-label="Défiler vers le bas">

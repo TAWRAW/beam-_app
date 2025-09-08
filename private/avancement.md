@@ -238,6 +238,56 @@ Mise à jour UI globale
 - Bloqueur: Hébergement gratuit/Multisite OVH impossible à retirer (ticket OVH ouvert). 
   - À faire dès réponse OVH: supprimer totalement `beamô.fr` et `www.beamô.fr` des Multisites (tous hébergements), puis re‑vérifier.
 - Après déblocage: vérifier Vercel Domains (Valid apex + www), définir `xn--beam-yqa.fr` en domaine primaire, revalider Tag Manager.
+
+---
+
+## 📌 Travaux récents (pages ville + CSS)
+
+Date: 2025-09-08
+
+Ce qui a été fait:
+- Pages dynamiques « ville »: `src/app/ville/[slug]/page.tsx` (SSG via `generateStaticParams`, SEO via `generateMetadata`).
+- Liste des villes centralisée: `src/lib/cities.ts` (incluant la préposition correcte `prep: 'à' | 'aux' | 'à la' | "à l'"`).
+- Footer dynamique: `src/components/layout/Footer.tsx` génère la liste « Syndic de copropriété [prep] [Ville] » depuis `cities` et pointe vers `/ville/[slug]`.
+- Redirections: ancien schéma `/syndic/syndic-:slug` → `/ville/:slug` ajouté dans `next.config.js`.
+- Sitemap: `src/app/sitemap.ts` enrichi avec les URLs des villes.
+- Personnalisation hero des pages ville: `Carousel` accepte `cityLabel` et `cityPrep` pour afficher « Le syndic local et efficace [prep] [Ville]. Une réponse en 48h garantie. ». La home n’est pas affectée (fallback texte d’origine).
+- Correctif CSS (Tailwind): 
+  - Le style global `h1, .h1 { font-size: clamp(...) }` écrasait les classes Tailwind (`text-7xl`, etc.) dans le hero.
+  - Correction: découper en `h1 { font-family; font-weight }` et `.h1 { font-size; line-height }` pour ne pas casser les utilitaires Tailwind sur les `h1`.
+- Fichier modifié: `src/app/globals.css`.
+
+Ajustements linguistiques (Les Andelys):
+- Besoin: afficher « Aux Andelys » (sans « Les ») dans le footer et dans le hero (Carousel) pour la page ville correspondante.
+- Implémentation: ajout de champs d’affichage optionnels dans `src/lib/cities.ts`:
+  - `displayName: 'Andelys'`, `displayPrep: 'Aux'` pour la ville `les-andelys`.
+  - Footer et pages ville consomment désormais `displayName/displayPrep` si présents, sinon `name/prep`.
+  - Fichiers impactés: `src/components/layout/Footer.tsx`, `src/app/ville/[slug]/page.tsx` (passage des props `cityLabel/cityPrep` au `Carousel`).
+
+Masquage sélectif de villes dans le footer:
+- Besoin: retirer du footer sans désactiver les pages: Val-de-Reuil, Gisors, Bueil, Mantes-la-Jolie.
+- Implémentation: ajout du champ optionnel `showInFooter?: boolean` dans `src/lib/cities.ts` et mise à `false` pour ces villes.
+- `Footer.tsx` filtre désormais avec `cities.filter(c => c.showInFooter !== false)` pour n’afficher que les villes voulues.
+
+Création de nouvelles pages ville (SEO inclus):
+- Ajouts dans `src/lib/cities.ts` avec `showInFooter: false` (non listées en footer mais présentes dans le sitemap) pour:
+  Saint-Marcel, La Chapelle-Longueville, Giverny, Étrépagny, Le Vaudreuil (affichage « Au Vaudreuil »), Saint-André-de-l’Eure, Ivry-la-Bataille, La Couture-Boussey, Gauville-la-Campagne, Parville, Aviron, Gravigny, Huest, Saint-Sébastien-de-Morsent, Fauville, Le Vieil-Évreux (affichage « Au Vieil‑Évreux »), Arnières-sur-Iton, Guichainville, Angerville-la-Campagne.
+- SEO: la page `src/app/ville/[slug]/page.tsx` génère des `metadata` dynamiques en utilisant `displayPrep/displayName` pour les titres et descriptions; ajout de `keywords` et `robots: index, follow`.
+
+SEO technique & SEO IA — améliorations globales
+- `src/app/robots.ts`: robots permissif avec `sitemap` et `host`, groupes pour Googlebot, Bingbot et bots IA (GPTBot, CCBot, Perplexity, etc.).
+- `public/indexnow.txt`: placeholder pour la clé IndexNow (à personnaliser et ping manuel/automatisé ensuite).
+- City pages enrichies: contenu structuré (intro H2, Services, FAQ, liens vers autres villes) + données structurées JSON‑LD (`LocalBusiness` + `FAQPage`).
+- Objectif: meilleure couverture SEO (title/meta/OG/keywords), SEO sémantique (FAQ, listes), et extraction par IA.
+
+Notes d’usage:
+- Ajouter une ville: éditer `src/lib/cities.ts` (slug, name, prep, département, région). Les pages, le footer et le sitemap se mettent à jour automatiquement.
+- Grammaire: pour « Les Andelys », `prep: 'aux'`. Si on veut afficher « aux Andelys » (sans « Les »), prévoir un champ d’affichage dédié (ex: `displayName: 'Andelys'`).
+
+Prochaines améliorations possibles:
+- Hero plus contextuel: props supplémentaires pour image/vidéo/overlay par ville.
+- SEO local: JSON‑LD enrichi (adresse/geo) et image OG spécifique par ville.
+- Tracking: event GA pour clics footer vers les pages ville et vues des pages ville.
 - Statut: en attente support OVH.
 
 ---
@@ -277,6 +327,96 @@ Actions réalisées
 - Vérification API: `/api/auth/login` → `200` + `Set-Cookie: app_session=…` puis redirection `redirect`.
 - Vérification middleware `/apps/*`: redirige vers `/login?redirect=…` si cookie absent/invalid.
 
+## 🧩 n8n — Mandats: intégration Google Docs + PDF
+
+Contexte
+- Webhook n8n (Basic Auth) connecté à l'app: `/api/mandats/generate`.
+- Chaîne validée: Webhook → Get rows (Sheets) → Validation & Formatage (Code) → Copy Google Doc → Docs API `batchUpdate` (replace placeholders) → Export PDF → (Upload Drive + Gmail) → Respond.
+
+Points clés et correctifs appliqués
+- Docs API: modèle converti en Google Doc natif (pas .docx).
+- Auth: nœud `HTTP Request` (Docs) en OAuth2 avec scopes `documents` + `drive.file`.
+- JSON Body: expression renvoyant un objet `{ requests: [...] }` (pas de chaîne JSON).
+- Gmail: pièce jointe sur `Binary Property = data` (sortie de l’export PDF), branchement direct depuis `Exporter en PDF`.
+- Respond: un seul `Respond to Webhook` en fin de flux (pas de double entrée).
+
+Placeholders non remplacés (cause et fix)
+- Cause: dans le nœud Code, on fusionnait `tpl` avec `...consts` APRÈS avoir mis les valeurs du formulaire; des clés vides en Sheet écrasaient les valeurs issues du formulaire → champs vides.
+- Fix recommandé:
+  1) Lire correctement les données du formulaire via `payload`:
+     `const form = ($json && typeof $json.payload === 'object') ? $json.payload : $json`
+  2) Construire `tpl` en posant d'abord les constantes `...consts`, puis SURPOSER les valeurs issues du formulaire (et dérivées) pour qu'elles prennent le dessus.
+  3) (Optionnel) Filtrer les constantes vides: supprimer des `consts` les clés dont la valeur est vide pour éviter tout écrasement intempestif.
+
+Snippet (extrait) — ordre de fusion correct
+```
+// … consts initialisées
+// Option: supprimer les vides
+for (const k of Object.keys(consts)) if (String(consts[k]).trim() === '') delete consts[k]
+
+const tpl = {
+  // 1) Constantes depuis Sheets en premier
+  ...consts,
+  // 2) Valeurs du formulaire et dérivées qui doivent primer
+  AG__DATE: isoToFR(AG__DATE_ISO),
+  MANDAT__DUREE: String(dureeMois),
+  MANDAT__DATE_DEBUT: isoToFR(MANDAT__DATE_DEBUT_ISO),
+  MANDAT__DATE_FIN: isoToFR(MANDAT__DATE_FIN_ISO),
+  COPRO__NOM_USAGE: form.COPRO__NOM_USAGE || '',
+  COPRO__ADRESSE: form.COPRO__ADRESSE || '',
+  COPRO__CP: form.COPRO__CP || '',
+  COPRO__VILLE: form.COPRO__VILLE || '',
+  COPRO__NUMERO_RNC: form.COPRO__NUMERO_RNC || '',
+  SYNDIC__HONORAIRES_HT: money(HONO_HT),
+  SYNDIC__HONORAIRES_TTC: money(HONO_TTC),
+  // etc.
+}
+```
+
+Regex date FR → ISO
+- Corrigée: `/^\d{2}\/\d{2}\/\d{4}$/` (attention à échapper le `/`).
+
+État actuel
+- Webhook 200 OK (nœud Respond en place), PDF reçu par mail, placeholders désormais remplacés.
+- Si un champ restait vide: vérifier la clé dans Sheets (colonne KEY sans espaces/casse), et le placeholder exact dans le Doc (pas de coupure/retour ligne/espaces à l’intérieur des `{{…}}`).
+
+---
+
+## ✅ n8n Mandats — Configuration finale (référence)
+
+- Chaîne des nœuds (ordre):
+  1) Webhook Trigger (POST, Basic Auth, Respond via node)
+  2) Get row(s) in sheet (Google Sheets)
+  3) Validation & Formatage (Code)
+  4) Copy file (Google Drive) — modèle Google Docs natif
+  5) HTTP Request (Docs API `documents.batchUpdate`) — replace placeholders
+  6) Exporter en PDF (Drive → download, Binary `data`)
+  7) [Option] Upload file (Drive → upload, Binary `data`) + [Option] Share file (anyone: reader)
+  8) Gmail (Send a message, Attachments Binary = `data`)
+  9) Respond to Webhook (JSON, 200)
+
+- Payload attendu (app → n8n): dans `body.payload` (pas à la racine).
+
+- Lecture Sheets: colonnes « Type » et « Information » (avec espace final dans l’export) → le Code retire `{{ }}` et trim() pour produire des clés propres.
+
+- Code (points critiques):
+  - Lire le formulaire depuis le Webhook: `const w = $items('Webhook Trigger',0,0)[0]?.json; const form = w?.body?.payload || {};`
+  - Fusion: `tpl = { ...consts, ...form/dérivés }` pour que le formulaire prime.
+  - Générer `requests` via replaceAllText avec `containsText.text = '{{KEY}}'` exactement.
+
+- Google Docs (modèle):
+  - Placeholders stricts `{{KEY}}` sans coupure/retour/espace interne.
+  - Modèle en Google Docs natif (mime `application/vnd.google-apps.document`).
+
+- Gmail: pièce jointe → `Binary Property = data` (sortie d’Export PDF); le download ne crée pas de fichier Drive (utiliser Upload si archivage voulu).
+
+## 🧪 Dépannage express
+
+- Champs vides côté Doc alors que le Webhook a des valeurs: le Code lisait `$json` (ligne Sheet) au lieu de `Webhook → body.payload`. Corriger la source.
+- Placeholders visibles: token `{{KEY}}` « cassé » dans le Doc (retour/espaces) → retaper d’un tenant.
+- Pas de lien public: ajouter “Share file” (anyone: reader) et renvoyer `webViewLink`.
+
+
 Résultats
 - La connexion fonctionne; si déjà connecté, le bouton “Connexion” n’exige plus d’identifiants (cookie déjà présent). Après déconnexion (`/logout`), le formulaire réapparaît.
 
@@ -293,3 +433,29 @@ Runbook rapide (local)
 - Démarrer: `cd nextjs-app && npm run dev` (ou `--port 3001`).
 - Login: `/login` → entrer l’email autorisé et le mot de passe local.
 - Logout: `/logout`.
+
+---
+
+## 🧷 Correctif UI — Espace blanc avant le footer
+
+Symptôme
+- Un espace blanc apparaissait entre la dernière section (ex. `FinalCta`) et le footer sur la landing et les pages ville.
+
+Cause
+- Le composant `Footer` imposait une marge supérieure `mt-20`. Cette marge crée une zone « hors section » où l’arrière‑plan par défaut (blanc) restait visible entre la dernière section et le footer.
+
+Correctif
+- Suppression de la marge supérieure du footer: `mt-20` retiré dans `src/components/layout/Footer.tsx`. Le footer s’aligne désormais directement après la dernière section, sans bande blanche.
+- La séparation visuelle est assurée par la barre `h-2 bg-primary` en haut du footer; pas de régression sur l’espacement.
+
+Correctif page Offres — bande blanche sous la barre de navigation
+- Contexte: la page `/offres` utilise un fond jaune global (`bg-primary` sur `<main>`). Le wrapper global ajoute un padding top pour la barre fixe, ce qui laissait une bande blanche (fond `body`) au-dessus de la zone jaune.
+- Fix: la première section de la page reçoit `relative -mt-20 md:-mt-24 pt-20 md:pt-24` afin d’annuler le padding global tout en conservant l’espace sous la barre. Fichier: `src/app/offres/page.tsx`.
+- Harmonisation entête sur pages colorées (flush sous la navbar fixe)
+- Contexte: certaines pages (erreur/404/contact) démarraient par une section colorée qui ne montait pas jusqu’à la navbar à cause du padding de compensation du header.
+- Fix: ajout du pattern `relative -mt-20 md:-mt-24 pt-20 md:pt-24` sur la première section (ou `main`) des pages suivantes:
+  - `src/app/offres/page.tsx` (déjà fait),
+  - `src/app/error.tsx`,
+  - `src/app/not-found.tsx`,
+  - `src/app/ressources/contact/page.tsx`.
+  Résultat: aucune bande blanche résiduelle sous la navbar; fond coloré aligné.

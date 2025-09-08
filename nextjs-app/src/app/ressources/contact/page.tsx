@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="section bg-gray-50">
+      <section className="section bg-gray-50 relative -mt-20 md:-mt-24 pt-20 md:pt-24">
         <div className="container">
           <div className="card p-8">
             <h1 className="h1">Contactez Beamô</h1>

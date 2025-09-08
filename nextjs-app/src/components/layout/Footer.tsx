@@ -1,6 +1,9 @@
+import Link from 'next/link'
+import { cities } from '@/lib/cities'
+
 export default function Footer() {
   return (
-    <footer className="mt-20 bg-[#222] text-white">
+    <footer className="bg-[#222] text-white">
       <div className="h-2 bg-primary" />
       <div className="mx-auto max-w-[1400px] px-6 py-16">
         <div className="grid gap-10 md:grid-cols-4">
@@ -8,13 +11,17 @@ export default function Footer() {
             <h3 className="text-primary relative mb-6 text-lg font-semibold after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-10 after:bg-primary">Nos offres</h3>
             <ul className="space-y-3 text-[#ccc]">
               <li><a href="/offres#syndic" className="hover:text-primary">Syndic de copropriété</a></li>
-              <li><a href="/syndic/syndic-vernon" className="hover:text-primary">Syndic de copropriété à Vernon</a></li>
-              <li><a href="/syndic/syndic-evreux" className="hover:text-primary">Syndic de copropriété à Évreux</a></li>
-              <li><a href="/syndic/syndic-les-andelys" className="hover:text-primary">Syndic de copropriété aux Andelys</a></li>
-              <li><a href="/syndic/syndic-louviers" className="hover:text-primary">Syndic de copropriété à Louviers</a></li>
-              <li><a href="/syndic/syndic-gaillon" className="hover:text-primary">Syndic de copropriété à Gaillon</a></li>
-              <li><a href="/syndic/syndic-gasny" className="hover:text-primary">Syndic de copropriété à Gasny</a></li>
-              <li><a href="/syndic/syndic-pacy-sur-eure" className="hover:text-primary">Syndic de copropriété à Pacy-sur-Eure</a></li>
+              {cities.filter((c) => c.showInFooter !== false).map((c) => {
+                const prep = c.displayPrep ?? c.prep ?? 'à'
+                const name = c.displayName ?? c.name
+                return (
+                  <li key={c.slug}>
+                    <Link href={`/ville/${c.slug}`} className="hover:text-primary">
+                      {`Syndic de copropriété ${prep} ${name}`}
+                    </Link>
+                  </li>
+                )
+              })}
               <li><a href="/comment-changer-syndic" className="hover:text-primary">Comment changer de syndic</a></li>
             </ul>
           </div>

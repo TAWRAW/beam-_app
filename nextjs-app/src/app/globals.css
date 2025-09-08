@@ -25,10 +25,11 @@ a {
   @apply no-underline hover:no-underline;
 }
 
-h1, .h1 {
+h1 { 
   font-family: var(--font-avenir-black), 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   font-weight: 900;
-  /* responsive scale using clamp, approx golden ratio */
+}
+.h1 { /* Utiliser cette classe si on veut la taille clampée */
   font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
   line-height: 1.1;
 }

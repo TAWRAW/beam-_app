@@ -10,7 +10,7 @@ export default function ErrorBoundary({
   reset: () => void
 }) {
   return (
-    <main className="section bg-primary">
+    <main className="section bg-primary relative -mt-20 md:-mt-24 pt-20 md:pt-24">
       <div className="container">
         <div className="card p-10 text-center">
           <h1 className="h1">Une erreur est survenue</h1>
