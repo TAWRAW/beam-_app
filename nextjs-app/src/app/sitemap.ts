@@ -6,6 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now },
+    { url: `${base}/qui-sommes-nous`, lastModified: now },
     { url: `${base}/offres`, lastModified: now },
     { url: `${base}/ressources/contact`, lastModified: now },
   ]

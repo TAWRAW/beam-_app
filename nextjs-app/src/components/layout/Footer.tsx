@@ -29,7 +29,7 @@ export default function Footer() {
           <div>
             <h3 className="text-primary relative mb-6 text-lg font-semibold after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-10 after:bg-primary">À propos</h3>
             <ul className="space-y-3 text-[#ccc]">
-              <li><a href="#" className="hover:text-primary">Notre histoire</a></li>
+              <li><a href="/qui-sommes-nous" className="hover:text-primary">Notre histoire</a></li>
               <li><a href="#" className="hover:text-primary">Notre équipe</a></li>
               <li><a href="#" className="hover:text-primary">Notre approche</a></li>
               <li><a href="#" className="hover:text-primary">Actualités</a></li>

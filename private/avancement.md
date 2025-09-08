@@ -459,3 +459,22 @@ Correctif page Offres — bande blanche sous la barre de navigation
   - `src/app/not-found.tsx`,
   - `src/app/ressources/contact/page.tsx`.
   Résultat: aucune bande blanche résiduelle sous la navbar; fond coloré aligné.
+
+---
+
+## 🧭 Nouvelle page — Qui sommes‑nous ?
+
+Implémentation
+- Route: `src/app/qui-sommes-nous/page.tsx` (App Router).
+- SEO: `metadata` (title/description/keywords/OG + canonical), `robots: index, follow`.
+- Contenu: sections Hero, Mission & valeurs, Histoire, Approche (listes), CTA final.
+- JSON‑LD: `Organization` (name, url, logo, sameAs) intégré en bas de page.
+
+Intégrations
+- Header: lien « Histoire » pointe sur `/qui-sommes-nous`.
+- Footer: « Notre histoire » pointe sur `/qui-sommes-nous`.
+- Sitemap: entrée ajoutée pour `/qui-sommes-nous`.
+
+À faire (contenu)
+- Remplacer les textes génériques par le contenu validé (document Google Drive fourni).
+- Ajouter photos/équipe/valeurs officielles si disponibles.

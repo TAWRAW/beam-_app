@@ -25,7 +25,7 @@ export default function Header() {
           <Link href="/" className="font-semibold text-neutral">Beamô</Link>
           <nav className="relative hidden items-center gap-10 md:flex">
             <Link href="/offres" className="text-neutral hover:text-primary">Offres</Link>
-            <Link href="#" className="text-neutral hover:text-primary">Histoire</Link>
+            <Link href="/qui-sommes-nous" className="text-neutral hover:text-primary">Histoire</Link>
             <div className="relative">
               <button
                 ref={btnRef}
