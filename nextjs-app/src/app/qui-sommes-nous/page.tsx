@@ -128,18 +128,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Histoire + portrait */}
+      {/* Le mot du fondateur + portrait */}
       <section className="section">
         <div className="container">
-          <h2 className="h2 font-semibold text-neutral">Notre histoire</h2>
+          <h2 className="h2 font-semibold text-neutral">Le mot du fondateur</h2>
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="card p-6">
-              <ul className="text-gray-700 space-y-2">
-                <li>• 2024–2025 — constat: trop d’attente, trop d’opacité, pas assez d’explications.</li>
-                <li>• 2025 — création de Beamô: transparence, délais, responsable unique.</li>
-                <li>• 2025 — outillage: portail documents, suivi des tickets, modèles d’AG clairs.</li>
-                <li>• 2026 → cap: excellence locale, élargir sans diluer la qualité.</li>
-              </ul>
+            <div className="card p-8">
+              <blockquote className="text-gray-700">
+                « Beamô est né d’une idée simple: si c’était ma copropriété, qu’est‑ce que j’exigerais? De la visibilité,
+                des délais tenus et des comptes propres. Mon ambition est claire: mettre fin aux habitudes qui font perdre du temps
+                et de l’argent aux copropriétaires. Ma volonté: un syndic local, responsable, lisible. »
+                <br />— Tom, fondateur de Beamô
+              </blockquote>
             </div>
             <figure className="card overflow-hidden p-0">
               <Image
@@ -171,19 +171,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Le mot du fondateur */}
-      <section className="section">
-        <div className="container">
-          <div className="card p-8">
-            <h2 className="h2 font-semibold text-neutral">Le mot du fondateur</h2>
-            <blockquote className="mt-4 text-gray-700">
-              « Beamô est né d’une idée simple: si c’était ma copropriété, qu’est‑ce que j’exigerais? De la visibilité, des délais tenus et des comptes propres.
-              Mon ambition est claire: mettre fin aux habitudes qui font perdre du temps et de l’argent aux copropriétaires. Ma volonté: un syndic local, responsable, lisible. »
-              <br />— Tom, fondateur de Beamô
-            </blockquote>
-          </div>
-        </div>
-      </section>
+      {/* (Section fondateur déplacée ci‑dessus, à côté du portrait) */}
 
       {/* Attentes */}
       <section className="section bg-gray-50">
