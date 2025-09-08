@@ -478,3 +478,57 @@ Intégrations
 À faire (contenu)
 - Remplacer les textes génériques par le contenu validé (document Google Drive fourni).
 - Ajouter photos/équipe/valeurs officielles si disponibles.
+
+Mise à jour contenu (ton assumé)
+- Intégration d’un texte éditorial fort (Ambition, Volonté, « Mettre fin … ») avec sections:
+  - Notre ambition / Notre volonté
+  - Pourquoi Beamô existe / Ce que nous faisons différemment
+  - Position assumée et clivante
+  - Histoire (timeline)
+  - Engagements mesurables
+  - Le mot du fondateur
+  - Attentes / Option courte « en bref »
+  - CTA final
+
+---
+
+## ✍️ Charte éditoriale — Ton & « mots forts »
+
+Objectif
+- Assumer une voix claire et assurée, orientée action, qui exprime l’Ambition et la Volonté de « mettre fin » aux irritants classiques de la copropriété.
+
+Piliers sémantiques (à réutiliser)
+- Ambition, Volonté, Exigence, Transparence, Proximité, Réactivité, Respect, Simplicité, Clarté.
+- Verbes d’action: « Mettre fin », « Clarifier », « Accélérer », « Assumer », « Garantir », « Simplifier ».
+
+Formules « Mettre fin… » (à décliner)
+- « Mettre fin aux réponses tardives. »
+- « Mettre fin aux frais cachés. »
+- « Mettre fin aux AG sans fin. »
+- « Mettre fin aux dossiers qui n’avancent pas. »
+
+Exemples prêts à l’emploi
+- Home (H1/H2)
+  - H1: « Le syndic local et efficace. »
+  - H2: « Mettons fin aux lenteurs et aux zones d’ombre. »
+- Pages ville (H1/H2)
+  - H1: « Le syndic local et efficace [prep] [Ville]. »
+  - H2: « Notre volonté: des réponses sous 48h et une gestion claire. »
+- Offres (intro)
+  - « Transparence totale. Aucune ligne illisible. Des engagements assumés. »
+- Changer de syndic (accroche)
+  - « Mettre fin à l’inertie: 5 étapes simples, on s’occupe de tout. »
+- Qui sommes‑nous (mission)
+  - « Notre ambition: réconcilier exigence, proximité et résultats. »
+
+CTA — variantes
+- « Demander un devis en 24h » / « Être rappelé » / « Démarrer la transition » / « Parler à un gestionnaire »
+
+Do / Don’t (rédaction)
+- Do: phrases courtes, verbe fort au présent, bénéfices concrets, évitez le jargon.
+- Don’t: hyperboles vagues (« solution innovante »), passif, doubles négations, promesses non mesurables.
+
+Implémentation progressive (suggestion)
+- Remplacer les sous‑titres H2 par des formulations « Ambition/Volonté/Mettre fin ».
+- Ajouter un encart « En bref » (3–5 puces d’engagements) en haut de Home/Offres/Villes.
+- Harmoniser les CTA avec une promesse mesurable (« 24h », « 48h »).
