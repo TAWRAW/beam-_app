@@ -1,11 +1,97 @@
 export const metadata = {
-  title: 'Offres de Syndic de Copropriété à Vernon, Evreux, Les Andelys | Beamô',
+  title: 'Offres de Syndic de Copropriété à Vernon, Évreux, Les Andelys | Beamô',
   description:
-    'Découvrez nos offres de syndic de copropriété à Vernon, Evreux et Les Andelys. Services transparents et réactifs adaptés à vos besoins. Changez facilement de syndic.',
+    'Découvrez nos offres de syndic de copropriété à Vernon, Évreux et Les Andelys. Services transparents et réactifs adaptés à vos besoins. Changez facilement de syndic.',
+  keywords: [
+    'offres syndic', 'tarifs syndic', 'prix syndic copropriété', 'Vernon', 'Évreux', 'Les Andelys', 
+    'changement syndic', 'gestion hybride', 'transparence', 'devis syndic'
+  ],
+  openGraph: {
+    title: 'Nos Offres Syndic - Transparence totale | Beamô',
+    description: 'Offres de syndic transparentes à Vernon, Évreux, Les Andelys. Standard, Hybride, Clos-Masure. Aucune ligne illisible.',
+    url: '/offres',
+    type: 'website',
+    locale: 'fr_FR',
+    images: [
+      {
+        url: '/outils/images/beamocomptearebour.png',
+        width: 1200,
+        height: 630,
+        alt: 'Beamô - Offres de syndic transparentes',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nos Offres Syndic - Transparence totale',
+    description: 'Offres de syndic transparentes : Standard, Hybride, Clos-Masure. Aucune ligne illisible.',
+  },
   alternates: { canonical: '/offres' },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function OffresPage() {
+  const offersJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://xn--beam-yqa.fr/offres#services',
+    name: 'Offres de Syndic de Copropriété',
+    provider: {
+      '@type': 'LocalBusiness',
+      name: 'Beamô',
+      url: 'https://xn--beam-yqa.fr'
+    },
+    description: 'Découvrez nos solutions adaptées aux copropriétés : Standard, Hybride et Clos-Masure.',
+    serviceType: 'Property Management',
+    areaServed: [
+      { '@type': 'City', name: 'Vernon' },
+      { '@type': 'City', name: 'Évreux' },
+      { '@type': 'City', name: 'Les Andelys' }
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Offres Syndic Beamô',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          name: 'Offre Standard',
+          description: 'Gestion classique de votre copropriété avec transparence et efficacité. Tous les services essentiels d\'un syndic professionnel.',
+          category: 'Syndic de copropriété',
+          availability: 'https://schema.org/InStock',
+          seller: {
+            '@type': 'Organization',
+            name: 'Beamô'
+          }
+        },
+        {
+          '@type': 'Offer',
+          name: 'Offre Hybride',
+          description: 'Un modèle participatif avec le conseil syndical pour réduire les coûts. Vous êtes impliqués dans la gestion.',
+          category: 'Syndic hybride',
+          availability: 'https://schema.org/InStock',
+          seller: {
+            '@type': 'Organization',
+            name: 'Beamô'
+          }
+        },
+        {
+          '@type': 'Offer',
+          name: 'Offre Clos-Masure',
+          description: 'En cours de développement',
+          category: 'Syndic spécialisé',
+          availability: 'https://schema.org/PreOrder',
+          seller: {
+            '@type': 'Organization',
+            name: 'Beamô'
+          }
+        }
+      ]
+    }
+  }
+
   return (
     <main className="bg-primary">
       <section className="section relative -mt-20 md:-mt-24 pt-20 md:pt-24">
@@ -21,6 +107,10 @@ export default function OffresPage() {
           </div>
         </div>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(offersJsonLd) }}
+      />
     </main>
   )
 }

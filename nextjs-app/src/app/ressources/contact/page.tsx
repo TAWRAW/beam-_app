@@ -3,11 +3,94 @@ import ContactForm from '@/components/forms/ContactForm'
 export const metadata = {
   title: 'Contactez Beamô - Le Syndic Hybride Nouvelle Génération',
   description:
-    "Contactez BEAMÔ, votre syndic hybride alliant digitalisation et expertise humaine. Nous répondons à toutes vos questions sur la gestion de votre copropriété.",
+    "Contactez Beamô, votre syndic hybride alliant digitalisation et expertise humaine. Nous répondons à toutes vos questions sur la gestion de votre copropriété sous 48h.",
+  keywords: [
+    'contact syndic', 'devis syndic', 'Vernon', 'Évreux', 'Les Andelys', 
+    'question copropriété', 'assemblée générale', '48h', 'réponse rapide'
+  ],
+  openGraph: {
+    title: 'Contactez Beamô - Réponse sous 48h garantie',
+    description: "Une question sur votre copropriété ? Laissez-nous un message, nous vous répondrons sous 48h.",
+    url: '/ressources/contact',
+    type: 'website',
+    locale: 'fr_FR',
+    images: [
+      {
+        url: '/outils/images/beamocomptearebour.png',
+        width: 1200,
+        height: 630,
+        alt: 'Contactez Beamô - Syndic de copropriété',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contactez Beamô - Réponse sous 48h',
+    description: "Une question sur votre copropriété ? Nous vous répondons sous 48h.",
+  },
   alternates: { canonical: '/ressources/contact' },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function ContactPage() {
+  const contactJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    '@id': 'https://xn--beam-yqa.fr/ressources/contact',
+    name: 'Contactez Beamô',
+    description: 'Contactez Beamô pour toutes vos questions sur la gestion de copropriété. Réponse garantie sous 48h.',
+    mainEntity: {
+      '@type': 'LocalBusiness',
+      name: 'Beamô',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+33-2-XX-XX-XX-XX',
+        contactType: 'customer service',
+        email: 'contact@xn--beam-yqa.fr',
+        availableLanguage: 'French',
+        areaServed: ['Vernon', 'Évreux', 'Les Andelys', 'Normandie'],
+        hoursAvailable: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          opens: '09:00',
+          closes: '18:00'
+        },
+        serviceType: 'Property Management'
+      }
+    },
+    potentialAction: {
+      '@type': 'ContactAction',
+      name: 'Contacter Beamô',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://xn--beam-yqa.fr/ressources/contact',
+        inLanguage: 'fr',
+        actionPlatform: ['http://schema.org/DesktopWebPlatform', 'http://schema.org/MobileWebPlatform']
+      }
+    }
+  }
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Beamô',
+    url: 'https://xn--beam-yqa.fr',
+    email: 'contact@xn--beam-yqa.fr',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+33-2-XX-XX-XX-XX',
+      contactType: 'customer support',
+      areaServed: 'FR',
+      availableLanguage: 'French'
+    },
+    sameAs: [
+      'https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true'
+    ]
+  }
+
   return (
     <main>
       {/* Hero */}
@@ -47,6 +130,14 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
     </main>
   )
 }

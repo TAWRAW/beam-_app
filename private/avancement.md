@@ -292,6 +292,74 @@ Prochaines améliorations possibles:
 
 ---
 
+## 🔍 Optimisations SEO — Session du 2025-09-09
+
+### Objectif
+Améliorer le référencement naturel des pages existantes sans créer de nouveaux contenus, en optimisant les métadonnées, données structurées et signaux techniques.
+
+### Travaux réalisés
+
+#### Phase 1 : Corrections critiques (P0) ✅
+1. **Robots.txt statique corrigé**
+   - Correction du sitemap URL: `https://www.beamo.fr/sitemap.xml` → `https://xn--beam-yqa.fr/sitemap.xml`
+   - Fichier: `nextjs-app/public/robots.txt`
+
+2. **Métadonnées globales enrichies** (`nextjs-app/src/app/layout.tsx`)
+   - Description étendue avec zones géographiques
+   - Mots-clés ajoutés: syndic, copropriété, Vernon, Évreux, Les Andelys, Normandie, Eure
+   - OpenGraph enrichi avec dimensions d'image (1200x630), alt text
+   - Twitter Cards ajoutées
+   - Robots directives avancées (googleBot, max-image-preview, max-snippet)
+   - Support Google Site Verification
+
+3. **Métadonnées complétées sur pages principales**
+   - **Page d'accueil** (`src/app/page.tsx`): keywords, OpenGraph complet, Twitter cards, robots
+   - **Page offres** (`src/app/offres/page.tsx`): mots-clés spécialisés (tarifs, changement syndic), OG/Twitter
+   - **Page contact** (`src/app/ressources/contact/page.tsx`): focus "réponse 48h", mots-clés contact/devis
+
+#### Phase 2 : Données structurées (P1) ✅
+1. **Page d'accueil** — JSON-LD ajouté
+   - **LocalBusiness** (Schema.org): nom, URL, logo, description, zones desservies (Vernon/Évreux/Les Andelys)
+   - **Service**: services de gestion de copropriété, contact, zones couvertes
+   - Fondateur: Tom Lemeille
+   - Liens externes: LinkedIn
+
+2. **Page offres** — JSON-LD Service + OfferCatalog
+   - **Service** principal avec provider LocalBusiness
+   - **OfferCatalog** avec 3 offres structurées:
+     * Offre Standard (InStock)
+     * Offre Hybride (InStock)  
+     * Offre Clos-Masure (PreOrder)
+   - Categories: "Syndic de copropriété", "Syndic hybride", "Syndic spécialisé"
+
+3. **Page contact** — JSON-LD ContactPage + Organization
+   - **ContactPage**: description, actions de contact
+   - **ContactPoint**: téléphone, email, horaires (9h-18h), langues (français)
+   - **Organization**: informations de contact consolidées
+   - Actions potentielles: ContactAction avec EntryPoint
+
+### Impact SEO attendu
+- **Indexation**: meilleure compréhension par les moteurs de recherche
+- **Rich snippets**: affichage enrichi dans les résultats Google (horaires, notes, liens directs)
+- **Local SEO**: données structurées pour les requêtes géolocalisées "syndic + ville"
+- **CTR amélioré**: images OpenGraph dans les partages sociaux
+- **Cohérence technique**: métadonnées uniformes et complètes
+
+### Fichiers modifiés
+- `nextjs-app/public/robots.txt`
+- `nextjs-app/src/app/layout.tsx`
+- `nextjs-app/src/app/page.tsx`
+- `nextjs-app/src/app/offres/page.tsx`
+- `nextjs-app/src/app/ressources/contact/page.tsx`
+
+### Phases suivantes (non implémentées)
+- **Images OpenGraph personnalisées** par page/section
+- **Sitemap enrichi** avec priority/changefreq
+- **Breadcrumbs JSON-LD** sur pages ville
+- **Données structurées avancées** (reviews, aggregateRating)
+
+---
+
 ## 🔐 Auth temporaire simple (email + mot de passe env)
 
 Objectif: restreindre l’accès à `/apps/*` à un seul compte (tom.lemeille@xn--beam-yqa.fr) via formulaire email+mot de passe, sans dépendance externe. Remplacera plus tard Auth.js/Google.
