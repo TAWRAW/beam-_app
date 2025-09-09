@@ -519,6 +519,10 @@ Intégrations UI
 - Mobile Quick Nav: lien « Extranet » → `/en-cours`.
 - Mobile Quick Nav: ajout du lien « Application » → `/apps` et correction du lien « Histoire » → `/qui-sommes-nous`.
 
+Backlink LinkedIn (footer)
+- Ajout d’un lien vers la page LinkedIn de Beamô dans le footer (sous le bloc marque) avec logo SVG inline.
+- URL: https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true (ouverture dans un nouvel onglet).
+
 À faire (optionnel)
 - Remplacer le GIF par une illustration locale si besoin.
 - Quand l’Extranet sera prêt: mettre à jour les liens sans supprimer la page (utile comme fallback).

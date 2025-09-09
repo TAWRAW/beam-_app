@@ -57,9 +57,30 @@ export default function Footer() {
             <div className="text-3xl font-bold text-primary">Beamô</div>
             <p className="mt-4 text-[#ccc]">Votre syndic de copropriété local et réactif, à l'écoute de vos besoins.</p>
             <div className="mt-6 flex gap-3">
-              {['facebook','twitter','linkedin','instagram'].map((name) => (
-                <a key={name} href="#" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#333] text-white transition hover:-translate-y-1 hover:bg-primary hover:text-[#222]">{/* icon placeholder */}<span className="sr-only">{name}</span></a>
-              ))}
+              {['facebook','twitter','linkedin','instagram'].map((name) => {
+                const href = name === 'linkedin'
+                  ? 'https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true'
+                  : '#'
+                return (
+                  <a
+                    key={name}
+                    href={href}
+                    target={name === 'linkedin' ? '_blank' : undefined}
+                    rel={name === 'linkedin' ? 'noopener noreferrer' : undefined}
+                    aria-label={name}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-[#333] text-white transition hover:-translate-y-1 hover:bg-primary hover:text-[#222]"
+                  >
+                    {name === 'linkedin' ? (
+                      // LinkedIn logo SVG
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
+                        <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM9 8h3.8v2.2h.05c.53-1 1.82-2.2 3.75-2.2 4 0 4.7 2.63 4.7 6.05V24h-4v-7.1c0-1.7-.03-3.88-2.37-3.88-2.38 0-2.75 1.85-2.75 3.76V24h-4V8z" />
+                      </svg>
+                    ) : (
+                      <span className="sr-only">{name}</span>
+                    )}
+                  </a>
+                )
+              })}
             </div>
           </div>
         </div>
