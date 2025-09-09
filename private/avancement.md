@@ -517,6 +517,7 @@ Implémentation
 Intégrations UI
 - Header: bouton « Extranet » → `/en-cours`.
 - Mobile Quick Nav: lien « Extranet » → `/en-cours`.
+- Mobile Quick Nav: ajout du lien « Application » → `/apps` et correction du lien « Histoire » → `/qui-sommes-nous`.
 
 À faire (optionnel)
 - Remplacer le GIF par une illustration locale si besoin.

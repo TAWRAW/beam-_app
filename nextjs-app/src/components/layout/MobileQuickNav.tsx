@@ -23,7 +23,7 @@ export default function MobileQuickNav() {
                 <Building2 className="h-5 w-5" />
                 <span className="text-[11px]">Offres</span>
               </Link>
-              <Link href="#" className="flex flex-col items-center gap-1 py-1" aria-label="Histoire">
+              <Link href="/qui-sommes-nous" className="flex flex-col items-center gap-1 py-1" aria-label="Histoire">
                 <BookOpen className="h-5 w-5" />
                 <span className="text-[11px]">Histoire</span>
               </Link>
@@ -55,6 +55,7 @@ export default function MobileQuickNav() {
             <div className="rounded-t-2xl border border-black/10 bg-white p-4 shadow-xl">
               <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
               <div className="grid gap-2">
+                <Link href="/apps" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Application</Link>
                 <Link href="/ressources/contact" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Nous contacter</Link>
                 <Link href="/en-cours" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Extranet</Link>
                 <Link href="/ressources" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Ressources</Link>
