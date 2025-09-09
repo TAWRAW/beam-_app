@@ -1,7 +1,38 @@
 "use client";
 import Link from 'next/link'
-import { Home, Building2, BookOpen, Menu } from 'lucide-react'
 import { useState } from 'react'
+
+// Lightweight inline icons to avoid external vendor chunks
+function IconHome(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <path d="M3 9.5 12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5Z"/>
+    </svg>
+  )
+}
+function IconBuilding(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="8" width="7" height="13" rx="1"/>
+      <path d="M6.5 6h0M6.5 10h0M6.5 14h0M6.5 18h0M17.5 11h0M17.5 15h0M17.5 19h0"/>
+    </svg>
+  )
+}
+function IconBook(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <path d="M4 19a2 2 0 0 0 2 2h13"/><path d="M20 22V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v13"/>
+      <path d="M6 18a2 2 0 0 1 2-2h12"/>
+    </svg>
+  )
+}
+function IconMenu(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <path d="M3 6h18M3 12h18M3 18h18"/>
+    </svg>
+  )
+}
 
 export default function MobileQuickNav() {
   const [open, setOpen] = useState(false)
@@ -16,15 +47,15 @@ export default function MobileQuickNav() {
           >
             <div className="grid grid-cols-4 items-center text-neutral">
               <Link href="/" className="flex flex-col items-center gap-1 py-1" aria-label="Accueil">
-                <Home className="h-5 w-5" />
+                <IconHome className="h-5 w-5" />
                 <span className="text-[11px]">Accueil</span>
               </Link>
               <Link href="/offres" className="flex flex-col items-center gap-1 py-1" aria-label="Offres">
-                <Building2 className="h-5 w-5" />
+                <IconBuilding className="h-5 w-5" />
                 <span className="text-[11px]">Offres</span>
               </Link>
               <Link href="/qui-sommes-nous" className="flex flex-col items-center gap-1 py-1" aria-label="Histoire">
-                <BookOpen className="h-5 w-5" />
+                <IconBook className="h-5 w-5" />
                 <span className="text-[11px]">Histoire</span>
               </Link>
               <button
@@ -35,7 +66,7 @@ export default function MobileQuickNav() {
                 aria-expanded={open}
                 aria-label="Plus"
               >
-                <Menu className="h-5 w-5" />
+                <IconMenu className="h-5 w-5" />
                 <span className="text-[11px]">Plus</span>
               </button>
             </div>
