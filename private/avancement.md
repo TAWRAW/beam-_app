@@ -500,7 +500,27 @@ Mises à jour récentes (style + wording)
 
 Notes CSS / Dev
 - Résolution des 404 sur chunks (_next/static/*) en dev: kill process :3004 → rm -rf .next → npm run dev -p 3004.
-- En cas de persistance: tester en prod local (npm run build && npm run start -p 3004) pour valider le rendu stable.
+  - En cas de persistance: tester en prod local (npm run build && npm run start -p 3004) pour valider le rendu stable.
+
+---
+
+## 🚧 Page "En cours de construction" + intégration Extranet
+
+Objectif
+- Disposer d’une page générique pour les fonctionnalités non encore disponibles (ex: Extranet), sans impacter les pages d’erreur (404/500).
+
+Implémentation
+- Route: `src/app/en-cours/page.tsx` (App Router) avec hero jaune + carte centrale, message: « En cours de construction — Nous travaillons sur une expérience incroyable ».
+- SEO: `robots: index: false, follow: true`, canonical `/en-cours`.
+- Liens internes: boutons « Retour à l’accueil » et « Nous contacter ».
+
+Intégrations UI
+- Header: bouton « Extranet » → `/en-cours`.
+- Mobile Quick Nav: lien « Extranet » → `/en-cours`.
+
+À faire (optionnel)
+- Remplacer le GIF par une illustration locale si besoin.
+- Quand l’Extranet sera prêt: mettre à jour les liens sans supprimer la page (utile comme fallback).
 
 ---
 

@@ -71,7 +71,7 @@ export default function Header() {
             </div>
           </nav>
           <div className="nav-buttons flex items-center gap-2">
-            <Link href="#" className="btn btn-extranet text-sm md:text-base px-3 py-1.5 md:px-4 md:py-2">Extranet</Link>
+            <Link href="/en-cours" className="btn btn-extranet text-sm md:text-base px-3 py-1.5 md:px-4 md:py-2">Extranet</Link>
             <Link href="/ressources/contact" className="btn text-sm md:text-base px-3 py-1.5 md:px-4 md:py-2">
               <span className="inline md:hidden">Contacter</span>
               <span className="hidden md:inline">Nous Contacter</span>

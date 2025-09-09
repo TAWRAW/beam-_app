@@ -56,7 +56,7 @@ export default function MobileQuickNav() {
               <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
               <div className="grid gap-2">
                 <Link href="/ressources/contact" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Nous contacter</Link>
-                <Link href="#" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Extranet</Link>
+                <Link href="/en-cours" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Extranet</Link>
                 <Link href="/ressources" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Ressources</Link>
               </div>
               <div className="mt-3 text-right">
@@ -69,4 +69,3 @@ export default function MobileQuickNav() {
     </>
   )
 }
-
