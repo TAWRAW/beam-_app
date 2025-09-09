@@ -486,9 +486,21 @@ Mise à jour contenu (ton assumé)
   - Position assumée et clivante
   - Histoire (timeline)
   - Engagements mesurables
-  - Le mot du fondateur
-  - Attentes / Option courte « en bref »
-  - CTA final
+- Le mot du fondateur
+- Attentes / Option courte « en bref »
+- CTA final
+
+Mises à jour récentes (style + wording)
+- Fond jaune (bg-primary) des sections: « Pourquoi Beamô existe », « En bref », et « Prêt à échanger… » pour renforcer l’identité visuelle.
+- Bloc fondateur: carte blanche rétablie autour de la citation, avec photo adjacente (2 colonnes) sur fond jaune.
+- Wording:
+  - « Des promesses de digital sans effet sur le quotidien » → « … et inutilisable par les copropriétaires ».
+  - « Tech utile: automatiser la paperasse… » → « … automatiser les tâches redondantes et chronophages… ».
+  - Titre « Notre position (assumée et clivante) » → « Notre position » et suppression du point « options cachées ».
+
+Notes CSS / Dev
+- Résolution des 404 sur chunks (_next/static/*) en dev: kill process :3004 → rm -rf .next → npm run dev -p 3004.
+- En cas de persistance: tester en prod local (npm run build && npm run start -p 3004) pour valider le rendu stable.
 
 ---
 

@@ -75,7 +75,7 @@ export default function AboutPage() {
       </section>
 
       {/* Pourquoi Beamô existe */}
-      <section className="section">
+      <section className="section bg-primary">
         <div className="container">
           <h2 className="h2 font-semibold text-neutral">Pourquoi Beamô existe</h2>
           <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 <li>• Des PV d’AG incompréhensibles</li>
                 <li>• Des frais qui s’empilent</li>
                 <li>• Des changements d’interlocuteurs permanents</li>
-                <li>• Des promesses de digital sans effet sur le quotidien</li>
+                <li>• Des promesses de digital sans effet sur le quotidien et inutilisable par les copropriétaires</li>
               </ul>
               <p className="mt-3 text-gray-700">
                 Beamô est né pour <strong>mettre fin</strong> à tout ça. Pas de grand discours: des preuves.
@@ -99,7 +99,7 @@ export default function AboutPage() {
                 <li>• Tableau de bord en ligne: demandes, documents, votes, budgets.</li>
                 <li>• Comptes clairs: factures classées, reporting trimestriel lisible.</li>
                 <li>• Pas de remises marketing: des prix justes et stables.</li>
-                <li>• Tech utile: automatiser la paperasse pour libérer du temps terrain.</li>
+                <li>• Tech utile: automatiser les tâches redondantes et chronophages pour libérer du temps terrain.</li>
               </ul>
             </div>
           </div>
@@ -109,14 +109,13 @@ export default function AboutPage() {
       {/* Position assumée */}
       <section className="section bg-gray-50">
         <div className="container">
-          <h2 className="h2 font-semibold text-neutral">Notre position (assumée et clivante)</h2>
+          <h2 className="h2 font-semibold text-neutral">Notre position</h2>
           <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="card p-6">
               <p className="text-gray-700">Nous choisissons d’être exigeants.</p>
               <ul className="mt-3 space-y-2 text-gray-700">
                 <li>• Mettre fin aux réponses floues: on dit ce qu’on fait et on fait ce qu’on dit.</li>
                 <li>• Mettre fin aux « on verra plus tard »: on planifie, on suit, on relance.</li>
-                <li>• Mettre fin aux « options cachées »: contrat type ALUR + annexes lisibles.</li>
                 <li>• Mettre fin aux gadgets: chaque outil doit servir votre immeuble.</li>
               </ul>
               <p className="mt-3 text-gray-700">
@@ -129,7 +128,7 @@ export default function AboutPage() {
       </section>
 
       {/* Le mot du fondateur + portrait */}
-      <section className="section">
+      <section className="section bg-primary">
         <div className="container">
           <h2 className="h2 font-semibold text-neutral">Le mot du fondateur</h2>
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -141,7 +140,7 @@ export default function AboutPage() {
                 <br />— Tom, fondateur de Beamô
               </blockquote>
             </div>
-            <figure className="card overflow-hidden p-0">
+            <figure className="overflow-hidden p-0 rounded-2xl border-0">
               <Image
                 src="/images/about/portrait.jpg"
                 alt="Portrait au bureau"
@@ -150,7 +149,7 @@ export default function AboutPage() {
                 className="h-full w-full object-cover"
                 priority
               />
-              <figcaption className="px-4 py-3 text-sm text-gray-600">Au bureau – implication terrain et proximité.</figcaption>
+              <figcaption className="px-4 py-3 text-sm text-gray-800">Au bureau – implication terrain et proximité.</figcaption>
             </figure>
           </div>
         </div>
@@ -174,7 +173,7 @@ export default function AboutPage() {
       </section>
 
       {/* Option courte */}
-      <section className="section">
+      <section className="section bg-primary">
         <div className="container">
           <div className="card p-6">
             <h2 className="h2 font-semibold text-neutral">En bref</h2>
@@ -199,7 +198,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      <section className="section">
+      <section className="section bg-primary">
         <div className="container">
           <div className="card p-8 text-center">
             <h2 className="text-2xl font-semibold">Prêt à échanger sur votre copropriété ?</h2>
