@@ -89,7 +89,7 @@ export default function Footer() {
           <ul className="flex flex-wrap gap-6">
             <li><a className="hover:text-primary" href="#">Mentions légales</a></li>
             <li><a className="hover:text-primary" href="/politique-de-confidentialite">Politique de confidentialité</a></li>
-            <li><a className="hover:text-primary" href="#">Conditions d'utilisation</a></li>
+            <li><a className="hover:text-primary" href="/conditions-utilisation">Conditions d'utilisation</a></li>
             <li><a className="hover:text-primary" href="#">Sources</a></li>
           </ul>
         </div>
