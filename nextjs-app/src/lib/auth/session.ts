@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import crypto from 'node:crypto'
+import crypto from 'crypto'
 
 const COOKIE_NAME = 'app_session'
 

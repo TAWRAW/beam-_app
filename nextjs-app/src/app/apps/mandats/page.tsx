@@ -117,7 +117,7 @@ export default function MandatsPage() {
         }
         // Sinon redirige vers login avec retour
         const back = encodeURIComponent(window.location.pathname + window.location.search)
-        window.location.href = `/login?redirect=${back}`
+        window.location.href = `/auth/login?redirect=${back}`
         return
       }
       const data = await res.json()
