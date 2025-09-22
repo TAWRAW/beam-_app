@@ -73,7 +73,7 @@ export async function PUT(
     // Vérifier que l'article existe
     const { data: existingArticle } = await supabaseAdmin
       .from('articles')
-      .select('id, slug, title')
+      .select('id, slug, title, published_at, status')
       .eq('id', params.id)
       .single()
 
