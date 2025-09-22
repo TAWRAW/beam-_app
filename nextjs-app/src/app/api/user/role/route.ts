@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching user role:', error)
     return NextResponse.json({ 
       role: 'visiteur',
-      error: error.message 
+      error: error instanceof Error ? error.message : 'Unknown error'
     })
   }
 }
