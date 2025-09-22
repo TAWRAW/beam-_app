@@ -35,7 +35,7 @@ export function LoginForm({ redirect = '/apps' }: { redirect?: string }) {
           setLoading(false)
           return
         }
-        router.replace(redirect)
+        router.replace(redirect as any)
       } else {
         const { error } = await supabase.auth.signUp({
           email,

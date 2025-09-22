@@ -53,7 +53,7 @@ export default function CategoryGallery() {
       {CATEGORIES.map(({ key, label, description, href, Icon }) => (
         <Link
           key={key}
-          href={href}
+          href={href as any}
           className="group flex items-center gap-4 rounded-lg border p-5 transition hover:border-primary hover:bg-primary/5"
         >
           <div className="flex h-14 w-14 items-center justify-center rounded-md bg-neutral-100 text-neutral-700 transition group-hover:bg-primary group-hover:text-white">

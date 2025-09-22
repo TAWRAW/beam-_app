@@ -101,10 +101,12 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     article = data
 
     // Incrémenter le compteur de vues côté serveur
-    await supabase
-      .from('articles')
-      .update({ views_count: article.views_count + 1 })
-      .eq('id', article.id)
+    if (article) {
+      await supabase
+        .from('articles')
+        .update({ views_count: article.views_count + 1 })
+        .eq('id', article.id)
+    }
 
   } catch (error) {
     console.error('Error loading article:', error)
