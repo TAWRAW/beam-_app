@@ -1,6 +1,37 @@
 # 📈 Avancement Migration Beamô (HTML → Next.js)
 
-Dernière mise à jour: plan de durcissement formulaire + SEO/Analytics avant stabilisation de prod.
+Dernière mise à jour: Intégration Supabase Auth (email + Google), table `profiles` + rôles, protection `/apps`, formulaire de connexion et redirections unifiées.
+
+## ✅ Avancement Supabase Auth & Profils (22/09/2025)
+- Connexion Supabase configurée via `@supabase/ssr` (clients serveur/navigateur).
+- Authentification: formulaire Login/Signup + OAuth Google (bouton “Continuer avec Google”).
+- Table `public.profiles` avec rôles: `visiteur`, `inscrit`, `payant`, `employe`, `admin`, `vip`.
+- Triggers: création/sync du profil sur événements `auth.users` (email, avatar), `updated_at` auto.
+- RLS/Policies: lecture propriétaire ou admin/employé, update owner/admin, delete admin.
+- Protection d’accès: middleware protège `/apps/*` via session Supabase; redirection vers `/auth/login`.
+- Pages: `/ressources/application` embarque LoginForm si non connecté; affiche rôle + liens si connecté.
+- Endpoint de debug: `/api/whoami` renvoie `user` + `profile`.
+
+Fichiers ajoutés/modifiés (principaux)
+- Env: `nextjs-app/.env.local` → `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Supabase migrations: `supabase/migrations/0001_profiles_and_roles.sql`, `0002_add_email_to_profiles.sql`.
+- Nettoyage base (option): `supabase/scripts/cleanup_profiles.sql` (non destructif).
+- Auth UI: `src/components/auth/LoginForm.tsx`, `src/app/auth/login/page.tsx`, `src/app/auth/logout/route.ts`.
+- Intégration: `src/app/ressources/application/page.tsx` (Login intégré), `src/app/api/whoami/route.ts`.
+- Protection: `src/middleware.ts` (session Supabase, redirect `/auth/login`).
+- API sécurisée: `src/app/api/mandats/generate/route.ts` (vérifie Supabase, envoie `user.id`).
+- Script admin: `nextjs-app/scripts/create-admin.js` + npm script `create:admin`.
+
+Variables d’environnement (à définir)
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client + SSR).
+- (Serveur optionnel) `SUPABASE_SERVICE_ROLE_KEY` pour scripts/admin.
+- OAuth Google (dans Google Cloud + Supabase Provider) – Redirect URI: `https://<project>.supabase.co/auth/v1/callback`.
+- Auth URLs Supabase: Site URL dev `http://localhost:3000`, prod `https://beamo.fr`; Allowed Redirects: `/auth/callback`.
+
+Tests/QA
+- Local: `/ressources/application` → signup/login OK, Google OK, redirection → `/apps`.
+- `/api/whoami` retourne session + profil (rôle).
+- `/apps/mandats` redirige vers `/auth/login` si 401.
 
 ## ✅ État actuel
 - Plan de migration validé: `private/plan-migration-nextjs.md`
@@ -594,6 +625,129 @@ Backlink LinkedIn (footer)
 À faire (optionnel)
 - Remplacer le GIF par une illustration locale si besoin.
 - Quand l’Extranet sera prêt: mettre à jour les liens sans supprimer la page (utile comme fallback).
+
+---
+
+## 📝 Système de gestion d'articles (22/09/2025)
+
+### Objectif
+Créer un système de gestion d'articles complet pour remplacer Strapi, avec interface d'administration et pages publiques optimisées SEO.
+
+### Travaux réalisés ✅
+
+#### Phase 1 : Base de données et API
+1. **Table articles Supabase** (`supabase/scripts/create-articles-table.sql`)
+   - Champs complets: title, slug, content (markdown), meta_description, featured_image, author_id
+   - SEO: seo_title, seo_keywords, reading_time_minutes auto-calculé
+   - Catégories et tags (array), statuts (draft/published/archived)
+   - RLS policies: lecture publique pour articles publiés, gestion admin/employé/auteur
+   - Triggers: updated_at auto, calcul temps de lecture
+   - Index de performance sur slug, status, published_at, category, tags
+
+2. **Types TypeScript** (`src/types/article.ts`)
+   - Interface Article complète avec tous les champs
+   - Types ArticleCategory et ArticleStatus
+   - Types pour création/édition
+
+3. **API CRUD complète** 
+   - `src/app/api/articles/route.ts`: GET (avec filtres/pagination/tri), POST
+   - `src/app/api/articles/[id]/route.ts`: GET, PUT, DELETE individuels
+   - Validation avec filtres par catégorie, statut, recherche texte
+   - Génération automatique de slug unique
+
+#### Phase 2 : Interface d'administration
+1. **Page principale** (`src/app/apps/articles/page.tsx`)
+   - Dashboard avec statistiques en temps réel (total, publiés, brouillons)
+   - DataTable avec Tanstack React Table
+   - Filtres par catégorie et statut
+   - Bouton "Nouvel Article"
+
+2. **Gestion des colonnes** (`src/app/apps/articles/columns.tsx`)
+   - Colonnes: titre, slug, catégorie, statut, auteur, dates
+   - Actions dropdown: voir, éditer, dupliquer, archiver, supprimer
+   - Tri et filtrage avancés
+
+3. **Création d'articles** (`src/app/apps/articles/new/page.tsx`)
+   - Formulaire complet avec tous les champs
+   - Génération auto du slug à partir du titre
+   - Éditeur markdown (textarea pour MVP)
+   - Champs SEO dédiés
+   - Preview mode
+
+4. **Édition d'articles** (`src/app/apps/articles/[id]/edit/page.tsx`)
+   - Chargement et mise à jour d'articles existants
+   - Formulaire pré-rempli
+   - Même interface que création
+
+#### Phase 3 : Pages publiques
+1. **Migration depuis Strapi** (`src/app/ressources/page.tsx`)
+   - Remplacement des appels Strapi par Supabase
+   - Même structure de filtrage par catégorie
+   - Cards d'articles avec image, extrait, temps de lecture
+
+2. **Page article individuelle** (`src/app/ressources/[slug]/page.tsx`)
+   - Route dynamique par slug
+   - Génération metadata SEO automatique (titre, description, OG)
+   - Rendu markdown du contenu
+   - Tracking des vues (views_count)
+
+#### Phase 4 : Intégrations
+1. **Navigation admin** (`src/components/AppSidebar.tsx`)
+   - Ajout onglet "Articles" avec icône
+   - Protection admin uniquement
+
+2. **Composants UI réutilisés**
+   - DataTable généralisé (`src/components/ui/data-table.tsx`)
+   - Harmonisation avec le système utilisateurs existant
+
+3. **Routing et protection**
+   - Middleware mis à jour pour protéger `/apps/articles`
+   - Toutes les routes articles nécessitent auth admin/employé
+
+### Données de test
+- Article exemple créé automatiquement: "Guide de gestion de copropriété"
+- Catégorie "guides" avec tags pertinents
+- Statut publié pour test des pages publiques
+
+### Base de données exécutée ✅
+Script SQL exécuté avec succès dans Supabase:
+- Table articles créée
+- Triggers et fonctions installés
+- RLS policies actives
+- 1 article de test disponible
+
+### État actuel
+- ✅ Système complet opérationnel
+- ✅ Interface admin fonctionnelle
+- ✅ Pages publiques migrées de Strapi vers Supabase
+- ✅ SEO optimisé avec metadata automatique
+- ✅ Sécurité via RLS Supabase
+
+### Prochaines améliorations possibles
+- Éditeur markdown enrichi (WYSIWYG)
+- Upload d'images pour featured_image
+- Système de commentaires
+- Statistiques détaillées par article
+- Export/import d'articles
+
+### Fichiers créés/modifiés
+**Nouveaux fichiers:**
+- `supabase/scripts/create-articles-table.sql`
+- `src/types/article.ts`
+- `src/app/api/articles/route.ts`
+- `src/app/api/articles/[id]/route.ts`
+- `src/app/apps/articles/page.tsx`
+- `src/app/apps/articles/new/page.tsx`
+- `src/app/apps/articles/[id]/edit/page.tsx`
+- `src/app/apps/articles/columns.tsx`
+- `private/gestionnaire-articles-roadmap.md`
+
+**Fichiers modifiés:**
+- `src/app/ressources/page.tsx` (migration Strapi → Supabase)
+- `src/app/ressources/[slug]/page.tsx` (création route article)
+- `src/components/AppSidebar.tsx` (ajout onglet Articles)
+- `src/components/layout/Header.tsx` (correction lien Application)
+- `src/middleware.ts` (protection routes articles)
 
 ---
 
