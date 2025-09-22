@@ -87,7 +87,7 @@ export default function Footer() {
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-[#444] pt-6 text-sm text-[#999]">
           <p>© {new Date().getFullYear()} Beamô — Tous droits réservés.</p>
           <ul className="flex flex-wrap gap-6">
-            <li><a className="hover:text-primary" href="#">Mentions légales</a></li>
+            <li><a className="hover:text-primary" href="/mentions-legales">Mentions légales</a></li>
             <li><a className="hover:text-primary" href="/politique-de-confidentialite">Politique de confidentialité</a></li>
             <li><a className="hover:text-primary" href="/conditions-utilisation">Conditions d'utilisation</a></li>
             <li><a className="hover:text-primary" href="#">Sources</a></li>

@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/ressources/contact`, lastModified: now },
     { url: `${base}/politique-de-confidentialite`, lastModified: now },
     { url: `${base}/conditions-utilisation`, lastModified: now },
+    { url: `${base}/mentions-legales`, lastModified: now },
   ]
 
   // Add city pages
