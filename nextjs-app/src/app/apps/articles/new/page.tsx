@@ -50,8 +50,8 @@ export default function NewArticlePage() {
     }
     
     // Effacer l'erreur du champ modifié
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+    if (field in errors && errors[field as keyof ArticleValidationErrors]) {
+      setErrors(prev => ({ ...prev, [field as keyof ArticleValidationErrors]: undefined }))
     }
   }
 
