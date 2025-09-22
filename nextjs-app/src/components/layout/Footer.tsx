@@ -88,7 +88,7 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} Beamô — Tous droits réservés.</p>
           <ul className="flex flex-wrap gap-6">
             <li><a className="hover:text-primary" href="#">Mentions légales</a></li>
-            <li><a className="hover:text-primary" href="#">Politique de confidentialité</a></li>
+            <li><a className="hover:text-primary" href="/politique-de-confidentialite">Politique de confidentialité</a></li>
             <li><a className="hover:text-primary" href="#">Conditions d'utilisation</a></li>
             <li><a className="hover:text-primary" href="#">Sources</a></li>
           </ul>
