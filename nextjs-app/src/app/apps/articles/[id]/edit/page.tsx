@@ -12,6 +12,7 @@ import {
   ArticleWithAuthor,
   UpdateArticleRequest, 
   validateArticle,
+  ArticleValidationErrors,
   ARTICLE_CATEGORIES,
   ARTICLE_STATUSES 
 } from '@/types/article'
@@ -22,7 +23,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({})
+  const [errors, setErrors] = useState<ArticleValidationErrors>({})
   const [article, setArticle] = useState<ArticleWithAuthor | null>(null)
   
   const [formData, setFormData] = useState<UpdateArticleRequest>({
@@ -102,8 +103,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     }
     
     // Effacer l'erreur du champ modifié
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+    if (field in errors && errors[field as keyof ArticleValidationErrors]) {
+      setErrors(prev => ({ ...prev, [field as keyof ArticleValidationErrors]: undefined }))
     }
   }
 

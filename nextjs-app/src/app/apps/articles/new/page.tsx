@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { 
   CreateArticleRequest, 
   validateArticle,
+  ArticleValidationErrors,
   ARTICLE_CATEGORIES,
   ARTICLE_STATUSES 
 } from '@/types/article'
@@ -19,7 +20,7 @@ export default function NewArticlePage() {
   const router = useRouter()
   const [loading, setSaving] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({})
+  const [errors, setErrors] = useState<ArticleValidationErrors>({})
   
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: '',
