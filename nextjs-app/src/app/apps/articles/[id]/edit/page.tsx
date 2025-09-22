@@ -22,7 +22,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
-  const [errors, setErrors] = useState<any>({})
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({})
   const [article, setArticle] = useState<ArticleWithAuthor | null>(null)
   
   const [formData, setFormData] = useState<UpdateArticleRequest>({

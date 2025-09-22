@@ -19,7 +19,7 @@ export default function NewArticlePage() {
   const router = useRouter()
   const [loading, setSaving] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
-  const [errors, setErrors] = useState<any>({})
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({})
   
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: '',
