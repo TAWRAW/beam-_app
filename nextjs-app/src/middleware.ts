@@ -58,7 +58,7 @@ export async function middleware(req: NextRequest) {
   if (!supabaseUrl || !supabaseAnonKey) {
     // No Supabase config and no legacy session, redirect to login
     const url = req.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/auth/login'
     url.searchParams.set('redirect', req.nextUrl.pathname + req.nextUrl.search)
     return NextResponse.redirect(url)
   }
@@ -80,7 +80,7 @@ export async function middleware(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     const url = req.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/auth/login'
     url.searchParams.set('redirect', req.nextUrl.pathname + req.nextUrl.search)
     return NextResponse.redirect(url)
   }
