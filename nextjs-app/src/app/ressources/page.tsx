@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic'
 export default async function RessourcesPage({
   searchParams
 }: {
-  searchParams: { cat?: string }
+  searchParams: { cat?: string; type?: string }
 }) {
   let articles: ArticleWithAuthor[] = []
   let error: string | null = null
@@ -45,6 +45,11 @@ export default async function RessourcesPage({
     if (searchParams.cat && searchParams.cat !== 'all') {
       query = query.eq('category', searchParams.cat)
     }
+    
+    // Filtrer par type si spécifié
+    if (searchParams.type && searchParams.type !== 'all') {
+      query = query.eq('type', searchParams.type)
+    }
 
     const { data, error: supabaseError } = await query
 
@@ -63,9 +68,15 @@ export default async function RessourcesPage({
       <div className="container">
         <h1 className="h1">Ressources</h1>
         <p className="mt-2 text-gray-600">
-          Explorez nos contenus par catégorie. {searchParams.cat && searchParams.cat !== 'all' && (
+          Explorez nos contenus par type et catégorie. 
+          {searchParams.cat && searchParams.cat !== 'all' && (
             <span className="text-primary font-medium">
               Catégorie: {searchParams.cat}
+            </span>
+          )}
+          {searchParams.type && searchParams.type !== 'all' && (
+            <span className="text-primary font-medium ml-2">
+              Type: {searchParams.type}
             </span>
           )}
         </p>
@@ -96,6 +107,11 @@ export default async function RessourcesPage({
                       <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                         {article.category}
                       </span>
+                      {article.type && (
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          {article.type}
+                        </span>
+                      )}
                       <span className="text-xs text-gray-500">
                         {article.reading_time_minutes} min de lecture
                       </span>
@@ -128,12 +144,24 @@ export default async function RessourcesPage({
                       </span>
                     </div>
                     
-                    <Link 
-                      href={`/ressources/${article.slug}`} 
-                      className="mt-4 inline-block btn hover:bg-primary/90 transition-colors"
-                    >
-                      Lire l'article
-                    </Link>
+                    <div className="mt-4 flex gap-2">
+                      <Link 
+                        href={`/ressources/${article.slug}`} 
+                        className="btn hover:bg-primary/90 transition-colors"
+                      >
+                        Lire l'article
+                      </Link>
+                      {article.attachment_url && (
+                        <a 
+                          href={article.attachment_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn bg-green-600 text-white hover:bg-green-700 transition-colors"
+                        >
+                          Télécharger
+                        </a>
+                      )}
+                    </div>
                   </article>
                 ))}
               </div>
@@ -143,12 +171,12 @@ export default async function RessourcesPage({
                   Aucun article disponible
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  {searchParams.cat && searchParams.cat !== 'all' 
-                    ? `Aucun article trouvé dans la catégorie "${searchParams.cat}".`
+                  {(searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')
+                    ? `Aucun article trouvé${searchParams.cat && searchParams.cat !== 'all' ? ` dans la catégorie "${searchParams.cat}"` : ''}${searchParams.type && searchParams.type !== 'all' ? ` de type "${searchParams.type}"` : ''}.`
                     : 'Aucun article n\'a encore été publié.'
                   }
                 </p>
-                {searchParams.cat && searchParams.cat !== 'all' && (
+                {((searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')) && (
                   <Link href="/ressources" className="btn">
                     Voir tous les articles
                   </Link>

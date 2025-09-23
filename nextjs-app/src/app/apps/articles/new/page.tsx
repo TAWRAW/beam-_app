@@ -13,6 +13,7 @@ import {
   validateArticle,
   ArticleValidationErrors,
   ARTICLE_CATEGORIES,
+  ARTICLE_TYPES,
   ARTICLE_STATUSES 
 } from '@/types/article'
 
@@ -30,7 +31,9 @@ export default function NewArticlePage() {
     excerpt: '',
     featured_image_url: '',
     category: 'general',
+    type: 'articles',
     tags: [],
+    attachment_url: '',
     status: 'draft',
     seo_title: '',
     seo_keywords: ''
@@ -287,6 +290,23 @@ export default function NewArticlePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Type de contenu
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => handleInputChange('type', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                >
+                  {ARTICLE_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tags (séparés par des virgules)
                 </label>
                 <Input
@@ -294,6 +314,20 @@ export default function NewArticlePage() {
                   onChange={(e) => handleTagsChange(e.target.value)}
                   placeholder="copropriété, gestion, conseil"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pièce jointe (optionnel)
+                </label>
+                <Input
+                  value={formData.attachment_url}
+                  onChange={(e) => handleInputChange('attachment_url', e.target.value)}
+                  placeholder="https://drive.google.com/file/d/..."
+                />
+                <p className="text-gray-500 text-sm mt-1">
+                  Ajoutez un lien vers un fichier Google Drive pour les modèles et documents
+                </p>
               </div>
             </div>
           </div>

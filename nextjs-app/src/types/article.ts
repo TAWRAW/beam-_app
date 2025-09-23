@@ -11,6 +11,13 @@ export type ArticleCategory =
   | 'reglementation'
   | 'immobilier'
 
+export type ArticleType = 
+  | 'articles'
+  | 'modeles'
+  | 'applications'
+  | 'juridique'
+  | 'documentation'
+
 // Type principal pour un article
 export interface Article {
   id: string
@@ -22,7 +29,9 @@ export interface Article {
   featured_image_url?: string
   author_id?: string
   category: ArticleCategory
+  type: ArticleType
   tags: string[]
+  attachment_url?: string
   status: ArticleStatus
   published_at?: string
   seo_title?: string
@@ -52,7 +61,9 @@ export interface CreateArticleRequest {
   excerpt?: string
   featured_image_url?: string
   category?: ArticleCategory
+  type?: ArticleType
   tags?: string[]
+  attachment_url?: string
   status?: ArticleStatus
   seo_title?: string
   seo_keywords?: string
@@ -164,6 +175,14 @@ export const ARTICLE_CATEGORIES: { value: ArticleCategory; label: string }[] = [
   { value: 'immobilier', label: 'Immobilier' }
 ]
 
+export const ARTICLE_TYPES: { value: ArticleType; label: string }[] = [
+  { value: 'articles', label: 'Articles' },
+  { value: 'modeles', label: 'Modèles' },
+  { value: 'applications', label: 'Applications' },
+  { value: 'juridique', label: 'Juridique' },
+  { value: 'documentation', label: 'Documentation' }
+]
+
 // Helper type guards
 export const isValidArticleStatus = (status: string): status is ArticleStatus => {
   return ['draft', 'published', 'archived'].includes(status)
@@ -173,6 +192,10 @@ export const isValidArticleCategory = (category: string): category is ArticleCat
   return ['general', 'guides', 'actualites', 'conseils', 'reglementation', 'immobilier'].includes(category)
 }
 
+export const isValidArticleType = (type: string): type is ArticleType => {
+  return ['articles', 'modeles', 'applications', 'juridique', 'documentation'].includes(type)
+}
+
 // Utilitaires pour la validation
 export interface ArticleValidationErrors {
   title?: string
@@ -180,6 +203,7 @@ export interface ArticleValidationErrors {
   content?: string
   meta_description?: string
   category?: string
+  type?: string
   tags?: string
   seo_title?: string
   published_at?: string
@@ -204,6 +228,10 @@ export const validateArticle = (article: Partial<CreateArticleRequest>): Article
 
   if (article.category && !isValidArticleCategory(article.category)) {
     errors.category = 'Catégorie invalide'
+  }
+
+  if (article.type && !isValidArticleType(article.type)) {
+    errors.type = 'Type d\'article invalide'
   }
 
   if (article.seo_title && article.seo_title.length > 60) {

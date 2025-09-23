@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { FileText, FileSignature, Calculator, Scale, Newspaper, type LucideIcon } from 'lucide-react'
 
-type Cat = {
+type ContentType = {
   key: string
   label: string
   description: string
@@ -9,40 +9,40 @@ type Cat = {
   Icon: LucideIcon
 }
 
-const CATEGORIES: Cat[] = [
+const TYPES: ContentType[] = [
   {
     key: 'articles',
     label: 'Articles',
     description: 'Conseils et actualités copropriété',
-    href: '/ressources?cat=articles',
+    href: '/ressources?type=articles',
     Icon: Newspaper,
   },
   {
     key: 'modeles',
     label: 'Modèles',
-    description: 'Documents prêts à l’emploi',
-    href: '/ressources?cat=modeles',
+    description: 'Documents prêts à l\'emploi',
+    href: '/ressources?type=modeles',
     Icon: FileSignature,
   },
   {
     key: 'applications',
     label: 'Applications',
     description: 'Outils et utilitaires en ligne',
-    href: '/ressources?cat=applications',
+    href: '/ressources?type=applications',
     Icon: Calculator,
   },
   {
     key: 'juridique',
     label: 'Juridique',
     description: 'Textes et obligations',
-    href: '/ressources?cat=juridique',
+    href: '/ressources?type=juridique',
     Icon: Scale,
   },
   {
     key: 'documentation',
     label: 'Documentation',
     description: 'Références et dossiers',
-    href: '/ressources?cat=documentation',
+    href: '/ressources?type=documentation',
     Icon: FileText,
   },
 ]
@@ -50,7 +50,7 @@ const CATEGORIES: Cat[] = [
 export default function CategoryGallery() {
   return (
     <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {CATEGORIES.map(({ key, label, description, href, Icon }) => (
+      {TYPES.map(({ key, label, description, href, Icon }) => (
         <Link
           key={key}
           href={href as any}

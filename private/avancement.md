@@ -33,6 +33,41 @@ Tests/QA
 - `/api/whoami` retourne session + profil (rôle).
 - `/apps/mandats` redirige vers `/auth/login` si 401.
 
+## 🧩 Ressources: Galerie + Typologie Articles (catégories/types)
+
+UI/Pages
+- Galerie de catégories ajoutée en haut de `/ressources` (grosses icônes): `src/components/ressources/CategoryGallery.tsx`.
+  - Catégories visibles: Articles, Modèles, Applications, Juridique, Documentation (Guides retiré).
+  - Libellés: “Modèles de lettres” → “Modèles”; “Outils” → “Applications”.
+- Page `src/app/ressources/page.tsx` mise à jour: galerie + retrait du message d’erreur Strapi non configuré.
+
+Back-end (Supabase)
+- Migration contenu générique: `supabase/migrations/0003_resources_categories.sql`
+  - `resource_categories` (slug, name, icon, description) + RLS (lecture publique, écriture admin/employé).
+  - `resources` (type enum, status, slug, title, content, category_id, author_id, published_at) + RLS: public lit le publié; admin/auteur gèrent.
+
+Module Articles (App)
+- Types étendus: `ArticleType` + champ `attachment_url`.
+  - Fichier: `nextjs-app/src/types/article.ts`
+  - Constantes: `ARTICLE_TYPES` (Articles, Modèles, Applications, Juridique, Documentation).
+  - Validation: `isValidArticleType`, erreur dédiée.
+- Formulaire de création: `nextjs-app/src/app/apps/articles/new/page.tsx`
+  - Sélecteur “Type de contenu”, champ “Pièce jointe (optionnel)” (URL Drive, etc.).
+  - Valeurs par défaut: `type='articles'`, `attachment_url=''`.
+- Liste Articles: `nextjs-app/src/app/apps/articles/page.tsx`
+  - Ajout du filtre par titre via `DataTable` (placeholder dédié).
+- Liste Utilisateurs (amélioration UX): `nextjs-app/src/app/apps/users/page.tsx`
+  - Filtre par email via `DataTable`.
+- Composant DataTable: `nextjs-app/src/components/ui/data-table.tsx`
+  - Props `filterColumn`, `filterPlaceholder` pour filtrage contextuel.
+
+DB Migration dédiée Articles
+- `supabase/migrations/20250923_add_article_type_and_attachment.sql`
+  - Enum `article_type`: articles, modeles, applications, juridique, documentation.
+  - Colonnes `articles.type` (NOT NULL, défaut `articles`) et `articles.attachment_url`.
+  - Index: `idx_articles_type`, `idx_articles_status_type`.
+  - Mise à jour des enregistrements existants (mapping par catégorie).
+
 ## ✅ État actuel
 - Plan de migration validé: `private/plan-migration-nextjs.md`
 - Dossier legacy détecté: `../Page_Web ` (avec un espace final dans le nom)

@@ -222,7 +222,12 @@ export default function ArticlesPage() {
 
       {/* Table des articles */}
       <div className="bg-white rounded-lg shadow">
-        <DataTable columns={columns} data={articles} />
+        <DataTable 
+          columns={columns} 
+          data={articles} 
+          filterColumn="title"
+          filterPlaceholder="Filtrer les articles par titre..."
+        />
       </div>
 
       {/* Tags populaires */}

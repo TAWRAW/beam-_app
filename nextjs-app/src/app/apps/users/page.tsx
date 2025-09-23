@@ -44,7 +44,12 @@ export default function UsersPage() {
           Gérez les rôles et permissions des utilisateurs de l'application.
         </p>
       </div>
-      <DataTable columns={columns} data={users} />
+      <DataTable 
+        columns={columns} 
+        data={users} 
+        filterColumn="email"
+        filterPlaceholder="Filtrer les utilisateurs par email..."
+      />
     </div>
   )
 }
