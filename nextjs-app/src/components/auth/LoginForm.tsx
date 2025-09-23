@@ -16,6 +16,7 @@ export function LoginForm({ redirect = '/apps' }: { redirect?: string }) {
 
   const callbackUrl = useMemo(() => {
     if (typeof window !== 'undefined' && window.location?.origin) {
+      // Toujours utiliser l'origine actuelle pour construire l'URL de callback
       return `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
     }
     return undefined

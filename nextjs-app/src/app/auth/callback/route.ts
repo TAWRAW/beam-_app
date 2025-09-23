@@ -7,6 +7,11 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get('code')
   const redirect = searchParams.get('redirect') || '/apps'
 
+  console.log('=== AUTH CALLBACK DEBUG ===')
+  console.log('URL:', req.url)
+  console.log('Redirect param:', searchParams.get('redirect'))
+  console.log('Final redirect:', redirect)
+
   if (code) {
     await supabase.auth.exchangeCodeForSession(code)
   }
