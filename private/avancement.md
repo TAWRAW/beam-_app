@@ -89,6 +89,25 @@ Correctifs appliqués
   - JavaScript origins: `https://www.xn--beam-yqa.fr`, `http://localhost:3000`.
   - Redirect URI: `https://<ref>.supabase.co/auth/v1/callback`.
 
+## 🔧 Corrections post-déploiement (OAuth + middleware)
+
+- Middleware Next: redirections unifiées vers `/auth/login` (suppression des références legacy `/login`).
+- `LoginForm`: construction du `redirectTo` Google via `NEXT_PUBLIC_SITE_URL` (punycode) → évite tout fallback sur localhost.
+- Supabase: “Site URL” corrigée en prod → `https://www.xn--beam-yqa.fr`.
+- Note Chrome: avertissements `Permissions-Policy: browsing-topics` bénins; `ERR_BLOCKED_BYCLIENT` provient souvent d’adblockers.
+
+## ✅ Déploiement Vercel – Check-list
+
+- Repo/branche: `TAWRAW/beam-_app` / `main`.
+- Root Directory: `nextjs-app`.
+- Env prod:
+  - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+  - `NEXT_PUBLIC_SITE_URL=https://www.xn--beam-yqa.fr`.
+- OAuth Google (Console):
+  - JavaScript origins: `https://www.xn--beam-yqa.fr`, `http://localhost:3000` (éviter l’URL avec accent).
+  - Redirect URI: `https://<ref>.supabase.co/auth/v1/callback`.
+
+
 ## ✅ État actuel
 - Plan de migration validé: `private/plan-migration-nextjs.md`
 - Dossier legacy détecté: `../Page_Web ` (avec un espace final dans le nom)
