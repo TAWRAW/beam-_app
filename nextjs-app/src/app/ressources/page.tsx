@@ -14,6 +14,9 @@ export const metadata = {
   alternates: { canonical: '/ressources' },
 }
 
+// Force dynamic rendering for search params
+export const dynamic = 'force-dynamic'
+
 export default async function RessourcesPage({
   searchParams
 }: {
