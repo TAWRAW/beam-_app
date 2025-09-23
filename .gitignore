@@ -24,3 +24,6 @@ node_modules/
 .idea/
 *.swp
 
+# Private folder
+private/
+
