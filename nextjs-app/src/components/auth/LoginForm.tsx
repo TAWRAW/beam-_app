@@ -15,11 +15,10 @@ export function LoginForm({ redirect = '/apps' }: { redirect?: string }) {
   const [mode, setMode] = useState<'login' | 'signup'>('login')
 
   const callbackUrl = useMemo(() => {
-    if (typeof window !== 'undefined' && window.location?.origin) {
-      // Toujours utiliser l'origine actuelle pour construire l'URL de callback
-      return `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
-    }
-    return undefined
+    // Utilise NEXT_PUBLIC_SITE_URL si défini (permet d'imposer le domaine punycode en prod)
+    const base = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : undefined)
+    if (!base) return undefined
+    return `${String(base).replace(/\/$/, '')}/auth/callback?redirect=${encodeURIComponent(redirect)}`
   }, [redirect])
 
   async function onSubmit(e: React.FormEvent) {

@@ -68,6 +68,27 @@ DB Migration dédiée Articles
   - Index: `idx_articles_type`, `idx_articles_status_type`.
   - Mise à jour des enregistrements existants (mapping par catégorie).
 
+## 🔁 OAuth Google – Redirection prod (IDN/punycode)
+
+Problème observé
+- Après login Google depuis `www.beamô.fr`, redirection vers `http://localhost:3000/?code=...`.
+
+Cause
+- Les domaines avec accent doivent être fournis en ASCII (punycode) dans Supabase et Google.
+- Si l’`options.redirectTo` n’est pas accepté (mauvais domaine), Supabase retombe sur `SITE_URL` (qui était en `localhost`).
+
+Correctifs appliqués
+- `LoginForm`: calcule le callback avec `NEXT_PUBLIC_SITE_URL` si présent, sinon `window.location.origin`.
+- `.env.local.example`: ajoute `NEXT_PUBLIC_SITE_URL` (mettre `https://www.xn--beam-yqa.fr` en prod).
+
+À configurer
+- Supabase → Authentication → URL Configuration:
+  - `Site URL`: `https://www.xn--beam-yqa.fr` (prod).
+  - Allowed Redirect URLs: `https://www.xn--beam-yqa.fr/auth/callback` (+ localhost en dev).
+- Google Cloud OAuth client:
+  - JavaScript origins: `https://www.xn--beam-yqa.fr`, `http://localhost:3000`.
+  - Redirect URI: `https://<ref>.supabase.co/auth/v1/callback`.
+
 ## ✅ État actuel
 - Plan de migration validé: `private/plan-migration-nextjs.md`
 - Dossier legacy détecté: `../Page_Web ` (avec un espace final dans le nom)
