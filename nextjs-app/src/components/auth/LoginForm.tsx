@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 
 export function LoginForm({ redirect = '/apps' }: { redirect?: string }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -13,6 +14,18 @@ export function LoginForm({ redirect = '/apps' }: { redirect?: string }) {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [mode, setMode] = useState<'login' | 'signup'>('login')
+
+  // Vérifier s'il y a une erreur dans l'URL (callback OAuth)
+  useEffect(() => {
+    const urlError = searchParams.get('error')
+    if (urlError) {
+      if (urlError === 'auth_callback_error') {
+        setError('Erreur lors de la connexion avec Google. Veuillez réessayer.')
+      } else {
+        setError('Erreur d\'authentification. Veuillez réessayer.')
+      }
+    }
+  }, [searchParams])
 
   const callbackUrl = useMemo(() => {
     // Utilise NEXT_PUBLIC_SITE_URL si défini (permet d'imposer le domaine punycode en prod)
