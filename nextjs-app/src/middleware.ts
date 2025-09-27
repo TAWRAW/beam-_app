@@ -21,7 +21,7 @@ export async function middleware(req: NextRequest) {
   // Check legacy auth first (session cookie)
   const legacyToken = req.cookies.get('app_session')?.value
   const legacySession = verifySession(legacyToken)
-  
+
   if (legacySession) {
     // For admin routes, check user role
     if (isAdminRoute) {
@@ -78,6 +78,7 @@ export async function middleware(req: NextRequest) {
   })
 
   const { data: { user } } = await supabase.auth.getUser()
+
   if (!user) {
     const url = req.nextUrl.clone()
     url.pathname = '/auth/login'

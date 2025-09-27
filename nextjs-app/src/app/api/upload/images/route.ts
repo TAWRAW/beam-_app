@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
+import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 
+// Client Supabase avec les permissions d'admin pour l'upload
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
 // Configuration des types MIME autorisés
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 
 export async function POST(request: NextRequest) {
@@ -22,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Validation du type de fichier
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Type de fichier non autorisé. Formats acceptés: JPEG, PNG, WebP, GIF' },
+        { error: 'Type de fichier non autorisé. Formats acceptés: JPEG, PNG, WebP, GIF, SVG' },
         { status: 400 }
       )
     }
@@ -41,17 +46,31 @@ export async function POST(request: NextRequest) {
 
     // Lire les données du fichier
     const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
 
-    // Sauvegarder le fichier
-    const filePath = join(process.cwd(), 'public', 'uploads', fileName)
-    await writeFile(filePath, buffer)
+    // Upload vers Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('image_article')
+      .upload(fileName, bytes, {
+        contentType: file.type,
+        cacheControl: '3600',
+        upsert: false
+      })
 
-    // Construire l'URL accessible
-    const fileUrl = `/uploads/${fileName}`
+    if (error) {
+      console.error('Supabase upload error:', error)
+      return NextResponse.json(
+        { error: 'Erreur lors de l\'upload vers Supabase' },
+        { status: 500 }
+      )
+    }
+
+    // Obtenir l'URL publique
+    const { data: { publicUrl } } = supabase.storage
+      .from('image_article')
+      .getPublicUrl(fileName)
 
     const response = {
-      url: fileUrl,
+      url: publicUrl,
       filename: fileName,
       originalName: file.name,
       size: file.size,

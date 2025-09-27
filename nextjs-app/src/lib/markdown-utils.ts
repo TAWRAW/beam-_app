@@ -57,8 +57,11 @@ export function isValidImageUrl(url: string): boolean {
   // Vérifier les extensions d'images communes
   const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i
 
-  // Vérifier les URLs locales d'upload
+  // Vérifier les URLs locales d'upload (legacy)
   const localUploadPattern = /^\/uploads\/[^/]+\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i
 
-  return imageExtensions.test(url) || localUploadPattern.test(url)
+  // Vérifier les URLs Supabase Storage
+  const supabasePattern = /^https:\/\/[^.]+\.supabase\.co\/storage\/v1\/object\/public\/image_article\/[^/]+\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i
+
+  return imageExtensions.test(url) || localUploadPattern.test(url) || supabasePattern.test(url)
 }

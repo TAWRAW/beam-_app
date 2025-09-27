@@ -544,12 +544,18 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
               <h4 className="text-sm font-medium text-gray-700 mb-2">Upload d'images</h4>
               <ImageUpload
                 onImageUploaded={(url) => {
-                  // Copier automatiquement le markdown dans le presse-papier
-                  navigator.clipboard.writeText(`![Image](${url})`)
+                  // Ajouter automatiquement l'image au contenu
+                  const imageMarkdown = `![Image](${url})`
+                  setFormData(prev => ({
+                    ...prev,
+                    content: prev.content + '\n\n' + imageMarkdown + '\n\n'
+                  }))
+                  // Copier aussi dans le presse-papier
+                  navigator.clipboard.writeText(imageMarkdown)
                 }}
               />
               <p className="text-xs text-gray-500 mt-2">
-                Les images uploadées génèrent automatiquement le code Markdown
+                Les images uploadées sont ajoutées automatiquement au contenu de l'article
               </p>
             </div>
 
