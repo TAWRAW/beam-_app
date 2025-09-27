@@ -97,7 +97,7 @@ export function AppSidebar() {
                   return (
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link href={item.href}>
+                        <Link href={item.href as any}>
                           <item.icon className="h-4 w-4" />
                           <span>{item.label}</span>
                         </Link>
@@ -128,7 +128,7 @@ export function AppSidebar() {
                     return (
                       <SidebarMenuItem key={item.href}>
                         <SidebarMenuButton asChild isActive={isActive}>
-                          <Link href={item.href}>
+                          <Link href={item.href as any}>
                             <item.icon className="h-4 w-4" />
                             <span>{item.label}</span>
                           </Link>
@@ -148,7 +148,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/logout" className="text-red-600 hover:text-red-700">
+              <Link href="/logout" as any className="text-red-600 hover:text-red-700">
                 <LogOut className="h-4 w-4" />
                 <span>Déconnexion</span>
               </Link>
