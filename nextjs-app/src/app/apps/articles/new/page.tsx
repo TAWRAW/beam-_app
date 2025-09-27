@@ -8,19 +8,20 @@ import slugify from 'slugify'
 
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/input'
-import { 
-  CreateArticleRequest, 
+import { MarkdownPreview } from '@/components/ui/MarkdownPreview'
+import {
+  CreateArticleRequest,
   validateArticle,
   ArticleValidationErrors,
   ARTICLE_CATEGORIES,
   ARTICLE_TYPES,
-  ARTICLE_STATUSES 
+  ARTICLE_STATUSES
 } from '@/types/article'
 
 export default function NewArticlePage() {
   const router = useRouter()
   const [loading, setSaving] = useState(false)
-  const [previewMode, setPreviewMode] = useState(false)
+  const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
   const [errors, setErrors] = useState<ArticleValidationErrors>({})
   
   const [formData, setFormData] = useState<CreateArticleRequest>({
@@ -110,17 +111,6 @@ export default function NewArticlePage() {
     }
   }
 
-  const renderMarkdownPreview = (content: string) => {
-    // Simple rendu markdown basique (on pourrait utiliser une vraie lib markdown plus tard)
-    return content
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold mb-4">$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-semibold mb-3">$1</h2>')
-      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-medium mb-2">$1</h3>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      .replace(/\n\n/g, '</p><p class="mb-4">')
-      .replace(/^\s*$/, '')
-  }
 
   return (
     <div className="container mx-auto py-10">
@@ -142,13 +132,32 @@ export default function NewArticlePage() {
         </div>
         
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setPreviewMode(!previewMode)}
-          >
-            <Eye className="mr-2 h-4 w-4" />
-            {previewMode ? 'Édition' : 'Aperçu'}
-          </Button>
+          <div className="flex rounded-lg border border-gray-200 p-1">
+            <button
+              onClick={() => setViewMode('edit')}
+              className={`px-3 py-1.5 text-sm rounded ${
+                viewMode === 'edit' ? 'bg-primary text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Édition
+            </button>
+            <button
+              onClick={() => setViewMode('split')}
+              className={`px-3 py-1.5 text-sm rounded ${
+                viewMode === 'split' ? 'bg-primary text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Split
+            </button>
+            <button
+              onClick={() => setViewMode('preview')}
+              className={`px-3 py-1.5 text-sm rounded ${
+                viewMode === 'preview' ? 'bg-primary text-white' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Aperçu
+            </button>
+          </div>
           
           <Button
             variant="outline"
@@ -168,92 +177,103 @@ export default function NewArticlePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Contenu principal */}
-        <div className="lg:col-span-2 space-y-6">
-          {!previewMode ? (
-            <>
-              {/* Titre */}
-              <div className="bg-white p-6 rounded-lg shadow">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Titre de l'article *
-                    </label>
-                    <Input
-                      value={formData.title}
-                      onChange={(e) => handleInputChange('title', e.target.value)}
-                      placeholder="Entrez le titre de votre article..."
-                      className={errors.title ? 'border-red-500' : ''}
-                    />
-                    {errors.title && (
-                      <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-                    )}
-                  </div>
+      {/* Layout flexible basé sur le mode */}
+      <div className={`grid gap-6 ${viewMode === 'split' ? 'grid-cols-1 lg:grid-cols-5' : 'grid-cols-1 lg:grid-cols-3'}`}>
+        {/* Zone d'édition */}
+        {(viewMode === 'edit' || viewMode === 'split') && (
+          <div className={`space-y-6 ${viewMode === 'split' ? 'lg:col-span-2' : 'lg:col-span-2'}`}>
+            {/* Titre */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Titre de l'article *
+                  </label>
+                  <Input
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    placeholder="Entrez le titre de votre article..."
+                    className={errors.title ? 'border-red-500' : ''}
+                  />
+                  {errors.title && (
+                    <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+                  )}
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Slug (URL)
-                    </label>
-                    <Input
-                      value={formData.slug}
-                      onChange={(e) => handleInputChange('slug', e.target.value)}
-                      placeholder="slug-de-larticle"
-                      className={errors.slug ? 'border-red-500' : ''}
-                    />
-                    {errors.slug && (
-                      <p className="text-red-500 text-sm mt-1">{errors.slug}</p>
-                    )}
-                    <p className="text-gray-500 text-sm mt-1">
-                      URL: /ressources/{formData.slug}
-                    </p>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Slug (URL)
+                  </label>
+                  <Input
+                    value={formData.slug}
+                    onChange={(e) => handleInputChange('slug', e.target.value)}
+                    placeholder="slug-de-larticle"
+                    className={errors.slug ? 'border-red-500' : ''}
+                  />
+                  {errors.slug && (
+                    <p className="text-red-500 text-sm mt-1">{errors.slug}</p>
+                  )}
+                  <p className="text-gray-500 text-sm mt-1">
+                    URL: /ressources/{formData.slug}
+                  </p>
                 </div>
               </div>
-
-              {/* Contenu */}
-              <div className="bg-white p-6 rounded-lg shadow">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contenu de l'article *
-                </label>
-                <textarea
-                  value={formData.content}
-                  onChange={(e) => handleInputChange('content', e.target.value)}
-                  placeholder="Rédigez votre article en markdown..."
-                  rows={20}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary font-mono ${
-                    errors.content ? 'border-red-500' : ''
-                  }`}
-                />
-                {errors.content && (
-                  <p className="text-red-500 text-sm mt-1">{errors.content}</p>
-                )}
-                <p className="text-gray-500 text-sm mt-2">
-                  Utilisez la syntaxe Markdown pour formater votre contenu.
-                </p>
-              </div>
-            </>
-          ) : (
-            /* Aperçu */
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h1 className="text-3xl font-bold mb-4">{formData.title || 'Titre de l\'article'}</h1>
-              
-              {formData.excerpt && (
-                <p className="text-lg text-gray-600 mb-6">{formData.excerpt}</p>
-              )}
-              
-              <div 
-                className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ 
-                  __html: `<p class="mb-4">${renderMarkdownPreview(formData.content || 'Contenu de l\'article...')}</p>` 
-                }}
-              />
             </div>
-          )}
-        </div>
 
+            {/* Contenu */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Contenu de l'article *
+              </label>
+              <textarea
+                value={formData.content}
+                onChange={(e) => handleInputChange('content', e.target.value)}
+                placeholder="Rédigez votre article en markdown..."
+                rows={viewMode === 'split' ? 25 : 20}
+                className={`w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary font-mono resize-none ${
+                  errors.content ? 'border-red-500' : ''
+                }`}
+              />
+              {errors.content && (
+                <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+              )}
+              <p className="text-gray-500 text-sm mt-2">
+                Utilisez la syntaxe Markdown pour formater votre contenu.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Zone de prévisualisation */}
+        {(viewMode === 'preview' || viewMode === 'split') && (
+          <div className={`${viewMode === 'split' ? 'lg:col-span-2' : 'lg:col-span-2'}`}>
+            <div className="bg-white p-6 rounded-lg shadow">
+              <div className="mb-6 border-b border-gray-200 pb-4">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {formData.title || 'Titre de l\'article'}
+                </h1>
+                <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                  <span>Catégorie: {ARTICLE_CATEGORIES.find(c => c.value === formData.category)?.label}</span>
+                  <span>Type: {ARTICLE_TYPES.find(t => t.value === formData.type)?.label}</span>
+                </div>
+                {formData.excerpt && (
+                  <div className="mt-3 p-3 bg-blue-50 border-l-4 border-blue-200 rounded">
+                    <p className="text-sm text-blue-800">
+                      <strong>Extrait (affiché sur les listes d'articles) :</strong>
+                    </p>
+                    <p className="text-blue-700 mt-1">{formData.excerpt}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="overflow-y-auto" style={{ maxHeight: viewMode === 'split' ? '600px' : 'none' }}>
+                <MarkdownPreview content={formData.content} />
+              </div>
+            </div>
+          </div>
+        )}
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className={`space-y-6 ${viewMode === 'split' ? 'lg:col-span-1' : 'lg:col-span-1'}`}>
           {/* Informations générales */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Informations</h3>
