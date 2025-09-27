@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ArrowLeft, Calendar, Clock, User, Eye } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
 import { ArticleWithAuthor } from '@/types/article'
+import { MarkdownPreview } from '@/components/ui/MarkdownPreview'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -61,19 +62,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-// Fonction pour le rendu markdown simple
-function renderMarkdown(content: string): string {
-  return content
-    .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold mb-6 mt-8">$1</h1>')
-    .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-semibold mb-4 mt-6">$1</h2>')
-    .replace(/^### (.*$)/gm, '<h3 class="text-xl font-medium mb-3 mt-5">$1</h3>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-    .replace(/`(.*?)`/g, '<code class="bg-gray-100 px-2 py-1 rounded text-sm">$1</code>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>')
-    .replace(/\n\n/g, '</p><p class="mb-4">')
-    .replace(/\n/g, '<br>')
-}
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
   let article: ArticleWithAuthor | null = null
@@ -172,12 +160,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             {article.title}
           </h1>
 
-          {/* Extrait */}
-          {article.excerpt && (
-            <p className="text-xl text-gray-600 leading-relaxed mb-6">
-              {article.excerpt}
-            </p>
-          )}
 
           {/* Auteur */}
           {article.author && (
@@ -206,12 +188,8 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </header>
 
         {/* Contenu de l'article */}
-        <article className="prose prose-lg prose-gray max-w-none">
-          <div 
-            dangerouslySetInnerHTML={{ 
-              __html: `<p class="mb-4">${renderMarkdown(article.content)}</p>` 
-            }} 
-          />
+        <article className="max-w-none">
+          <MarkdownPreview content={article.content} />
         </article>
 
         {/* Tags */}
