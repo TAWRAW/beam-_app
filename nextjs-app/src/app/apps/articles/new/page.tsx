@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Save, Eye } from 'lucide-react'
 import slugify from 'slugify'
 
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MarkdownPreview } from '@/components/ui/MarkdownPreview'
 import { ImageUpload } from '@/components/ui/ImageUpload'

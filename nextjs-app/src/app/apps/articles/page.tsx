@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Plus, FileText, Eye, Users, TrendingUp } from 'lucide-react'
 
 import { DataTable } from '@/components/ui/data-table'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { columns } from './columns'
 import { 
   ArticleWithAuthor, 

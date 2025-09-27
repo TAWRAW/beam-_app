@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { User } from "@supabase/supabase-js"
 
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,

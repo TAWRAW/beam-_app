@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon, Copy, Check } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 
 interface ImageUploadProps {
   onImageUploaded?: (url: string) => void
