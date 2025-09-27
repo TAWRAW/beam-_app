@@ -9,8 +9,8 @@ const supabaseAdmin = createClient(
 )
 
 export async function middleware(req: NextRequest) {
-  // Only protect /apps/* paths, but allow logout and debug
-  if (!req.nextUrl.pathname.startsWith('/apps') || req.nextUrl.pathname === '/logout' || req.nextUrl.pathname === '/debug-auth') return NextResponse.next()
+  // Only protect /apps/* paths, but allow logout
+  if (!req.nextUrl.pathname.startsWith('/apps') || req.nextUrl.pathname === '/logout') return NextResponse.next()
 
   console.log('🔍 Middleware called for:', req.nextUrl.pathname)
 
