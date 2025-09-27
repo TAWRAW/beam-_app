@@ -57,8 +57,10 @@ export function MarkdownPreview({ content, className = '' }: MarkdownPreviewProp
               {children}
             </blockquote>
           ),
-          code: ({ inline, children, ...props }) => (
-            inline ? (
+          code: ({ children, className, ...props }: any) => {
+            const isInline = !className?.includes('language-')
+
+            return isInline ? (
               <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800">
                 {children}
               </code>
@@ -67,7 +69,7 @@ export function MarkdownPreview({ content, className = '' }: MarkdownPreviewProp
                 {children}
               </code>
             )
-          ),
+          },
           a: ({ children, href }) => (
             <a
               href={href}
