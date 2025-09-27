@@ -60,6 +60,7 @@ export interface CreateArticleRequest {
   content: string
   excerpt?: string
   featured_image_url?: string
+  author_id?: string
   category?: ArticleCategory
   type?: ArticleType
   tags?: string[]
@@ -73,6 +74,7 @@ export interface CreateArticleRequest {
 // Type pour la mise à jour d'un article
 export interface UpdateArticleRequest extends Partial<CreateArticleRequest> {
   id: string
+  author_id?: string
 }
 
 // Type pour les filtres de recherche

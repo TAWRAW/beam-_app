@@ -8,13 +8,16 @@ import slugify from 'slugify'
 
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/input'
-import { 
+import { MarkdownPreview } from '@/components/ui/MarkdownPreview'
+import { ImageUpload } from '@/components/ui/ImageUpload'
+import {
   ArticleWithAuthor,
-  UpdateArticleRequest, 
+  UpdateArticleRequest,
   validateArticle,
   ArticleValidationErrors,
   ARTICLE_CATEGORIES,
-  ARTICLE_STATUSES 
+  ARTICLE_TYPES,
+  ARTICLE_STATUSES
 } from '@/types/article'
 
 export default function EditArticlePage({ params }: { params: { id: string } }) {
@@ -26,6 +29,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [errors, setErrors] = useState<ArticleValidationErrors>({})
   const [article, setArticle] = useState<ArticleWithAuthor | null>(null)
   
+  const [authors, setAuthors] = useState<Array<{id: string, full_name?: string, email?: string}>>([])
   const [formData, setFormData] = useState<UpdateArticleRequest>({
     id: params.id,
     title: '',
@@ -38,12 +42,19 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     tags: [],
     status: 'draft',
     seo_title: '',
-    seo_keywords: ''
+    seo_keywords: '',
+    author_id: ''
   })
 
   useEffect(() => {
     loadArticle()
   }, [params.id])
+
+  useEffect(() => {
+    if (article) {
+      loadAuthors()
+    }
+  }, [article])
 
   useEffect(() => {
     // Afficher un message de succès si on vient de créer l'article
@@ -52,6 +63,41 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       console.log('Article créé avec succès!')
     }
   }, [searchParams])
+
+  const loadAuthors = async () => {
+    try {
+      const response = await fetch('/api/admin/users')
+      if (response.ok) {
+        const data = await response.json()
+        const authorsList = data.users?.map((user: any) => ({
+          id: user.profile?.id,
+          full_name: user.profile?.full_name,
+          email: user.profile?.email
+        })).filter((author: any) => author.id) || []
+        setAuthors(authorsList)
+      } else {
+        console.warn('Could not load authors, using fallback')
+        // Fallback: utiliser l'auteur actuel de l'article s'il existe
+        if (article?.author) {
+          setAuthors([{
+            id: article.author.id,
+            full_name: article.author.full_name,
+            email: article.author.email
+          }])
+        }
+      }
+    } catch (error) {
+      console.warn('Error loading authors, using fallback:', error)
+      // Fallback: utiliser l'auteur actuel de l'article s'il existe
+      if (article?.author) {
+        setAuthors([{
+          id: article.author.id,
+          full_name: article.author.full_name,
+          email: article.author.email
+        }])
+      }
+    }
+  }
 
   const loadArticle = async () => {
     try {
@@ -76,7 +122,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         tags: articleData.tags || [],
         status: articleData.status,
         seo_title: articleData.seo_title || '',
-        seo_keywords: articleData.seo_keywords || ''
+        seo_keywords: articleData.seo_keywords || '',
+        author_id: articleData.author_id || ''
       })
     } catch (error) {
       console.error('Error loading article:', error)
@@ -168,17 +215,6 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     }
   }
 
-  const renderMarkdownPreview = (content: string) => {
-    // Simple rendu markdown basique
-    return content
-      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold mb-4">$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-semibold mb-3">$1</h2>')
-      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-medium mb-2">$1</h3>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      .replace(/\n\n/g, '</p><p class="mb-4">')
-      .replace(/^\s*$/, '')
-  }
 
   if (loading) {
     return (
@@ -363,17 +399,15 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             /* Aperçu */
             <div className="bg-white p-6 rounded-lg shadow">
               <h1 className="text-3xl font-bold mb-4">{formData.title || 'Titre de l\'article'}</h1>
-              
+
               {formData.excerpt && (
-                <p className="text-lg text-gray-600 mb-6">{formData.excerpt}</p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">Extrait (non affiché publiquement)</h4>
+                  <p className="text-blue-700 text-sm">{formData.excerpt}</p>
+                </div>
               )}
-              
-              <div 
-                className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ 
-                  __html: `<p class="mb-4">${renderMarkdownPreview(formData.content || 'Contenu de l\'article...')}</p>` 
-                }}
-              />
+
+              <MarkdownPreview content={formData.content || '*Votre contenu apparaîtra ici...*'} />
             </div>
           )}
         </div>
@@ -386,6 +420,24 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Auteur
+                </label>
+                <select
+                  value={formData.author_id || ''}
+                  onChange={(e) => handleInputChange('author_id', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                >
+                  <option value="">Sélectionner un auteur</option>
+                  {authors.map((author) => (
+                    <option key={author.id} value={author.id}>
+                      {author.full_name || author.email}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Extrait
                 </label>
                 <textarea
@@ -395,6 +447,9 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   rows={3}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 />
+                <p className="text-gray-500 text-sm mt-1">
+                  Résumé interne, ne s'affiche pas publiquement
+                </p>
               </div>
 
               <div>
@@ -480,22 +535,38 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             </div>
           </div>
 
-          {/* Image de couverture */}
+          {/* Images */}
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4">Image de couverture</h3>
+            <h3 className="text-lg font-semibold mb-4">Images</h3>
+
+            {/* Upload d'images pour le contenu */}
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Upload d'images</h4>
+              <ImageUpload
+                onImageUploaded={(url) => {
+                  // Copier automatiquement le markdown dans le presse-papier
+                  navigator.clipboard.writeText(`![Image](${url})`)
+                }}
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                Les images uploadées génèrent automatiquement le code Markdown
+              </p>
+            </div>
+
+            {/* Image de couverture */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                URL de l'image
+                Image de couverture (URL)
               </label>
               <Input
                 value={formData.featured_image_url}
                 onChange={(e) => handleInputChange('featured_image_url', e.target.value)}
-                placeholder="https://exemple.com/image.jpg"
+                placeholder="https://exemple.com/image.jpg ou /uploads/image.jpg"
               />
               {formData.featured_image_url && (
                 <div className="mt-2">
-                  <img 
-                    src={formData.featured_image_url} 
+                  <img
+                    src={formData.featured_image_url}
                     alt="Aperçu"
                     className="w-full h-32 object-cover rounded"
                     onError={(e) => {

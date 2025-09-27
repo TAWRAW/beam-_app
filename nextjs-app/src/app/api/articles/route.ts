@@ -181,14 +181,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Récupérer l'utilisateur actuel pour définir l'auteur
-    // Note: Ici nous devrions vérifier l'auth, mais pour simplifier on utilise le premier admin
-    const { data: currentUser } = await supabaseAdmin
-      .from('profiles')
-      .select('id')
-      .eq('role', 'admin')
-      .limit(1)
-      .single()
+    // Récupérer l'utilisateur actuel pour définir l'auteur si pas fourni
+    let authorId = body.author_id
+    if (!authorId) {
+      const { data: currentUser } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('role', 'admin')
+        .limit(1)
+        .single()
+      authorId = currentUser?.id
+    }
 
     // Préparer les données d'insertion
     const articleData = {
@@ -198,7 +201,7 @@ export async function POST(request: NextRequest) {
       content: body.content,
       excerpt: body.excerpt,
       featured_image_url: body.featured_image_url,
-      author_id: currentUser?.id,
+      author_id: authorId,
       category: body.category || 'general',
       tags: body.tags || [],
       status: body.status || 'draft',

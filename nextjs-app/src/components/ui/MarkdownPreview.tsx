@@ -97,6 +97,14 @@ export function MarkdownPreview({ content, className = '' }: MarkdownPreviewProp
               {children}
             </td>
           ),
+          img: ({ src, alt }) => (
+            <img
+              src={src}
+              alt={alt || ''}
+              className="max-w-full h-auto rounded-lg shadow-md my-6 mx-auto block"
+              loading="lazy"
+            />
+          ),
         }}
       >
         {content || '*Votre contenu apparaîtra ici...*'}

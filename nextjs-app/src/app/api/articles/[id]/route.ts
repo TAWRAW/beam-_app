@@ -140,6 +140,7 @@ export async function PUT(
     if (body.content !== undefined) updateData.content = body.content
     if (body.excerpt !== undefined) updateData.excerpt = body.excerpt
     if (body.featured_image_url !== undefined) updateData.featured_image_url = body.featured_image_url
+    if (body.author_id !== undefined) updateData.author_id = body.author_id
     if (body.category !== undefined) updateData.category = body.category
     if (body.tags !== undefined) updateData.tags = body.tags
     if (body.seo_title !== undefined) updateData.seo_title = body.seo_title

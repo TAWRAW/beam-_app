@@ -9,6 +9,7 @@ import slugify from 'slugify'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/input'
 import { MarkdownPreview } from '@/components/ui/MarkdownPreview'
+import { ImageUpload } from '@/components/ui/ImageUpload'
 import {
   CreateArticleRequest,
   validateArticle,
@@ -405,22 +406,38 @@ export default function NewArticlePage() {
             </div>
           </div>
 
-          {/* Image de couverture */}
+          {/* Images */}
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4">Image de couverture</h3>
+            <h3 className="text-lg font-semibold mb-4">Images</h3>
+
+            {/* Upload d'images pour le contenu */}
+            <div className="mb-6">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Upload d'images</h4>
+              <ImageUpload
+                onImageUploaded={(url) => {
+                  // Copier automatiquement le markdown dans le presse-papier
+                  navigator.clipboard.writeText(`![Image](${url})`)
+                }}
+              />
+              <p className="text-xs text-gray-500 mt-2">
+                Les images uploadées génèrent automatiquement le code Markdown
+              </p>
+            </div>
+
+            {/* Image de couverture */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                URL de l'image
+                Image de couverture (URL)
               </label>
               <Input
                 value={formData.featured_image_url}
                 onChange={(e) => handleInputChange('featured_image_url', e.target.value)}
-                placeholder="https://exemple.com/image.jpg"
+                placeholder="https://exemple.com/image.jpg ou /uploads/image.jpg"
               />
               {formData.featured_image_url && (
                 <div className="mt-2">
-                  <img 
-                    src={formData.featured_image_url} 
+                  <img
+                    src={formData.featured_image_url}
                     alt="Aperçu"
                     className="w-full h-32 object-cover rounded"
                     onError={(e) => {
