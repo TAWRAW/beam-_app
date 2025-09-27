@@ -9,8 +9,16 @@ const supabaseAdmin = createClient(
 )
 
 export async function middleware(req: NextRequest) {
-  // Only protect /apps/* paths
-  if (!req.nextUrl.pathname.startsWith('/apps')) return NextResponse.next()
+  // Only protect /apps/* paths, but allow logout
+  if (!req.nextUrl.pathname.startsWith('/apps') || req.nextUrl.pathname === '/logout') return NextResponse.next()
+
+  console.log('🔍 Middleware called for:', req.nextUrl.pathname)
+
+  // TEMPORARY: Allow all in development mode for debugging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🚧 Development mode: allowing all requests')
+    return NextResponse.next()
+  }
 
   const res = NextResponse.next()
 
@@ -20,7 +28,9 @@ export async function middleware(req: NextRequest) {
 
   // Check legacy auth first (session cookie)
   const legacyToken = req.cookies.get('app_session')?.value
+  console.log('🔐 Legacy token found:', !!legacyToken)
   const legacySession = verifySession(legacyToken)
+  console.log('🔐 Legacy session valid:', !!legacySession)
 
   if (legacySession) {
     // For admin routes, check user role
@@ -78,8 +88,10 @@ export async function middleware(req: NextRequest) {
   })
 
   const { data: { user } } = await supabase.auth.getUser()
+  console.log('🔐 Supabase user found:', !!user)
 
   if (!user) {
+    console.log('❌ No user found, redirecting to login')
     const url = req.nextUrl.clone()
     url.pathname = '/auth/login'
     url.searchParams.set('redirect', req.nextUrl.pathname + req.nextUrl.search)
@@ -113,4 +125,4 @@ export async function middleware(req: NextRequest) {
   return res
 }
 
-export const config = { matcher: ['/apps/:path*'] }
+export const config = { matcher: ['/apps/:path*', '/logout'] }

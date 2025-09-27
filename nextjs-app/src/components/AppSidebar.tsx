@@ -70,6 +70,9 @@ export function AppSidebar() {
     return true
   })
 
+  // Force show all items in development mode
+  const isDev = process.env.NODE_ENV === 'development'
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -83,7 +86,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {loading ? (
+              {loading && !isDev ? (
                 <>
                   <SidebarMenuSkeleton showIcon />
                   <SidebarMenuSkeleton showIcon />
@@ -108,19 +111,19 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Admin Section */}
-        {(isAdmin || loading) && (
+        {(isAdmin || loading || isDev) && (
           <SidebarGroup>
             <SidebarGroupLabel>Administration</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {loading ? (
+                {loading && !isDev ? (
                   <>
                     <SidebarMenuSkeleton showIcon />
                     <SidebarMenuSkeleton showIcon />
                     <SidebarMenuSkeleton showIcon />
                   </>
                 ) : (
-                  visibleAdminItems.map((item) => {
+                  (isDev ? adminItems : visibleAdminItems).map((item) => {
                     const isActive = pathname === item.href
                     return (
                       <SidebarMenuItem key={item.href}>

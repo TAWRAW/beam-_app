@@ -1,14 +1,9 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { User, Camera, Save, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 
 interface Profile {
   id: string
@@ -35,10 +30,31 @@ export default function ProfilePage() {
 
   const loadProfile = async () => {
     try {
+      // BYPASS pour le développement
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🚧 DEV MODE: Bypassing auth check for profile page')
+        const mockProfile = {
+          id: 'dev-user',
+          full_name: 'Utilisateur de développement',
+          email: 'dev@beamo.fr',
+          avatar_url: '',
+          role: 'admin'
+        }
+        setProfile(mockProfile)
+        setFormData({
+          full_name: mockProfile.full_name,
+          email: mockProfile.email
+        })
+        setLoading(false)
+        return
+      }
+
       // Récupérer l'utilisateur connecté
+      const supabase = createSupabaseBrowserClient()
       const { data: { user }, error: userError } = await supabase.auth.getUser()
 
       if (userError || !user) {
+        console.log('❌ No user found, redirecting to login')
         router.push('/auth/login')
         return
       }
@@ -46,6 +62,7 @@ export default function ProfilePage() {
       // Récupérer le token d'accès
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
+        console.log('❌ No session found, redirecting to login')
         router.push('/auth/login')
         return
       }
@@ -87,6 +104,7 @@ export default function ProfilePage() {
       const fileName = `avatar-${profile.id}-${Date.now()}.${fileExt}`
 
       // Upload vers Supabase Storage
+      const supabase = createSupabaseBrowserClient()
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('image_article')
         .upload(fileName, file, {
@@ -150,6 +168,7 @@ export default function ProfilePage() {
     setSaving(true)
     try {
       // Récupérer le token d'accès
+      const supabase = createSupabaseBrowserClient()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
         alert('Session expirée')

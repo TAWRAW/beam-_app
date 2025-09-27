@@ -1,12 +1,21 @@
 import { ReactNode } from 'react'
 import { AppSidebar } from '@/components/AppSidebar'
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
+import { AlignJustify } from 'lucide-react'
 
 export default function AppsLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
+        {/* Header mobile */}
+        <header className="flex h-16 shrink-0 items-center gap-2 px-4 lg:hidden border-b">
+          <SidebarTrigger className="h-8 w-8">
+            <AlignJustify className="h-4 w-4" />
+          </SidebarTrigger>
+          <h1 className="text-lg font-semibold">Menu</h1>
+        </header>
+
         <main className="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">{children}</main>
       </SidebarInset>
     </SidebarProvider>
