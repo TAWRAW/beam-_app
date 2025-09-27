@@ -148,7 +148,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="/logout" as any className="text-red-600 hover:text-red-700">
+              <Link href={"/logout" as any} className="text-red-600 hover:text-red-700">
                 <LogOut className="h-4 w-4" />
                 <span>Déconnexion</span>
               </Link>
