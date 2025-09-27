@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Clock, User, Eye } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
 import { ArticleWithAuthor } from '@/types/article'
 import { MarkdownPreview } from '@/components/ui/MarkdownPreview'
+import { getEffectiveFeaturedImage } from '@/lib/markdown-utils'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   try {
     const { data: article } = await supabase
       .from('articles')
-      .select('title, meta_description, seo_title, featured_image_url')
+      .select('title, meta_description, seo_title, featured_image_url, content')
       .eq('slug', params.slug)
       .eq('status', 'published')
       .single()
@@ -39,20 +40,23 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       }
     }
 
+    // Obtenir l'image effective (featured_image_url ou première image du contenu)
+    const effectiveImage = getEffectiveFeaturedImage(article.featured_image_url, article.content)
+
     return {
       title: article.seo_title || `${article.title} — Beamô`,
       description: article.meta_description || undefined,
       openGraph: {
         title: article.title,
         description: article.meta_description || undefined,
-        images: article.featured_image_url ? [article.featured_image_url] : undefined,
+        images: effectiveImage ? [effectiveImage] : undefined,
         type: 'article',
       },
       twitter: {
         card: 'summary_large_image',
         title: article.title,
         description: article.meta_description || undefined,
-        images: article.featured_image_url ? [article.featured_image_url] : undefined,
+        images: effectiveImage ? [effectiveImage] : undefined,
       },
     }
   } catch {
@@ -103,6 +107,9 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
   if (!article) notFound()
 
+  // Obtenir l'image effective pour l'affichage
+  const effectiveFeaturedImage = getEffectiveFeaturedImage(article.featured_image_url, article.content)
+
   const formattedDate = new Date(article.published_at!).toLocaleDateString('fr-FR', {
     year: 'numeric',
     month: 'long',
@@ -126,9 +133,9 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         {/* Header de l'article */}
         <header className="mb-8">
           {/* Image de couverture */}
-          {article.featured_image_url && (
+          {effectiveFeaturedImage && (
             <img
-              src={article.featured_image_url}
+              src={effectiveFeaturedImage}
               alt={article.title}
               className="w-full h-64 md:h-80 object-cover rounded-lg mb-8"
             />
