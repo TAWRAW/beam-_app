@@ -7,6 +7,7 @@ import { Poppins } from 'next/font/google'
 import { avenirBlack } from './fonts'
 import Script from 'next/script'
 import GA from '@/components/analytics/GA'
+import ConditionalLayout from '@/components/layout/ConditionalLayout'
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400','500','600','700'] })
 
@@ -109,13 +110,9 @@ export default function RootLayout({
             <GA />
           </>
         ) : null}
-        <Header />
-        {/* Offset content for the fixed header using padding instead of a separate spacer */}
-        <div className="pt-20 md:pt-24 min-h-screen">
+        <ConditionalLayout>
           {children}
-        </div>
-        <Footer />
-        <MobileQuickNav />
+        </ConditionalLayout>
       </body>
     </html>
   )
