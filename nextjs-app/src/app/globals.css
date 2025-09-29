@@ -71,6 +71,14 @@ h2, h3, h4, h5, h6, p, a, li, button, input, textarea, label, span {
 .loading-bar .bar { height: 100%; width: 50%; background: #FFC300; animation: progress 1.5s ease-in-out infinite alternate; }
 @keyframes progress { from { transform: translateX(-10%); } to { transform: translateX(60%); } }
 
+/* Animation de secousse pour feedback UX */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+.animate-shake { animation: shake 0.5s ease-in-out; }
+
 /* Scroll arrow on video */
 .scroll-arrow {
   position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);

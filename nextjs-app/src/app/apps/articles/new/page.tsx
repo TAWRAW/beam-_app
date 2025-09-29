@@ -53,6 +53,7 @@ export default function NewArticlePage() {
   const [saving, setSaving] = useState(false)
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
   const [errors, setErrors] = useState<ArticleValidationErrors>({})
+  const [shakeButtons, setShakeButtons] = useState(false)
   
   const [formData, setFormData] = useState<CreateArticleRequest>({
     title: '',
@@ -108,6 +109,11 @@ export default function NewArticlePage() {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       setSaving(false)
+
+      // Animation de secousse pour indiquer le refus
+      setShakeButtons(true)
+      setTimeout(() => setShakeButtons(false), 500)
+
       return
     }
 
@@ -188,22 +194,24 @@ export default function NewArticlePage() {
               Aperçu
             </button>
           </div>
-          
-          <Button
-            variant="outline"
-            onClick={() => handleSave('draft')}
-            disabled={saving}
-          >
-            <Save className="mr-2 h-4 w-4" />
-            Brouillon
-          </Button>
-          
-          <Button
-            onClick={() => handleSave('published')}
-            disabled={saving}
-          >
-            Publier
-          </Button>
+
+          <div className={`flex gap-2 ${shakeButtons ? 'animate-shake' : ''}`}>
+            <Button
+              variant="outline"
+              onClick={() => handleSave('draft')}
+              disabled={saving}
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Brouillon
+            </Button>
+
+            <Button
+              onClick={() => handleSave('published')}
+              disabled={saving}
+            >
+              Publier
+            </Button>
+          </div>
         </div>
       </div>
 
