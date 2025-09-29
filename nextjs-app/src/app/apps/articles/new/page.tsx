@@ -21,7 +21,7 @@ import {
 
 export default function NewArticlePage() {
   const router = useRouter()
-  const [loading, setSaving] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
   const [errors, setErrors] = useState<ArticleValidationErrors>({})
   
@@ -163,7 +163,7 @@ export default function NewArticlePage() {
           <Button
             variant="outline"
             onClick={() => handleSave('draft')}
-            disabled={loading}
+            disabled={saving}
           >
             <Save className="mr-2 h-4 w-4" />
             Brouillon
@@ -171,7 +171,7 @@ export default function NewArticlePage() {
           
           <Button
             onClick={() => handleSave('published')}
-            disabled={loading}
+            disabled={saving}
           >
             Publier
           </Button>
