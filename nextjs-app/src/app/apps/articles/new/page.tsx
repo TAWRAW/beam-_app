@@ -1,3 +1,32 @@
+/**
+ * CRÉATION D'ARTICLES - Interface d'édition
+ *
+ * Interface complète pour créer de nouveaux articles dans le CMS Beamô.
+ * Éditeur markdown avec prévisualisation et gestion des métadonnées SEO.
+ *
+ * FONCTIONNALITÉS:
+ * - Éditeur markdown avec modes: édition, préview, split
+ * - Auto-génération de slug à partir du titre
+ * - Upload d'images avec intégration automatique
+ * - Gestion des catégories et types d'articles
+ * - Validation des données avant sauvegarde
+ * - Sauvegarde en brouillon ou publication directe
+ * - Métadonnées SEO complètes
+ *
+ * WORKFLOW:
+ * 1. Saisie titre → génération automatique du slug
+ * 2. Rédaction contenu en markdown
+ * 3. Configuration métadonnées (SEO, catégorie, tags)
+ * 4. Upload images optionnel
+ * 5. Sauvegarde (draft/published) → redirection vers édition
+ *
+ * MAINTENANCE:
+ * - Types d'articles dans /types/article.ts
+ * - API de création dans /api/articles/route.ts
+ * - Validation avec validateArticle()
+ * - Upload images via ImageUpload component
+ */
+
 "use client"
 
 import { useState } from 'react'

@@ -1,3 +1,28 @@
+/**
+ * PAGE OFFRES - Présentation des services Beamô
+ *
+ * Page commerciale présentant les différentes offres de syndic de copropriété.
+ * Optimisée pour la conversion et le référencement local.
+ *
+ * OFFRES PROPOSÉES:
+ * - Standard: Gestion classique complète
+ * - Hybride: Modèle participatif avec conseil syndical
+ * - Clos-Masure: En développement (spécialisé maisons normandes)
+ *
+ * FONCTIONNALITÉS:
+ * - Cartes d'offres avec descriptions détaillées
+ * - Métadonnées SEO optimisées pour conversion
+ * - Données structurées OfferCatalog pour Google
+ * - Design responsive avec animations loading
+ * - CTA vers pages de détail/contact
+ *
+ * MAINTENANCE:
+ * - Ajouter nouvelles offres dans offersJsonLd et grid
+ * - Modifier tarifs/descriptions selon évolution commerciale
+ * - Mettre à jour statut Clos-Masure quand disponible
+ * - Vérifier liens CTA vers pages de détail
+ */
+
 export const metadata = {
   title: 'Offres de Syndic de Copropriété à Vernon, Évreux, Les Andelys | Beamô',
   description:

@@ -1,8 +1,33 @@
+/**
+ * PAGE D'ACCUEIL PRINCIPALE - Beamô
+ *
+ * Cette page est le point d'entrée principal du site Beamô.
+ * Elle présente les services de syndic de copropriété avec un design moderne
+ * et optimisé pour le SEO local (Vernon, Évreux, Les Andelys).
+ *
+ * STRUCTURE:
+ * - Carousel hero avec présentation principale
+ * - Section Features (avantages/services)
+ * - Section Squares (témoignages/arguments)
+ * - CTA final pour conversion
+ *
+ * SEO:
+ * - Métadonnées complètes (title, description, OG, Twitter)
+ * - Données structurées JSON-LD pour LocalBusiness et Service
+ * - Optimisé pour recherches locales géographiques
+ *
+ * MAINTENANCE:
+ * - Modifier les métadonnées si changement de zones géographiques
+ * - Ajuster les données structurées pour nouvelles offres de service
+ * - Vérifier les composants sections si changement de layout
+ */
+
 import Carousel from '@/components/sections/Carousel'
 import Features from '@/components/sections/Features'
 import Squares from '@/components/sections/Squares'
 import FinalCta from '@/components/sections/FinalCta'
 
+// Configuration SEO principale - Point d'entrée du site
 export const metadata = {
   title: 'Beamô - Syndic de Copropriété à Vernon, Évreux et Les Andelys',
   description:
@@ -39,6 +64,8 @@ export const metadata = {
 }
 
 export default function Page() {
+  // Données structurées JSON-LD pour référencement local
+  // Type: LocalBusiness - Aide Google à comprendre notre activité géographique
   const businessJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -93,6 +120,8 @@ export default function Page() {
     knowsAbout: ['syndic', 'copropriété', 'assemblée générale', 'gestion immobilière', 'transparence', 'proximité']
   }
 
+  // Données structurées JSON-LD pour les services
+  // Type: Service - Décrit nos prestations pour les moteurs de recherche
   const serviceJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -113,10 +142,19 @@ export default function Page() {
 
   return (
     <main className="min-h-screen">
+      {/* Hero section avec slider principal */}
       <Carousel />
+
+      {/* Section avantages et services Beamô */}
       <Features />
+
+      {/* Témoignages et arguments de vente */}
       <Squares />
+
+      {/* Call-to-action final pour conversion */}
       <FinalCta />
+
+      {/* Injection des données structurées pour le SEO */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}

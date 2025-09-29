@@ -1,3 +1,30 @@
+/**
+ * PAGES VILLES DYNAMIQUES - SEO Local Géographique
+ *
+ * Génère automatiquement des pages optimisées pour chaque ville/commune
+ * des zones de couverture Beamô (47 villes générées).
+ *
+ * FONCTIONNALITÉS:
+ * - Génération statique (SSG) pour performance optimale
+ * - Métadonnées SEO personnalisées par ville
+ * - Données structurées LocalBusiness + FAQPage
+ * - Contenu adapté avec prépositions grammaticales correctes
+ * - Section "villes voisines" pour maillage interne
+ * - FAQ personnalisée par zone géographique
+ *
+ * GÉNÉRATION:
+ * - generateStaticParams() crée les routes au build
+ * - generateMetadata() génère SEO personnalisé
+ * - Données villes dans /lib/cities.ts
+ * - Routes: /ville/vernon, /ville/evreux, etc.
+ *
+ * MAINTENANCE:
+ * - Ajouter nouvelles villes dans cities.ts
+ * - Modifier template métadonnées si repositionnement
+ * - Vérifier données structurées si changement schema.org
+ * - Adapter FAQ selon retours terrain par zone
+ */
+
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'

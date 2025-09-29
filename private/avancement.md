@@ -829,40 +829,104 @@ Script SQL exécuté avec succès dans Supabase:
 ## ✍️ Charte éditoriale — Ton & « mots forts »
 
 Objectif
-- Assumer une voix claire et assurée, orientée action, qui exprime l’Ambition et la Volonté de « mettre fin » aux irritants classiques de la copropriété.
+- Assumer une voix claire et assurée, orientée action, qui exprime l'Ambition et la Volonté de « mettre fin » aux irritants classiques de la copropriété.
 
 Piliers sémantiques (à réutiliser)
 - Ambition, Volonté, Exigence, Transparence, Proximité, Réactivité, Respect, Simplicité, Clarté.
-- Verbes d’action: « Mettre fin », « Clarifier », « Accélérer », « Assumer », « Garantir », « Simplifier ».
+- Verbes d'action: « Mettre fin », « Clarifier », « Accélérer », « Assumer », « Garantir », « Simplifier ».
 
 Formules « Mettre fin… » (à décliner)
 - « Mettre fin aux réponses tardives. »
 - « Mettre fin aux frais cachés. »
 - « Mettre fin aux AG sans fin. »
-- « Mettre fin aux dossiers qui n’avancent pas. »
+- « Mettre fin aux dossiers qui n'avancent pas. »
 
-Exemples prêts à l’emploi
+Exemples prêts à l'emploi
 - Home (H1/H2)
   - H1: « Le syndic local et efficace. »
-  - H2: « Mettons fin aux lenteurs et aux zones d’ombre. »
+  - H2: « Mettons fin aux lenteurs et aux zones d'ombre. »
 - Pages ville (H1/H2)
   - H1: « Le syndic local et efficace [prep] [Ville]. »
   - H2: « Notre volonté: des réponses sous 48h et une gestion claire. »
 - Offres (intro)
   - « Transparence totale. Aucune ligne illisible. Des engagements assumés. »
 - Changer de syndic (accroche)
-  - « Mettre fin à l’inertie: 5 étapes simples, on s’occupe de tout. »
+  - « Mettre fin à l'inertie: 5 étapes simples, on s'occupe de tout. »
 - Qui sommes‑nous (mission)
   - « Notre ambition: réconcilier exigence, proximité et résultats. »
 
 CTA — variantes
 - « Demander un devis en 24h » / « Être rappelé » / « Démarrer la transition » / « Parler à un gestionnaire »
 
-Do / Don’t (rédaction)
+Do / Don't (rédaction)
 - Do: phrases courtes, verbe fort au présent, bénéfices concrets, évitez le jargon.
-- Don’t: hyperboles vagues (« solution innovante »), passif, doubles négations, promesses non mesurables.
+- Don't: hyperboles vagues (« solution innovante »), passif, doubles négations, promesses non mesurables.
 
 Implémentation progressive (suggestion)
 - Remplacer les sous‑titres H2 par des formulations « Ambition/Volonté/Mettre fin ».
-- Ajouter un encart « En bref » (3–5 puces d’engagements) en haut de Home/Offres/Villes.
+- Ajouter un encart « En bref » (3–5 puces d'engagements) en haut de Home/Offres/Villes.
 - Harmoniser les CTA avec une promesse mesurable (« 24h », « 48h »).
+
+---
+
+## 🚀 Session Finalisation — 23/09/2025
+
+### Système Complet Opérationnel
+L'application Next.js Beamô est maintenant entièrement fonctionnelle avec :
+
+#### Authentification & Administration ✅
+- Auth temporaire simple (email/password) sécurisée par session HMAC
+- Protection middleware sur `/apps/*` avec redirection automatique
+- Interface d'administration complète avec sidebar et navigation
+- Gestion des utilisateurs avec tableau filtrable et contrôles admin
+
+#### Gestionnaire d'Articles Supabase ✅  
+- Migration complète de Strapi vers Supabase
+- Table articles avec RLS, triggers auto (reading_time, updated_at)
+- API CRUD complète avec validation et pagination
+- Interface admin : création, édition, gestion par statut/catégorie
+- Pages publiques SEO-optimisées avec routing dynamique par slug
+- Système de type d'articles (Articles, Modèles, Applications, Juridique, Documentation)
+
+#### Workflow n8n — Mandats ✅
+- Intégration Google Sheets → Docs → PDF → Gmail complète
+- Webhook sécurisé (Basic Auth) connecté à `/api/mandats/generate`
+- Formulaire client avec calculs automatiques (honoraires HT/TTC, durées)
+- Templating Google Docs avec remplacement de placeholders
+- Export PDF automatique et envoi par email avec pièce jointe
+- Session utilisateur attachée comme `userId` dans les mandats générés
+
+#### Infrastructure & Déploiement ✅
+- Vercel configuré avec variables d'environnement production
+- DNS et domaines configurés (beamô.fr → xn--beam-yqa.fr punycode)
+- OAuth Google opérationnel avec redirections correctes
+- `/private` folder protégé dans .gitignore
+- Commits synchronisés avec GitHub (problème Vercel résolu côté plateforme)
+
+#### Contenu & SEO ✅
+- 47 pages ville générées automatiquement avec SEO local
+- Métadonnées complètes, données structurées JSON-LD
+- Sitemap dynamique, robots.txt optimisé
+- Pages principales : Accueil, Offres, Contact, Qui sommes-nous
+- Système de ressources avec galerie par catégories
+- Charte éditoriale "mots forts" définie
+
+#### UX & Design ✅
+- Interface mobile responsive avec quick navigation bottom-sheet
+- Couleurs Beamô (#FFC300) et typographie Poppins intégrées
+- Pages d'erreur personnalisées (404/500) avec style cohérent
+- Formulaire de contact avec validation et anti-spam (EmailJS + futur SMTP)
+- Page "En cours" pour fonctionnalités futures (Extranet)
+
+### Statut Technique Final
+- ✅ Build production sans erreurs TypeScript
+- ✅ Tests de sécurité : RLS Supabase, middleware Next.js, sessions signées
+- ✅ Performance : SSG pages ville, API optimisées, assets optimisés
+- ✅ Monitoring : logs Vercel, erreurs trackées, analytiques GA4 prêtes
+
+### Transition Achevée
+Migration HTML statique → Next.js 14 + Supabase **COMPLÈTE**
+- Parité fonctionnelle atteinte
+- Nouvelles fonctionnalités admin opérationnelles  
+- Infrastructure moderne et scalable en place
+- Prêt pour mise en production et évolutions futures
