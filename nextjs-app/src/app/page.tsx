@@ -65,59 +65,136 @@ export const metadata = {
 
 export default function Page() {
   // Données structurées JSON-LD pour référencement local
-  // Type: LocalBusiness - Aide Google à comprendre notre activité géographique
+  // Type: ProfessionalService - Aide Google à comprendre notre activité professionnelle
   const businessJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': 'https://xn--beam-yqa.fr/#business',
+    '@type': 'ProfessionalService',
+    '@id': 'https://www.xn--beam-yqa.fr/#business',
     name: 'Beamô',
-    alternateName: 'Beamo',
-    url: 'https://xn--beam-yqa.fr',
-    logo: 'https://xn--beam-yqa.fr/favicon.png',
-    description: 'Syndic de copropriété moderne et transparent à Vernon, Évreux, Les Andelys et leurs environs.',
-    telephone: '+33-2-XX-XX-XX-XX',
-    email: 'contact@xn--beam-yqa.fr',
-    foundingDate: '2024',
-    founder: {
-      '@type': 'Person',
-      name: 'Tom Lemeille'
+    alternateName: 'Beamo Syndic de Copropriété',
+    url: 'https://www.xn--beam-yqa.fr',
+    logo: 'https://www.xn--beam-yqa.fr/favicon.png',
+    image: [
+      'https://www.xn--beam-yqa.fr/outils/images/beamocomptearebour.png'
+    ],
+    description: 'Syndic de copropriété moderne à Vernon, Evreux et Les Andelys. Réactivité garantie sous 48h, transparence totale, suivi digitalisé 24/7.',
+    telephone: '+33775707099',
+    email: 'tom.lemeille@beamô.fr',
+    priceRange: '€€',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Saint-Marcel',
+      addressRegion: 'Normandie',
+      postalCode: '27950',
+      addressCountry: 'FR'
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: '49.0931',
+      longitude: '1.4875'
     },
     areaServed: [
       {
         '@type': 'City',
         name: 'Vernon',
-        addressRegion: 'Normandie'
+        containedInPlace: {
+          '@type': 'AdministrativeArea',
+          name: 'Eure'
+        }
       },
       {
-        '@type': 'City', 
+        '@type': 'City',
         name: 'Évreux',
-        addressRegion: 'Normandie'
+        containedInPlace: {
+          '@type': 'AdministrativeArea',
+          name: 'Eure'
+        }
       },
       {
         '@type': 'City',
         name: 'Les Andelys',
-        addressRegion: 'Normandie'
-      }
-    ],
-    serviceType: 'Property Management',
-    makesOffer: [
-      {
-        '@type': 'Offer',
-        name: 'Gestion de copropriété',
-        description: 'Gestion complète et transparente de votre copropriété',
-        category: 'syndic standard'
+        containedInPlace: {
+          '@type': 'AdministrativeArea',
+          name: 'Eure'
+        }
       },
       {
-        '@type': 'Offer',
-        name: 'Gestion hybride',
-        description: 'Modèle participatif avec le conseil syndical pour réduire les coûts',
-        category: 'syndic hybride'
+        '@type': 'City',
+        name: 'Louviers'
+      },
+      {
+        '@type': 'City',
+        name: 'Gaillon'
+      },
+      {
+        '@type': 'AdministrativeArea',
+        name: 'Eure'
+      },
+      {
+        '@type': 'AdministrativeArea',
+        name: 'Normandie'
       }
     ],
     sameAs: [
       'https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true'
     ],
-    knowsAbout: ['syndic', 'copropriété', 'assemblée générale', 'gestion immobilière', 'transparence', 'proximité']
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday'
+        ],
+        opens: '09:00',
+        closes: '18:00'
+      }
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Services de gestion de copropriété',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Gestion administrative de copropriété',
+            description: 'Gestion complète administrative : convocations AG, procès-verbaux, courriers copropriétaires, suivi conseil syndical.'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Gestion comptable de copropriété',
+            description: 'Budget prévisionnel, appels de fonds trimestriels, comptes individuels, clôture annuelle.'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Organisation assemblées générales',
+            description: 'Préparation ordre du jour, convocations, animation assemblée, gestion votes, rédaction procès-verbal.'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'Suivi des travaux de copropriété',
+            description: 'Consultation entreprises, analyse devis, suivi chantier, réception travaux.'
+          }
+        }
+      ]
+    },
+    founder: {
+      '@type': 'Person',
+      name: 'Tom Lemeille',
+      jobTitle: 'Fondateur'
+    }
   }
 
   // Données structurées JSON-LD pour les services
@@ -125,18 +202,27 @@ export default function Page() {
   const serviceJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    '@id': 'https://xn--beam-yqa.fr/#service',
+    '@id': 'https://www.xn--beam-yqa.fr/#service',
     name: 'Services de Syndic de Copropriété',
     provider: {
-      '@id': 'https://xn--beam-yqa.fr/#business'
+      '@id': 'https://www.xn--beam-yqa.fr/#business'
     },
-    description: 'Services de gestion de copropriété transparents et réactifs',
+    description: 'Services de gestion de copropriété transparents et réactifs avec réponse garantie sous 48h',
     serviceType: 'Property Management',
-    areaServed: 'Normandie',
+    areaServed: [
+      {
+        '@type': 'State',
+        name: 'Normandie'
+      },
+      {
+        '@type': 'AdministrativeArea',
+        name: 'Eure'
+      }
+    ],
     availableChannel: {
       '@type': 'ServiceChannel',
-      serviceUrl: 'https://xn--beam-yqa.fr/ressources/contact',
-      servicePhone: '+33-2-XX-XX-XX-XX'
+      serviceUrl: 'https://www.xn--beam-yqa.fr/ressources/contact',
+      servicePhone: '+33775707099'
     }
   }
 

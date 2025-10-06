@@ -1,8 +1,19 @@
+# Robots.txt pour Beamô - Syndic de Copropriété
+# Date de mise à jour : 06/10/2025
+
 User-agent: *
+Allow: /
+
+# Bloquer l'accès aux dossiers administratifs
 Disallow: /admin/
 Disallow: /.git/
 Disallow: /.vscode/
 Disallow: /.github/
-Allow: /
 
-Sitemap: https://xn--beam-yqa.fr/sitemap.xml
+# Bloquer les paramètres de recherche
+Disallow: /*?s=
+Disallow: /*?p=
+
+# Sitemap principal (IMPORTANT : utiliser la version punycode)
+Sitemap: https://www.xn--beam-yqa.fr/sitemap.xml
+Sitemap: https://www.xn--beam-yqa.fr/sitemap_index.xml

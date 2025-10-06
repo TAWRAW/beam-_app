@@ -12,7 +12,7 @@ import ConditionalLayout from '@/components/layout/ConditionalLayout'
 const poppins = Poppins({ subsets: ['latin'], weight: ['400','500','600','700'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://xn--beam-yqa.fr'),
+  metadataBase: new URL('https://www.xn--beam-yqa.fr'),
   title: {
     default: 'Beamô — Syndic nouvelle génération',
     template: '%s | Beamô',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'Beamô',
-    url: 'https://xn--beam-yqa.fr',
+    url: 'https://www.xn--beam-yqa.fr',
     title: 'Beamô — Syndic nouvelle génération',
     description: 'Beamô, syndic de copropriété moderne et transparent. Proximité, réactivité et écoute au service de votre copropriété.',
     images: [
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     images: ['/outils/images/beamocomptearebour.png'],
   },
   alternates: { canonical: '/' },
-  icons: { 
+  icons: {
     icon: '/favicon.ico',
     apple: '/favicon.png',
   },
