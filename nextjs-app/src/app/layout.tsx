@@ -70,6 +70,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Force rebuild 2025-10-09 for GTM injection
   return (
     <html lang="fr">
       <body className={`${poppins.className} ${avenirBlack.variable}`}>
