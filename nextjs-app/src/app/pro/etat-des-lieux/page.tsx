@@ -458,12 +458,20 @@ export default function EtatDesLieuxPage() {
               <h3 className="mb-3 text-xl font-bold text-black">
                 Combien de temps dure un état des lieux professionnel ?
               </h3>
+              <p className="text-gray-700 mb-3">
+                La durée varie selon la surface et le type de bien. <strong>Pour un logement en bon état
+                général</strong>, comptez <strong>30 à 45 minutes pour un studio ou T1</strong>,{' '}
+                <strong>45 minutes à 1h pour un T2-T3</strong>, et <strong>1h à 1h30 pour un T4-T5</strong>.
+                Pour une location meublée, ajoutez 15 à 30 minutes pour l'inventaire complet du mobilier
+                et des équipements.
+              </p>
               <p className="text-gray-700">
-                La durée varie selon la surface et le type de bien. Comptez <strong>30 à 45 minutes pour un
-                studio ou T1</strong>, <strong>45 minutes à 1h pour un T2-T3</strong>, et{' '}
-                <strong>1h à 1h30 pour un T4-T5</strong>. Pour une location meublée, ajoutez 15 à 30 minutes
-                pour l'inventaire complet du mobilier et des équipements. Nous privilégions la rigueur à la
-                rapidité : chaque élément est inspecté et photographié pour éviter tout litige ultérieur.
+                Ces durées sont <strong>indicatives et peuvent varier selon l'état du bien et sa
+                typologie</strong> (présence de dégradations, nombre de pièces annexes, vétusté, etc.).
+                Nous privilégions la rigueur à la rapidité : chaque élément est inspecté et photographié
+                pour éviter tout litige ultérieur. <strong>Aucun surcoût n'est facturé en cas de
+                dépassement</strong> de cette fourchette horaire : le tarif reste fixe selon le nombre
+                de pièces.
               </p>
             </div>
 
@@ -530,6 +538,27 @@ export default function EtatDesLieuxPage() {
                 élément est listé, photographié et son état est décrit précisément. Ce service est proposé
                 en option à <strong>+20€ HT</strong>. Parfait pour les locations Airbnb, résidences étudiantes,
                 logements meublés touristiques ou résidences de fonction.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border-2 border-gray-200 bg-white p-6">
+              <h3 className="mb-3 text-xl font-bold text-black">
+                Proposez-vous des pré-visites d'état des lieux ?
+              </h3>
+              <p className="text-gray-700">
+                Oui ! La <strong>pré-visite d'état des lieux</strong> est un service très apprécié qui permet
+                de <strong>réduire considérablement les conflits et les litiges</strong> lors de l'état des
+                lieux de sortie définitif. Nous intervenons <strong>quelques jours avant la fin du bail</strong>
+                pour dresser un constat anticipé de l'état du logement. Cette visite permet d'identifier en
+                amont les <strong>éventuelles dégradations ou réparations locatives</strong> à effectuer.
+              </p>
+              <p className="text-gray-700 mt-3">
+                Le locataire peut ainsi <strong>effectuer les réparations nécessaires avant la remise des
+                clés</strong>, évitant les retenues sur caution et les contentieux. Pour le propriétaire ou
+                l'agence, c'est l'assurance d'une <strong>récupération du bien en bon état</strong> et d'une
+                transition locative fluide. La pré-visite est facturée selon la même grille tarifaire qu'un
+                état des lieux classique. Un investissement qui évite souvent des coûts bien plus élevés en
+                litiges et vacances locatives.
               </p>
             </div>
           </div>
@@ -788,6 +817,14 @@ export default function EtatDesLieuxPage() {
                 acceptedAnswer: {
                   '@type': 'Answer',
                   text: 'Absolument ! Nous réalisons des états des lieux spécifiques pour les locations meublées avec un inventaire exhaustif du mobilier pour +20€ HT.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Proposez-vous des pré-visites d\'état des lieux ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Oui ! La pré-visite d\'état des lieux permet de réduire considérablement les conflits et litiges. Nous intervenons quelques jours avant la fin du bail pour identifier les dégradations. Le locataire peut ainsi effectuer les réparations nécessaires avant la remise des clés, évitant retenues sur caution et contentieux.',
                 },
               },
             ],
