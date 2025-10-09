@@ -37,7 +37,7 @@ export default function Footer() {
             </ul>
             <h4 className="text-primary relative mb-6 mt-8 text-lg font-semibold after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-10 after:bg-primary">Pour les professionnels</h4>
             <ul className="space-y-3 text-[#ccc]">
-              <li><a href="#" className="hover:text-primary">États des lieux</a></li>
+              <li><a href="/pro/etat-des-lieux" className="hover:text-primary">États des lieux</a></li>
               <li><a href="#" className="hover:text-primary">Représentation en AG</a></li>
               <li><a href="/ressources/contact" className="hover:text-primary">Contact</a></li>
             </ul>
