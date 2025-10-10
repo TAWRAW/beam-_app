@@ -22,10 +22,10 @@ export default function MentionsLegalesPage() {
       <section className="relative -mt-20 md:-mt-24 pt-20 md:pt-24 bg-primary">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               Mentions légales
             </h1>
-            <p className="text-xl text-gray-700">
+            <p className="text-xl text-muted-foreground">
               Informations légales et réglementaires
             </p>
           </div>
@@ -39,7 +39,7 @@ export default function MentionsLegalesPage() {
             <div className="bg-white rounded-lg shadow-sm border p-8">
               
               <h2>1. Identification de l'éditeur</h2>
-              <div className="bg-gray-50 p-6 rounded-lg mb-6">
+              <div className="bg-muted p-6 rounded-lg mb-6">
                 <p><strong>Dénomination :</strong> Beamô</p>
                 <p><strong>Forme juridique :</strong> Entreprise individuelle</p>
                 <p><strong>Dirigeant :</strong> Tom Lemeille</p>
@@ -61,7 +61,7 @@ export default function MentionsLegalesPage() {
               </ul>
 
               <h2>3. Assurances et garanties</h2>
-              <div className="bg-gray-50 p-6 rounded-lg mb-6">
+              <div className="bg-muted p-6 rounded-lg mb-6">
                 <p><strong>Responsabilité Civile Professionnelle :</strong></p>
                 <p>Compagnie : [À compléter]</p>
                 <p>Police n° : [À compléter]</p>
@@ -73,7 +73,7 @@ export default function MentionsLegalesPage() {
               </div>
 
               <h2>4. Hébergement du site</h2>
-              <div className="bg-gray-50 p-6 rounded-lg mb-6">
+              <div className="bg-muted p-6 rounded-lg mb-6">
                 <p><strong>Hébergeur :</strong> Vercel Inc.</p>
                 <p><strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis</p>
                 <p><strong>Site web :</strong> <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://vercel.com</a></p>
@@ -141,7 +141,7 @@ export default function MentionsLegalesPage() {
                 En qualité de syndic professionnel, Beamô adhère au dispositif de médiation 
                 de la consommation. En cas de litige, vous pouvez saisir le médiateur compétent :
               </p>
-              <div className="bg-gray-50 p-6 rounded-lg mb-6">
+              <div className="bg-muted p-6 rounded-lg mb-6">
                 <p><strong>Médiateur :</strong> [À compléter selon l'organisme choisi]</p>
                 <p><strong>Site web :</strong> [À compléter]</p>
               </div>
@@ -156,7 +156,7 @@ export default function MentionsLegalesPage() {
                 <li><strong>Courrier :</strong> Beamô, 27950 Saint-Marcel, France</li>
               </ul>
 
-              <p className="text-sm text-gray-600 mt-8">
+              <p className="text-sm text-muted-foreground mt-8">
                 <strong>Dernière mise à jour :</strong> 22 septembre 2025
               </p>
 

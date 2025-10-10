@@ -23,7 +23,7 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
         <div className="mb-8">
           <Link
             href="/ressources"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Retour aux ressources
@@ -49,7 +49,7 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
             <span className="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 w-fit">
               {article.category}
             </span>
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
                 <span className="whitespace-nowrap">{formattedDate}</span>
@@ -66,13 +66,13 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
           </div>
 
           {/* Titre */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
             {article.title}
           </h1>
 
           {/* Auteur */}
           {article.author && (
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">
               {article.author.avatar_url ? (
                 <img
                   src={article.author.avatar_url}
@@ -80,15 +80,15 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
                   className="w-12 h-12 rounded-full"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                  <User className="h-6 w-6 text-gray-600" />
+                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                  <User className="h-6 w-6 text-muted-foreground" />
                 </div>
               )}
               <div>
-                <p className="font-medium text-gray-900">
+                <p className="font-medium text-foreground">
                   {article.author.full_name || 'Auteur anonyme'}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Article publié le {formattedDate}
                 </p>
               </div>
@@ -103,13 +103,13 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
 
         {/* Tags */}
         {article.tags && article.tags.length > 0 && (
-          <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="mt-12 pt-8 border-t border-border">
             <h3 className="text-lg font-semibold mb-4">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {article.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-accent text-muted-foreground hover:bg-muted transition-colors"
                 >
                   {tag}
                 </span>
@@ -119,7 +119,7 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
         )}
 
         {/* Navigation vers d'autres articles */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-12 pt-8 border-t border-border">
           <div className="text-center">
             <Link
               href="/ressources"

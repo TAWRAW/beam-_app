@@ -58,6 +58,11 @@ export const metadata = {
   },
 }
 
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import Link from 'next/link'
+
 export default function OffresPage() {
   const offersJsonLd = {
     '@context': 'https://schema.org',
@@ -123,7 +128,7 @@ export default function OffresPage() {
         <div className="container">
           <header className="text-center">
             <h1 className="h1">Nos Offres</h1>
-            <p className="mt-2 text-gray-700">Découvrez nos solutions adaptées aux copropriétés.</p>
+            <p className="mt-2 text-muted-foreground">Découvrez nos solutions adaptées aux copropriétés.</p>
           </header>
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             <OffreCard id="syndic" title="Offre Standard" desc="Gestion classique de votre copropriété avec transparence et efficacité. Tous les services essentiels d'un syndic professionnel, avec notre engagement de réactivité." cta="Découvrir" />
@@ -142,16 +147,28 @@ export default function OffresPage() {
 
 function OffreCard({ id, title, desc, cta, showLoading }: { id: string; title: string; desc: string; cta: string | null; showLoading?: boolean }) {
   return (
-    <div id={id} className="card p-8">
-      <h2 className="text-xl font-semibold">{title}</h2>
-      <p className="mt-3 text-gray-700">{desc}</p>
-      {showLoading && (
-        <div className="mt-6">
-          <div className="emoji-wave mb-2 flex gap-2 text-2xl"><span>🏢</span><span>🏠</span><span>🏗️</span><span>🏤</span><span>🏬</span><span>🏘️</span><span>🏛️</span><span>🏣</span></div>
-          <div className="loading-bar"><div className="bar" /></div>
+    <Card id={id} className="border-2 border-black bg-white p-8 shadow-xl transition-transform hover:-translate-y-1 hover:shadow-2xl">
+      <CardHeader className="p-0">
+        <div className="flex items-center gap-2">
+          <CardTitle className="text-xl text-foreground">{title}</CardTitle>
+          {showLoading && <Badge variant="secondary">Bientôt disponible</Badge>}
         </div>
+      </CardHeader>
+      <CardContent className="p-0 pt-3">
+        <CardDescription className="text-base text-muted-foreground">{desc}</CardDescription>
+        {showLoading && (
+          <div className="mt-6">
+            <div className="loading-bar"><div className="bar" /></div>
+          </div>
+        )}
+      </CardContent>
+      {cta && (
+        <CardFooter className="mt-6 p-0">
+          <Button asChild className="border-2 border-black">
+            <Link href="/ressources/contact">{cta}</Link>
+          </Button>
+        </CardFooter>
       )}
-      {cta && <a className="mt-6 btn" href="#">{cta}</a>}
-    </div>
+    </Card>
   )
 }

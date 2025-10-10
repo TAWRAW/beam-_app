@@ -24,21 +24,23 @@
 
 import Carousel from '@/components/sections/Carousel'
 import Features from '@/components/sections/Features'
+import WhyChangeSyndic from '@/components/sections/WhyChangeSyndic'
+import InterventionZones from '@/components/sections/InterventionZones'
 import Squares from '@/components/sections/Squares'
 import FinalCta from '@/components/sections/FinalCta'
 
 // Configuration SEO principale - Point d'entrée du site
 export const metadata = {
-  title: 'Beamô - Syndic de Copropriété à Vernon, Évreux et Les Andelys',
+  title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Réponse 48h | Beamô',
   description:
-    "Beamô, votre syndic de copropriété local à Vernon, Évreux, Les Andelys et ses environs. Proximité, réactivité et écoute au service de votre copropriété. Mettons fin aux lenteurs et aux zones d'ombre.",
+    "Syndic de copropriété à Vernon, Gaillon et Évreux. Réactivité 48h, transparence totale, tarifs clairs. Votre syndic local en Normandie.",
   keywords: [
-    'syndic', 'syndic de copropriété', 'gestion copropriété', 'Vernon', 'Évreux', 'Les Andelys', 
-    'assemblée générale', 'Normandie', 'Eure', 'transparence', 'proximité', 'réactivité'
+    'syndic', 'syndic de copropriété', 'gestion copropriété', 'Vernon', 'Gaillon', 'Évreux', 'Les Andelys',
+    'assemblée générale', 'Normandie', 'Eure', 'transparence', 'proximité', 'réactivité', 'syndic local'
   ],
   openGraph: {
-    title: 'Beamô - Le syndic local et efficace',
-    description: "Votre syndic de copropriété local à Vernon, Évreux, Les Andelys. Mettons fin aux lenteurs et aux zones d'ombre.",
+    title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Beamô',
+    description: "Syndic de copropriété à Vernon, Gaillon et Évreux. Réactivité 48h, transparence totale, tarifs clairs.",
     url: '/',
     type: 'website',
     locale: 'fr_FR',
@@ -47,14 +49,14 @@ export const metadata = {
         url: '/outils/images/beamocomptearebour.png',
         width: 1200,
         height: 630,
-        alt: 'Beamô - Syndic de copropriété local et efficace',
+        alt: 'Beamô - Syndic de copropriété Vernon, Gaillon, Évreux',
       }
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Beamô - Le syndic local et efficace',
-    description: "Votre syndic de copropriété à Vernon, Évreux, Les Andelys. Proximité, réactivité et transparence.",
+    title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Beamô',
+    description: "Syndic local en Normandie : Vernon, Gaillon, Évreux. Réponse garantie sous 48h.",
   },
   alternates: { canonical: '/' },
   robots: {
@@ -233,6 +235,12 @@ export default function Page() {
 
       {/* Section avantages et services Beamô */}
       <Features />
+
+      {/* Section "Pourquoi changer de syndic ?" - SEO */}
+      <WhyChangeSyndic />
+
+      {/* Section zones d'intervention - SEO local + maillage interne */}
+      <InterventionZones />
 
       {/* Témoignages et arguments de vente */}
       <Squares />

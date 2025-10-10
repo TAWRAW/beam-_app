@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trackEvent } from '@/components/analytics/GA'
 import emailjs from '@emailjs/browser'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
 
 const PUB_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
@@ -68,36 +72,38 @@ export default function ContactForm() {
     <form onSubmit={onSubmit} className="space-y-4" noValidate>
       {/* Honeypot */}
       <div className="hidden">
-        <label>Company<input name="company" autoComplete="off" /></label>
+        <Label>Company<Input name="company" autoComplete="off" /></Label>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium" htmlFor="name">Nom & Prénom</label>
-        <input id="name" name="name" required className="mt-1 w-full rounded border px-3 py-2" placeholder="Ex: Tom LEMEILLE" />
+      <div className="space-y-2">
+        <Label htmlFor="name">Nom & Prénom</Label>
+        <Input id="name" name="name" required placeholder="Ex: Tom LEMEILLE" />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="block text-sm font-medium" htmlFor="email">Adresse email</label>
-          <input id="email" type="email" name="email" required className="mt-1 w-full rounded border px-3 py-2" placeholder="Ex: tom.lemeille@beamo.fr" />
+        <div className="space-y-2">
+          <Label htmlFor="email">Adresse email</Label>
+          <Input id="email" type="email" name="email" required placeholder="Ex: tom.lemeille@beamo.fr" />
         </div>
-        <div>
-          <label className="block text-sm font-medium" htmlFor="phone">Téléphone (optionnel)</label>
-          <input id="phone" type="tel" name="phone" className="mt-1 w-full rounded border px-3 py-2" placeholder="Ex: 07 75 70 70 99" />
+        <div className="space-y-2">
+          <Label htmlFor="phone">Téléphone (optionnel)</Label>
+          <Input id="phone" type="tel" name="phone" placeholder="Ex: 07 75 70 70 99" />
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium" htmlFor="copro">Nom de votre copropriété (optionnel)</label>
-        <input id="copro" name="copro" className="mt-1 w-full rounded border px-3 py-2" placeholder="Ex: Résidence Le Lavoir" />
+      <div className="space-y-2">
+        <Label htmlFor="copro">Nom de votre copropriété (optionnel)</Label>
+        <Input id="copro" name="copro" placeholder="Ex: Résidence Le Lavoir" />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium" htmlFor="message">Votre message</label>
-        <textarea id="message" name="message" required rows={6} className="mt-1 w-full rounded border px-3 py-2" placeholder="Votre question ou demande..." />
+      <div className="space-y-2">
+        <Label htmlFor="message">Votre message</Label>
+        <Textarea id="message" name="message" required rows={6} placeholder="Votre question ou demande..." />
       </div>
 
-      <button className="rounded bg-primary px-4 py-2 text-white" type="submit">Envoyer mon message</button>
+      <Button type="submit" size="lg" className="border-2 border-black">
+        Envoyer mon message
+      </Button>
       {status && (
         <p className={`mt-2 text-sm ${status.ok ? 'text-green-600' : 'text-red-600'}`}>{status.message}</p>
       )}

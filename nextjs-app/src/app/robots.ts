@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const base = 'https://xn--beam-yqa.fr'
+  const base = 'https://www.xn--beam-yqa.fr'
   return {
     rules: [
       { userAgent: '*', allow: '/' },

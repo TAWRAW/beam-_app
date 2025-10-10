@@ -40,29 +40,11 @@ h2, h3, h4, h5, h6, p, a, li, button, input, textarea, label, span {
   font-weight: 600; /* Poppins bold for body */
 }
 
-/* Buttons resembling legacy */
-.btn {
-  padding: 8px 15px;
-  background: #FFC300;
-  color: black;
-  text-decoration: none;
-  border-radius: 20px;
-  border: 2px solid black;
-  font-weight: 600;
-  transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
-  display: inline-block;
-  box-shadow: 0 6px 14px rgba(0,0,0,.12);
-}
-.btn:hover { background: black; color: #FFC300; transform: scale(1.05); }
-.btn-extranet { background: white; color: black; border: 2px solid #FFC300; }
-.btn-extranet:hover { background: #FFC300; color: black; }
-
 /* Accessibility focus styles */
 :focus-visible { outline: 2px solid #FFC300; outline-offset: 2px; }
 
 /* Sections and containers */
 .section { padding: 5rem 0; }
-.card { background:#fff; border:3px solid #000; border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,.15); }
 
 
 /* Emoji wave + loading bar (Offres) */
@@ -94,64 +76,95 @@ h2, h3, h4, h5, h6, p, a, li, button, input, textarea, label, span {
 }
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  * {
+    @apply border-border;
   }
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  body {
+    @apply bg-background text-foreground;
   }
+}
+
+/* Theme shadcn personnalisé Beamô */
+:root {
+  --background: rgb(255, 255, 255);
+  --foreground: rgb(0, 0, 0);
+  --card: rgb(255, 255, 255);
+  --card-foreground: rgb(0, 0, 0);
+  --popover: rgb(255, 255, 255);
+  --popover-foreground: rgb(15, 22, 36);
+  --primary: rgb(255, 195, 0);
+  --primary-foreground: rgb(0, 0, 0);
+  --secondary: rgb(0, 0, 0);
+  --secondary-foreground: rgb(255, 195, 0);
+  --muted: rgb(232, 232, 232);
+  --muted-foreground: rgb(0, 0, 0);
+  --accent: rgb(238, 238, 238);
+  --accent-foreground: rgb(255, 195, 0);
+  --destructive: rgb(226, 19, 19);
+  --destructive-foreground: rgb(250, 250, 250);
+  --border: rgb(0, 0, 0);
+  --input: rgb(201, 201, 201);
+  --ring: rgb(255, 195, 0);
+  --chart-1: rgb(46, 132, 132);
+  --chart-2: rgb(220, 101, 31);
+  --chart-3: rgb(255, 195, 0);
+  --chart-4: rgb(46, 106, 132);
+  --chart-5: rgb(99, 99, 99);
+  --sidebar: rgb(252, 252, 252);
+  --sidebar-foreground: rgb(15, 22, 36);
+  --sidebar-primary: rgb(188, 93, 39);
+  --sidebar-primary-foreground: rgb(255, 255, 255);
+  --sidebar-accent: rgb(5, 5, 5);
+  --sidebar-accent-foreground: rgb(255, 255, 255);
+  --sidebar-border: rgb(0, 0, 0);
+  --sidebar-ring: rgb(188, 93, 39);
+  --radius: 1.6rem;
+  --shadow-x: 1px;
+  --shadow-y: 1px;
+  --shadow-blur: 1.5px;
+  --shadow-spread: 2px;
+  --shadow-opacity: 1;
+  --shadow-color: #000000;
+}
+
+.dark {
+  --background: rgb(18, 18, 18);
+  --foreground: rgb(193, 193, 193);
+  --card: rgb(36, 36, 36);
+  --card-foreground: rgb(193, 193, 193);
+  --popover: rgb(26, 24, 27);
+  --popover-foreground: rgb(193, 193, 193);
+  --primary: rgb(255, 195, 0);
+  --primary-foreground: rgb(26, 24, 27);
+  --secondary: rgb(255, 196, 0);
+  --secondary-foreground: rgb(0, 0, 0);
+  --muted: rgb(34, 34, 34);
+  --muted-foreground: rgb(136, 136, 136);
+  --accent: rgb(59, 59, 59);
+  --accent-foreground: rgb(255, 196, 0);
+  --destructive: rgb(255, 102, 0);
+  --destructive-foreground: rgb(26, 24, 27);
+  --border: rgb(34, 34, 34);
+  --input: rgb(34, 34, 34);
+  --ring: rgb(220, 101, 31);
+  --chart-1: rgb(255, 195, 0);
+  --chart-2: rgb(220, 101, 31);
+  --chart-3: rgb(248, 164, 74);
+  --chart-4: rgb(255, 234, 0);
+  --chart-5: rgb(189, 189, 189);
+  --sidebar: rgb(18, 18, 18);
+  --sidebar-foreground: rgb(193, 193, 193);
+  --sidebar-primary: rgb(220, 101, 31);
+  --sidebar-primary-foreground: rgb(26, 24, 27);
+  --sidebar-accent: rgb(51, 51, 51);
+  --sidebar-accent-foreground: rgb(193, 193, 193);
+  --sidebar-border: rgb(34, 34, 34);
+  --sidebar-ring: rgb(220, 101, 31);
+  --shadow-x: 1px;
+  --shadow-y: 1px;
+  --shadow-blur: 1.5px;
+  --shadow-spread: 2px;
+  --shadow-opacity: 1;
+  --shadow-color: #000000;
 }
 

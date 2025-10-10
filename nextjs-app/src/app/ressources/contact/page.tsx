@@ -1,4 +1,5 @@
 import ContactForm from '@/components/forms/ContactForm'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata = {
   title: 'Contactez Beamô - Le Syndic Hybride Nouvelle Génération',
@@ -94,40 +95,46 @@ export default function ContactPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="section bg-gray-50 relative -mt-20 md:-mt-24 pt-20 md:pt-24">
+      <section className="section bg-muted relative -mt-20 md:-mt-24 pt-20 md:pt-24">
         <div className="container">
-          <div className="card p-8">
-            <h1 className="h1">Contactez Beamô</h1>
-            <p className="mt-3 text-gray-700">
-              Une question sur votre copropriété ? Envie d'en savoir plus sur notre approche ?
-              <br /> Laissez-nous un message, nous vous répondrons sous 48h.
-            </p>
-          </div>
+          <Card className="border-2 border-black bg-white p-8 shadow-xl">
+            <CardContent className="p-0">
+              <h1 className="h1">Contactez Beamô</h1>
+              <p className="mt-3 text-muted-foreground">
+                Une question sur votre copropriété ? Envie d'en savoir plus sur notre approche ?
+                <br /> Laissez-nous un message, nous vous répondrons sous 48h.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* Form */}
       <section className="section">
         <div className="container">
-          <div className="card p-8">
-            <h2 className="h2">Laissez-nous un message</h2>
-            <div className="mt-6">
-              <ContactForm />
-            </div>
-            <p className="mt-4 text-sm text-gray-500">
-              🔒 Vos informations ne sont utilisées que pour répondre à votre message et ne seront jamais partagées avec des tiers.
-            </p>
-          </div>
+          <Card className="border-2 border-black bg-white p-8 shadow-xl">
+            <CardContent className="p-0">
+              <h2 className="h2">Laissez-nous un message</h2>
+              <div className="mt-6">
+                <ContactForm />
+              </div>
+              <p className="mt-4 text-sm text-muted-foreground">
+                🔒 Vos informations ne sont utilisées que pour répondre à votre message et ne seront jamais partagées avec des tiers.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* CTA */}
       <section className="section bg-primary">
         <div className="container">
-          <div className="card p-8">
-            <h2 className="h2">Discutons de votre projet</h2>
-            <p className="mt-2 text-gray-700">Nous sommes à votre écoute pour vous accompagner dans la gestion de votre copropriété.</p>
-          </div>
+          <Card className="border-2 border-black bg-white p-8 shadow-xl">
+            <CardContent className="p-0">
+              <h2 className="h2">Discutons de votre projet</h2>
+              <p className="mt-2 text-muted-foreground">Nous sommes à votre écoute pour vous accompagner dans la gestion de votre copropriété.</p>
+            </CardContent>
+          </Card>
         </div>
       </section>
       <script

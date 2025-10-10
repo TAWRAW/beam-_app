@@ -34,7 +34,7 @@ export default function LogoutPage() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-4">Déconnexion en cours...</h1>
-        <p className="text-gray-600">Vous allez être redirigé vers la page d'accueil.</p>
+        <p className="text-muted-foreground">Vous allez être redirigé vers la page d'accueil.</p>
       </div>
     </div>
   )

@@ -1,6 +1,8 @@
+import { Card, CardContent } from '@/components/ui/card'
+
 export default function Services() {
   return (
-    <section className="section bg-gray-50">
+    <section className="section bg-muted">
       <div className="container">
         <h2 className="h2 font-semibold text-neutral">Nos services de syndic</h2>
         <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -12,7 +14,11 @@ export default function Services() {
             'Transparence des dépenses et reporting',
             'Portail copropriétaire (documents, interventions, suivi)'
           ].map((s) => (
-            <li key={s} className="card p-4">✅ {s}</li>
+            <li key={s}>
+              <Card className="border-2 border-black bg-white p-4 shadow-lg">
+                <CardContent className="p-0">✅ {s}</CardContent>
+              </Card>
+            </li>
           ))}
         </ul>
       </div>

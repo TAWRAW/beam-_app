@@ -1,6 +1,7 @@
 "use client";
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -71,11 +72,15 @@ export default function Header() {
             </div>
           </nav>
           <div className="nav-buttons flex items-center gap-2">
-            <Link href="/en-cours" className="btn btn-extranet text-sm md:text-base px-3 py-1.5 md:px-4 md:py-2">Extranet</Link>
-            <Link href="/ressources/contact" className="btn text-sm md:text-base px-3 py-1.5 md:px-4 md:py-2">
-              <span className="inline md:hidden">Contacter</span>
-              <span className="hidden md:inline">Nous Contacter</span>
-            </Link>
+            <Button asChild variant="outline" size="sm" className="border-2 border-primary text-sm md:text-base">
+              <Link href="/en-cours">Extranet</Link>
+            </Button>
+            <Button asChild size="sm" className="border-2 border-black text-sm md:text-base">
+              <Link href="/ressources/contact">
+                <span className="inline md:hidden">Contacter</span>
+                <span className="hidden md:inline">Nous Contacter</span>
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

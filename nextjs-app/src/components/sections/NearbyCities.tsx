@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { cities } from '@/lib/cities'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function NearbyCities({ currentSlug }: { currentSlug: string }) {
   const links = cities.filter((c) => c.slug !== currentSlug).slice(0, 8)
@@ -13,10 +14,14 @@ export default function NearbyCities({ currentSlug }: { currentSlug: string }) {
             const name = c.displayName ?? c.name
             const prep = c.displayPrep ?? c.prep ?? 'à'
             return (
-              <li key={c.slug} className="card p-4">
-                <Link href={`/ville/${c.slug}`} className="hover:text-primary">
-                  {`Syndic ${prep} ${name}`}
-                </Link>
+              <li key={c.slug}>
+                <Card className="border-2 border-black bg-white p-4 shadow-lg">
+                  <CardContent className="p-0">
+                    <Link href={`/ville/${c.slug}`} className="hover:text-primary">
+                      {`Syndic ${prep} ${name}`}
+                    </Link>
+                  </CardContent>
+                </Card>
               </li>
             )
           })}

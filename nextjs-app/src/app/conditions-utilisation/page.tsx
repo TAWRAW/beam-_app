@@ -22,10 +22,10 @@ export default function ConditionsUtilisationPage() {
       <section className="relative -mt-20 md:-mt-24 pt-20 md:pt-24 bg-primary">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               Conditions d'utilisation
             </h1>
-            <p className="text-xl text-gray-700">
+            <p className="text-xl text-muted-foreground">
               Modalités et conditions d'utilisation de nos services
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function ConditionsUtilisationPage() {
                 <li><strong>Adresse :</strong> 27950 Saint-Marcel</li>
               </ul>
 
-              <p className="text-sm text-gray-600 mt-8">
+              <p className="text-sm text-muted-foreground mt-8">
                 <strong>Dernière mise à jour :</strong> 22 septembre 2025
               </p>
 

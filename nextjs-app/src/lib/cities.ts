@@ -9,16 +9,20 @@ export type City = {
   displayPrep?: string
   // Control presence in footer listing (default: true)
   showInFooter?: boolean
+  // Code postal pour API stats copropriétés
+  postalCode?: string
+  // Quartiers couverts pour SEO local
+  neighborhoods?: string[]
 }
 
 export const cities: City[] = [
-  { slug: 'vernon', name: 'Vernon', department: 'Eure (27)', region: 'Normandie', prep: 'à' },
-  { slug: 'evreux', name: 'Évreux', department: 'Eure (27)', region: 'Normandie', prep: 'à' },
-  { slug: 'les-andelys', name: 'Les Andelys', displayName: 'Andelys', displayPrep: 'Aux', department: 'Eure (27)', region: 'Normandie', prep: 'aux' },
-  { slug: 'louviers', name: 'Louviers', department: 'Eure (27)', region: 'Normandie', prep: 'à' },
-  { slug: 'gaillon', name: 'Gaillon', department: 'Eure (27)', region: 'Normandie', prep: 'à' },
-  { slug: 'gasny', name: 'Gasny', department: 'Eure (27)', region: 'Normandie', prep: 'à' },
-  { slug: 'pacy-sur-eure', name: 'Pacy-sur-Eure', department: 'Eure (27)', region: 'Normandie', prep: 'à' },
+  { slug: 'vernon', name: 'Vernon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27200', neighborhoods: ['Vernonnet', 'Les Blanchères', 'Les Boutardes', 'Le Moussel', 'Le Parc', 'Glatigny', 'Fieschi', 'Le Petit Val', 'Ma Campagne', 'Valmeux'] },
+  { slug: 'evreux', name: 'Évreux', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27000', neighborhoods: ['Centre-ville', 'La Madeleine', 'Nétreville', 'Saint-Michel', 'Saint-Léger', 'Navarre', 'Clos au Duc', 'La Poterie'] },
+  { slug: 'les-andelys', name: 'Les Andelys', displayName: 'Andelys', displayPrep: 'Aux', department: 'Eure (27)', region: 'Normandie', prep: 'aux', postalCode: '27700', neighborhoods: ['Grand Andely', 'Petit Andely', 'Centre historique'] },
+  { slug: 'louviers', name: 'Louviers', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27400', neighborhoods: ['Centre-ville', 'Les Oiseaux', 'Maison Rouge'] },
+  { slug: 'gaillon', name: 'Gaillon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27600', neighborhoods: ['Quartier Nord', 'Quartier Sud-Ouest', 'Aubevoye', 'Saint-Aubin-sur-Gaillon'] },
+  { slug: 'gasny', name: 'Gasny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27620' },
+  { slug: 'pacy-sur-eure', name: 'Pacy-sur-Eure', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27120' },
   { slug: 'val-de-reuil', name: 'Val-de-Reuil', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false },
   { slug: 'gisors', name: 'Gisors', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false },
   { slug: 'bueil', name: 'Bueil', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false },
