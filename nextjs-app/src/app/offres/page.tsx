@@ -61,7 +61,14 @@ export const metadata = {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import Link from 'next/link'
+import { CheckCircle2, Shield } from 'lucide-react'
 
 export default function OffresPage() {
   const offersJsonLd = {
@@ -131,9 +138,26 @@ export default function OffresPage() {
             <p className="mt-2 text-muted-foreground">Découvrez nos solutions adaptées aux copropriétés.</p>
           </header>
           <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <OffreCard id="syndic" title="Offre Standard" desc="Gestion classique de votre copropriété avec transparence et efficacité. Tous les services essentiels d'un syndic professionnel, avec notre engagement de réactivité." cta="Découvrir" />
-            <OffreCard id="conseil" title="Offre Hybride" desc="Un modèle participatif avec le conseil syndical pour réduire les coûts. Vous êtes impliqués dans la gestion, nous vous apportons notre expertise technique." cta="En savoir plus" />
-            <OffreCard id="gestion" title="Offre Clos-Masure" desc="En cours de développement..." cta={null} showLoading />
+            <OffreCard
+              id="syndic"
+              title="Offre Standard"
+              desc="Gestion classique de votre copropriété avec transparence et efficacité. Tous les services essentiels d'un syndic professionnel, avec notre engagement de réactivité."
+              cta="Découvrir"
+              showContractType={true}
+            />
+            <OffreCard
+              id="conseil"
+              title="Offre Hybride"
+              desc="Un modèle participatif avec le conseil syndical pour réduire les coûts. Vous êtes impliqués dans la gestion, nous vous apportons notre expertise technique."
+              cta="En savoir plus"
+            />
+            <OffreCard
+              id="gestion"
+              title="Offre Clos-Masure"
+              desc="En cours de développement..."
+              cta={null}
+              showLoading
+            />
           </div>
         </div>
       </section>
@@ -145,7 +169,14 @@ export default function OffresPage() {
   )
 }
 
-function OffreCard({ id, title, desc, cta, showLoading }: { id: string; title: string; desc: string; cta: string | null; showLoading?: boolean }) {
+function OffreCard({ id, title, desc, cta, showLoading, showContractType }: {
+  id: string;
+  title: string;
+  desc: string;
+  cta: string | null;
+  showLoading?: boolean;
+  showContractType?: boolean;
+}) {
   return (
     <Card id={id} className="border-2 border-black bg-white p-8 shadow-xl transition-transform hover:-translate-y-1 hover:shadow-2xl">
       <CardHeader className="p-0">
@@ -156,6 +187,74 @@ function OffreCard({ id, title, desc, cta, showLoading }: { id: string; title: s
       </CardHeader>
       <CardContent className="p-0 pt-3">
         <CardDescription className="text-base text-muted-foreground">{desc}</CardDescription>
+
+        {showContractType && (
+          <div className="mt-6">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="contrat-type" className="border-none">
+                <AccordionTrigger className="text-sm font-medium text-primary hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Découvrir le contrat type syndic
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-4 text-sm text-muted-foreground">
+                  <div className="space-y-4">
+                    <p className="font-medium text-foreground">
+                      Le contrat type de syndic : votre protection garantie par la loi ALUR
+                    </p>
+                    <p>
+                      Chez Beamô, nous appliquons le <strong>contrat type de syndic</strong> imposé par la loi ALUR.
+                      Ce cadre légal vous protège et garantit une relation claire et transparente.
+                    </p>
+
+                    <div className="space-y-2">
+                      <p className="font-medium text-foreground">Pourquoi c'est important pour vous :</p>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span><strong>Durée limitée</strong> : Maximum 3 ans, non renouvelable tacitement</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span><strong>Rémunération claire</strong> : Toutes les prestations détaillées au forfait</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span><strong>Mise en concurrence</strong> : Vous comparez facilement les offres</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span><strong>Résiliation encadrée</strong> : Conditions de sortie définies à l'avance</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span><strong>Transmission garantie</strong> : Documents et fonds transmis au syndic suivant</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="rounded-lg bg-primary/10 p-4 space-y-2">
+                      <p className="font-medium text-foreground">Ce qui change pour vous :</p>
+                      <ul className="space-y-1 text-sm">
+                        <li>• Aucune surprise sur les honoraires</li>
+                        <li>• Aucune clause abusive cachée</li>
+                        <li>• Vous gardez le contrôle sur votre syndic</li>
+                        <li>• Vous pouvez comparer notre offre facilement</li>
+                      </ul>
+                    </div>
+
+                    <p className="text-xs italic">
+                      Beamô va même plus loin : nous affichons publiquement nos tarifs et nous nous engageons
+                      sur des délais de réponse (48h garanties).
+                    </p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        )}
+
         {showLoading && (
           <div className="mt-6">
             <div className="loading-bar"><div className="bar" /></div>
