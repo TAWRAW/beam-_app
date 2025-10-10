@@ -48,7 +48,7 @@ export default function ContactPage() {
       name: 'Beamô',
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+33-2-XX-XX-XX-XX',
+        telephone: '+33-7-75-70-70-99',
         contactType: 'customer service',
         email: 'contact@xn--beam-yqa.fr',
         availableLanguage: 'French',
@@ -82,7 +82,7 @@ export default function ContactPage() {
     email: 'contact@xn--beam-yqa.fr',
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+33-2-XX-XX-XX-XX',
+      telephone: '+33-7-75-70-70-99',
       contactType: 'customer support',
       areaServed: 'FR',
       availableLanguage: 'French'
