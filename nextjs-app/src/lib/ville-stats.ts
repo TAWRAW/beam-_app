@@ -71,10 +71,10 @@ export function formatVilleStats(
   data: VilleStatsResponse
 ): VilleStatsFormatted {
   const totalSyndics = data.repartition_syndics.total
-  const pourcentagePro = totalSyndics > 0
+  const pourcentageSyndicPro = totalSyndics > 0
     ? Math.round((data.repartition_syndics.professionnel / totalSyndics) * 100)
     : 0
-  const pourcentageBenevole = totalSyndics > 0
+  const pourcentageSyndicBenevole = totalSyndics > 0
     ? Math.round((data.repartition_syndics.benevole / totalSyndics) * 100)
     : 0
 

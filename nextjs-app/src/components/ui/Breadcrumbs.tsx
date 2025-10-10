@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { ChevronRight, Home } from 'lucide-react'
+import type { Route } from 'next'
 
 export interface BreadcrumbItem {
   label: string
-  href?: string
+  href?: Route | string
 }
 
 interface BreadcrumbsProps {
@@ -31,7 +32,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
           {items[0]?.href === '/' && (
             <li>
               <Link
-                href="/"
+                href={'/' as Route}
                 className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
               >
                 <Home className="h-4 w-4" />
@@ -53,7 +54,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
 
                 {item.href && !isLast ? (
                   <Link
-                    href={item.href}
+                    href={item.href as Route}
                     className="hover:text-foreground transition-colors hover:underline"
                   >
                     {item.label}
