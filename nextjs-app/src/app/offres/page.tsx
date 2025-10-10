@@ -243,11 +243,6 @@ function OffreCard({ id, title, desc, cta, showLoading, showContractType }: {
                         <li>• Vous pouvez comparer notre offre facilement</li>
                       </ul>
                     </div>
-
-                    <p className="text-xs italic">
-                      Beamô va même plus loin : nous affichons publiquement nos tarifs et nous nous engageons
-                      sur des délais de réponse (48h garanties).
-                    </p>
                   </div>
                 </AccordionContent>
               </AccordionItem>
