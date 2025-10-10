@@ -102,7 +102,7 @@ export default async function CityPage({ params }: { params: Params }) {
     logo: 'https://www.xn--beam-yqa.fr/logo.png',
     image: 'https://www.xn--beam-yqa.fr/og-image.jpg',
     priceRange: '€€',
-    telephone: '+33-2-XX-XX-XX-XX',
+    telephone: '+33-7-75-70-70-99',
     email: 'contact@xn--beam-yqa.fr',
     address: {
       '@type': 'PostalAddress',
