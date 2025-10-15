@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     // 5. Validation et normalisation de la catégorie
     let category: ArticleCategory = 'general'
-    if (body.categorie) {
+    if (body.categorie && typeof body.categorie === 'string') {
       const normalizedCategory = body.categorie.toLowerCase().trim()
       if (isValidArticleCategory(normalizedCategory)) {
         category = normalizedCategory
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     // 6. Validation et normalisation du type
     let type: ArticleType = 'articles'
-    if (body.type) {
+    if (body.type && typeof body.type === 'string') {
       const normalizedType = body.type.toLowerCase().trim()
       if (isValidArticleType(normalizedType)) {
         type = normalizedType
