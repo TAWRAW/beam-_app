@@ -194,7 +194,8 @@ export async function POST(request: NextRequest) {
       status: 'draft' as const, // Créé en brouillon par défaut
       featured_image_url: null,
       seo_keywords: tags.join(', '),
-      published_at: null
+      published_at: null,
+      import_source: 'notion' as const // Marquer l'article comme importé depuis Notion
     }
 
     // 10. Créer l'article dans Supabase

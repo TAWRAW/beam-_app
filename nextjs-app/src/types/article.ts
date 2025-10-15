@@ -18,6 +18,9 @@ export type ArticleType =
   | 'juridique'
   | 'documentation'
 
+// Source d'importation de l'article
+export type ArticleImportSource = 'manual' | 'notion' | 'api'
+
 // Type principal pour un article
 export interface Article {
   id: string
@@ -38,6 +41,7 @@ export interface Article {
   seo_keywords?: string
   reading_time_minutes: number
   views_count: number
+  import_source?: ArticleImportSource
   created_at: string
   updated_at: string
 }
@@ -81,6 +85,7 @@ export interface UpdateArticleRequest extends Partial<CreateArticleRequest> {
 export interface ArticleFilters {
   status?: ArticleStatus | 'all'
   category?: ArticleCategory | 'all'
+  import_source?: ArticleImportSource | 'all'
   author_id?: string
   search?: string // Recherche dans titre, excerpt, content
   tags?: string[]

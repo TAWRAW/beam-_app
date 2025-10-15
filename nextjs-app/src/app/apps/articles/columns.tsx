@@ -58,8 +58,15 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
       const article = row.original
       return (
         <div className="max-w-md">
-          <div className="font-medium text-gray-900 truncate">
-            {article.title}
+          <div className="flex items-center gap-2">
+            <div className="font-medium text-gray-900 truncate">
+              {article.title}
+            </div>
+            {article.import_source === 'notion' && (
+              <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+                Notion
+              </span>
+            )}
           </div>
           {article.excerpt && (
             <div className="text-sm text-gray-500 truncate mt-1">

@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
     const filters: ArticleFilters = {
       status: searchParams.get('status') as any || 'all',
       category: searchParams.get('category') as any || 'all',
+      import_source: searchParams.get('import_source') as any || 'all',
       author_id: searchParams.get('author_id') || undefined,
       search: searchParams.get('search') || undefined,
       tags: searchParams.get('tags')?.split(',').filter(Boolean) || undefined,
@@ -63,6 +64,10 @@ export async function GET(request: NextRequest) {
 
     if (filters.category && filters.category !== 'all') {
       query = query.eq('category', filters.category)
+    }
+
+    if (filters.import_source && filters.import_source !== 'all') {
+      query = query.eq('import_source', filters.import_source)
     }
 
     if (filters.author_id) {

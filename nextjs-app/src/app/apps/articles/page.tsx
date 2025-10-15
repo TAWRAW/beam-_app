@@ -23,7 +23,8 @@ export default function ArticlesPage() {
   const [statsLoading, setStatsLoading] = useState(true)
   const [filters, setFilters] = useState<ArticleFilters>({
     status: 'all',
-    category: 'all'
+    category: 'all',
+    import_source: 'all'
   })
 
   const loadArticles = async () => {
@@ -37,6 +38,10 @@ export default function ArticlesPage() {
       
       if (filters.category && filters.category !== 'all') {
         params.set('category', filters.category)
+      }
+
+      if (filters.import_source && filters.import_source !== 'all') {
+        params.set('import_source', filters.import_source)
       }
 
       params.set('sort_field', 'updated_at')
@@ -206,12 +211,28 @@ export default function ArticlesPage() {
             </select>
           </div>
 
-          {(filters.status !== 'all' || filters.category !== 'all') && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Source
+            </label>
+            <select
+              value={filters.import_source || 'all'}
+              onChange={(e) => setFilters({ ...filters, import_source: e.target.value as any })}
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+            >
+              <option value="all">Toutes les sources</option>
+              <option value="manual">Manuels</option>
+              <option value="notion">Importés depuis Notion</option>
+              <option value="api">Importés via API</option>
+            </select>
+          </div>
+
+          {(filters.status !== 'all' || filters.category !== 'all' || filters.import_source !== 'all') && (
             <div className="flex items-end">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setFilters({ status: 'all', category: 'all' })}
+                onClick={() => setFilters({ status: 'all', category: 'all', import_source: 'all' })}
               >
                 Réinitialiser
               </Button>
