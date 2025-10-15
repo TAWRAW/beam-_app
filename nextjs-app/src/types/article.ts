@@ -211,6 +211,20 @@ export interface ArticleValidationErrors {
   published_at?: string
 }
 
+// Type pour l'importation depuis Notion (via n8n)
+export interface NotionArticleImport {
+  titre: string
+  slug?: string
+  contenu: string
+  extrait?: string
+  categorie?: string
+  type?: string
+  tags?: string // Format: "tag1, tag2, tag3"
+  piece_jointe?: string
+  meta_description?: string
+  meta_title?: string
+}
+
 export const validateArticle = (article: Partial<CreateArticleRequest>): ArticleValidationErrors => {
   const errors: ArticleValidationErrors = {}
 
