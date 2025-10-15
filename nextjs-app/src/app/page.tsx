@@ -58,7 +58,7 @@ export const metadata = {
     title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Beamô',
     description: "Syndic local en Normandie : Vernon, Gaillon, Évreux. Réponse garantie sous 48h.",
   },
-  alternates: { canonical: '/' },
+  alternates: { canonical: 'https://www.xn--beam-yqa.fr/' },
   robots: {
     index: true,
     follow: true,

@@ -51,7 +51,7 @@ export const metadata = {
     title: 'Nos Offres Syndic - Transparence totale',
     description: 'Offres de syndic transparentes : Standard, Hybride, Clos-Masure. Aucune ligne illisible.',
   },
-  alternates: { canonical: '/offres' },
+  alternates: { canonical: 'https://www.xn--beam-yqa.fr/offres' },
   robots: {
     index: true,
     follow: true,

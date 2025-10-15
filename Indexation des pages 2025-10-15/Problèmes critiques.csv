@@ -1,0 +1,7 @@
+Raison,Source,Validation,Pages
+Introuvable (404),Site Web,Échec,3
+Autre page avec balise canonique correcte,Site Web,Non commencé,33
+"Explorée, actuellement non indexée",Systèmes Google,Non commencé,4
+"Détectée, actuellement non indexée",Systèmes Google,Non commencé,2
+Page avec redirection,Site Web,Commencé,4
+Page en double sans URL canonique sélectionnée par l'utilisateur,Site Web,Sans objet,0

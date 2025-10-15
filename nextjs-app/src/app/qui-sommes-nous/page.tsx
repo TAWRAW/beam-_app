@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Qui sommes-nous ? | Beamô',
   description:
     "Beamô est un syndic de copropriété local et réactif. Découvrez notre mission, nos valeurs et notre approche de gestion transparente et efficace.",
-  alternates: { canonical: '/qui-sommes-nous' },
+  alternates: { canonical: 'https://www.xn--beam-yqa.fr/qui-sommes-nous' },
   openGraph: {
     title: 'Qui sommes-nous ? | Beamô',
     description:
@@ -163,7 +163,7 @@ export default function AboutPage() {
             <figure className="overflow-hidden p-0 rounded-2xl border-0">
               <Image
                 src="/images/about/portrait.jpg"
-                alt="Portrait au bureau"
+                alt="Tom Lemeille, fondateur Beamô syndic copropriété Vernon - Portrait professionnel au bureau Place Jean Paul II"
                 width={886}
                 height={886}
                 className="h-full w-full object-cover"

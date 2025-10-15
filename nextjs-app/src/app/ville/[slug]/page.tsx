@@ -39,6 +39,7 @@ import FAQ from '@/components/sections/FAQ'
 import NearbyCities from '@/components/sections/NearbyCities'
 import FinalCta from '@/components/sections/FinalCta'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { getCityBySlug, getCitySlugs } from '@/lib/cities'
 import { getFormattedVilleStats } from '@/lib/ville-stats'
 
@@ -55,29 +56,61 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const prep = city.displayPrep || city.prep || 'à'
   const name = city.displayName || city.name
   const dept = city.department ? ` ${city.department.split('(')[1]?.replace(')', '') || ''}` : ''
-  const title = `Syndic Copropriété ${name} | Réponse 48h | Beamô${dept}`
-  const description = `Syndic de copropriété ${prep} ${name} : réactivité garantie sous 48h, transparence totale, tarifs sans surprise. Proximité et expertise locale.`
+
+  // Titre unique et optimisé pour chaque ville
+  const title = `Syndic Copropriété ${name}${dept} | Gestion Locale | Beamô`
+
+  // Description enrichie avec éléments différenciants
+  const description = `Beamô, votre syndic de copropriété ${prep} ${name}. ✅ Réponse garantie 48h ✅ Transparence totale ✅ Tarifs clairs ✅ Interlocuteur dédié ${city.neighborhoods ? `✅ Couvre ${city.neighborhoods.length} quartiers` : ''}. Changez de syndic facilement !`
 
   return {
     title,
     description,
     alternates: {
-      canonical: `/ville/${city.slug}`,
+      canonical: `https://www.xn--beam-yqa.fr/ville/${city.slug}`,
     },
     openGraph: {
-      title,
+      title: `Syndic ${name} - Gestion de Copropriété Locale | Beamô`,
       description,
       url: `/ville/${city.slug}`,
       type: 'website',
       locale: 'fr_FR',
+      images: [
+        {
+          url: '/outils/images/beamocomptearebour.png',
+          width: 1200,
+          height: 630,
+          alt: `Beamô - Syndic de copropriété ${prep} ${name}`,
+        }
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Syndic ${name} | Beamô`,
+      description: `Syndic moderne ${prep} ${name}. Réactivité 48h, transparence totale.`,
+      images: ['/outils/images/beamocomptearebour.png'],
     },
     robots: {
       index: true,
       follow: true,
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
     },
     keywords: [
-      'syndic', 'syndic de copropriété', 'gestion copropriété',
-      city.name, name, 'Normandie', 'Eure', 'syndic local', 'réactivité', 'transparence'
+      `syndic ${city.name}`,
+      `syndic de copropriété ${city.name}`,
+      `gestion copropriété ${city.name}`,
+      `changement syndic ${city.name}`,
+      `syndic ${city.postalCode || ''}`,
+      city.name,
+      name,
+      'syndic local',
+      'syndic proximité',
+      'syndic transparent',
+      'assemblée générale',
+      'charges copropriété',
+      ...(city.neighborhoods ? city.neighborhoods.slice(0, 3) : [])
     ],
   }
 }
@@ -236,6 +269,16 @@ export default async function CityPage({ params }: { params: Params }) {
       />
       <NearbyCities currentSlug={city.slug} />
       <FinalCta />
+
+      {/* Breadcrumb Schema pour améliorer l'indexation */}
+      <BreadcrumbSchema
+        items={[
+          { name: 'Accueil', url: 'https://www.xn--beam-yqa.fr' },
+          { name: 'Villes', url: 'https://www.xn--beam-yqa.fr' },
+          { name: label, url: `https://www.xn--beam-yqa.fr/ville/${city.slug}` }
+        ]}
+      />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
