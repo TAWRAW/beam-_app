@@ -21,7 +21,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
             <li key={index} className="flex items-center gap-2">
               {item.href && !isLast ? (
                 <Link
-                  href={item.href}
+                  href={item.href as string}
                   className="hover:text-foreground transition-colors"
                 >
                   {item.label}
