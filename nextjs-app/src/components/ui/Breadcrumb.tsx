@@ -16,12 +16,13 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
       <ol className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
+          const href = item.href || '/'
 
           return (
             <li key={index} className="flex items-center gap-2">
               {item.href && !isLast ? (
                 <Link
-                  href={item.href as string}
+                  href={href as any}
                   className="hover:text-foreground transition-colors"
                 >
                   {item.label}
