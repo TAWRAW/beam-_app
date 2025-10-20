@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import { User, Camera, Save, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
+import { SocialPublishingPreferencesComponent } from '@/components/profile/SocialPublishingPreferences'
+import type { SocialPublishingPreferences } from '@/types/social-publishing'
+import { getDefaultPreferences } from '@/types/social-publishing'
 
 interface Profile {
   id: string
@@ -11,6 +14,9 @@ interface Profile {
   email: string
   avatar_url?: string
   role: string
+  metadata?: {
+    social_publishing_preferences?: SocialPublishingPreferences
+  }
 }
 
 export default function ProfilePage() {
@@ -208,6 +214,47 @@ export default function ProfilePage() {
     }
   }
 
+  const handleSaveSocialPreferences = async (preferences: SocialPublishingPreferences) => {
+    if (!profile) return
+
+    // Récupérer le token d'accès
+    const supabase = createSupabaseBrowserClient()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      throw new Error('Session expirée')
+    }
+
+    // Mettre à jour le profil via API avec les nouvelles préférences
+    const response = await fetch('/api/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({
+        full_name: profile.full_name,
+        email: profile.email,
+        metadata: {
+          ...profile.metadata,
+          social_publishing_preferences: preferences
+        }
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la sauvegarde')
+    }
+
+    // Mettre à jour l'état local
+    setProfile(prev => prev ? {
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        social_publishing_preferences: preferences
+      }
+    } : null)
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -327,6 +374,16 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Section préférences de publication réseaux sociaux */}
+      {profile.role === 'admin' || profile.role === 'employe' ? (
+        <div className="mt-6">
+          <SocialPublishingPreferencesComponent
+            initialPreferences={profile.metadata?.social_publishing_preferences || getDefaultPreferences()}
+            onSave={handleSaveSocialPreferences}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }

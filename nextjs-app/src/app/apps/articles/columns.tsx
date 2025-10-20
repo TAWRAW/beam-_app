@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, Eye, Edit, Trash2, ExternalLink } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Eye, Edit, Trash2, ExternalLink, Facebook, Linkedin, Check, X } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -176,6 +176,62 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
       return (
         <div className="text-sm text-gray-600">
           {formatDate(publishedAt)}
+        </div>
+      )
+    },
+  },
+  {
+    id: "social_media",
+    header: "Réseaux sociaux",
+    cell: ({ row }) => {
+      const article = row.original
+      const facebookPublished = !!article.published_on_facebook
+      const linkedinPublished = !!article.published_on_linkedin
+
+      // Only show for published articles
+      if (article.status !== 'published') {
+        return <span className="text-gray-400 text-xs">-</span>
+      }
+
+      return (
+        <div className="flex items-center gap-2">
+          <div
+            className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+              facebookPublished
+                ? 'bg-blue-100 text-blue-700'
+                : 'bg-gray-100 text-gray-500'
+            }`}
+            title={facebookPublished
+              ? `Publié le ${formatDate(article.published_on_facebook!)}`
+              : 'Non publié sur Facebook'
+            }
+          >
+            <Facebook className="h-3 w-3" />
+            {facebookPublished ? (
+              <Check className="h-3 w-3" />
+            ) : (
+              <X className="h-3 w-3" />
+            )}
+          </div>
+
+          <div
+            className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+              linkedinPublished
+                ? 'bg-blue-100 text-blue-700'
+                : 'bg-gray-100 text-gray-500'
+            }`}
+            title={linkedinPublished
+              ? `Publié le ${formatDate(article.published_on_linkedin!)}`
+              : 'Non publié sur LinkedIn'
+            }
+          >
+            <Linkedin className="h-3 w-3" />
+            {linkedinPublished ? (
+              <Check className="h-3 w-3" />
+            ) : (
+              <X className="h-3 w-3" />
+            )}
+          </div>
         </div>
       )
     },

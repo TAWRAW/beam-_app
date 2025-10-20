@@ -37,6 +37,9 @@ export interface Article {
   attachment_url?: string
   status: ArticleStatus
   published_at?: string
+  published_on_facebook?: string  // Date de publication sur Facebook (NULL = non publié)
+  published_on_linkedin?: string  // Date de publication sur LinkedIn (NULL = non publié)
+  published_on_instagram?: string // Date de publication sur Instagram (NULL = non publié)
   seo_title?: string
   seo_keywords?: string
   reading_time_minutes: number
@@ -91,6 +94,8 @@ export interface ArticleFilters {
   tags?: string[]
   published_after?: string
   published_before?: string
+  facebook_status?: 'all' | 'published' | 'not_published'
+  linkedin_status?: 'all' | 'published' | 'not_published'
 }
 
 // Type pour les options de tri

@@ -24,7 +24,9 @@ export default function ArticlesPage() {
   const [filters, setFilters] = useState<ArticleFilters>({
     status: 'all',
     category: 'all',
-    import_source: 'all'
+    import_source: 'all',
+    facebook_status: 'all',
+    linkedin_status: 'all'
   })
 
   const loadArticles = async () => {
@@ -42,6 +44,14 @@ export default function ArticlesPage() {
 
       if (filters.import_source && filters.import_source !== 'all') {
         params.set('import_source', filters.import_source)
+      }
+
+      if (filters.facebook_status && filters.facebook_status !== 'all') {
+        params.set('facebook_status', filters.facebook_status)
+      }
+
+      if (filters.linkedin_status && filters.linkedin_status !== 'all') {
+        params.set('linkedin_status', filters.linkedin_status)
       }
 
       params.set('sort_field', 'updated_at')
@@ -227,12 +237,48 @@ export default function ArticlesPage() {
             </select>
           </div>
 
-          {(filters.status !== 'all' || filters.category !== 'all' || filters.import_source !== 'all') && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Facebook
+            </label>
+            <select
+              value={filters.facebook_status || 'all'}
+              onChange={(e) => setFilters({ ...filters, facebook_status: e.target.value as any })}
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+            >
+              <option value="all">Tous</option>
+              <option value="published">Publiés</option>
+              <option value="not_published">Non publiés</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              LinkedIn
+            </label>
+            <select
+              value={filters.linkedin_status || 'all'}
+              onChange={(e) => setFilters({ ...filters, linkedin_status: e.target.value as any })}
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+            >
+              <option value="all">Tous</option>
+              <option value="published">Publiés</option>
+              <option value="not_published">Non publiés</option>
+            </select>
+          </div>
+
+          {(filters.status !== 'all' || filters.category !== 'all' || filters.import_source !== 'all' || filters.facebook_status !== 'all' || filters.linkedin_status !== 'all') && (
             <div className="flex items-end">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setFilters({ status: 'all', category: 'all', import_source: 'all' })}
+                onClick={() => setFilters({
+                  status: 'all',
+                  category: 'all',
+                  import_source: 'all',
+                  facebook_status: 'all',
+                  linkedin_status: 'all'
+                })}
               >
                 Réinitialiser
               </Button>

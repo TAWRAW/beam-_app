@@ -36,6 +36,8 @@ export async function GET(request: NextRequest) {
       tags: searchParams.get('tags')?.split(',').filter(Boolean) || undefined,
       published_after: searchParams.get('published_after') || undefined,
       published_before: searchParams.get('published_before') || undefined,
+      facebook_status: searchParams.get('facebook_status') as any || 'all',
+      linkedin_status: searchParams.get('linkedin_status') as any || 'all',
     }
 
     // Paramètres de tri
@@ -88,6 +90,22 @@ export async function GET(request: NextRequest) {
 
     if (filters.published_before) {
       query = query.lte('published_at', filters.published_before)
+    }
+
+    if (filters.facebook_status && filters.facebook_status !== 'all') {
+      if (filters.facebook_status === 'published') {
+        query = query.not('published_on_facebook', 'is', null)
+      } else if (filters.facebook_status === 'not_published') {
+        query = query.is('published_on_facebook', null)
+      }
+    }
+
+    if (filters.linkedin_status && filters.linkedin_status !== 'all') {
+      if (filters.linkedin_status === 'published') {
+        query = query.not('published_on_linkedin', 'is', null)
+      } else if (filters.linkedin_status === 'not_published') {
+        query = query.is('published_on_linkedin', null)
+      }
     }
 
     // Application du tri
