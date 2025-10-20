@@ -40,10 +40,10 @@ export default function MobileQuickNav() {
   return (
     <>
       {/* Bottom quick nav - only phones/tablets */}
-      <nav className="fixed inset-x-0 bottom-2 z-50 lg:hidden">
-        <div className="mx-auto max-w-[1400px] px-3">
-          <div className="rounded-full bg-white/95 px-4 py-2 shadow-[0_8px_16px_rgba(0,0,0,0.2),_0_2px_4px_rgba(0,0,0,0.1)] backdrop-blur supports-[backdrop-filter]:bg-white/80"
-            style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) * 1)' }}
+      <nav className="fixed inset-x-0 bottom-0 z-50 lg:hidden">
+        <div className="mx-auto max-w-[1400px]">
+          <div className="bg-white px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.1)] border-t border-border"
+            style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}
           >
             <div className="grid grid-cols-4 items-center text-neutral">
               <Link href="/" className="flex flex-col items-center gap-1 py-1" aria-label="Accueil">
