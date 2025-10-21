@@ -6,13 +6,24 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { SocialIntegrationCard } from '@/components/integrations/SocialIntegrationCard'
 import { TokenExpirationWarning } from '@/components/integrations/TokenExpirationWarning'
+import { SocialPublishingPreferencesComponent } from '@/components/profile/SocialPublishingPreferences'
 import type { SocialIntegration, SocialPlatform } from '@/types/social-integration'
+import type { SocialPublishingPreferences } from '@/types/social-publishing'
+import { getDefaultPreferences } from '@/types/social-publishing'
 import Link from 'next/link'
 
 const PLATFORMS: SocialPlatform[] = ['facebook', 'linkedin', 'instagram']
 
+interface Profile {
+  id: string
+  metadata?: {
+    social_publishing_preferences?: SocialPublishingPreferences
+  }
+}
+
 export default function IntegrationsPage() {
   const [integrations, setIntegrations] = useState<SocialIntegration[]>([])
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -44,6 +55,27 @@ export default function IntegrationsPage() {
       setLoading(true)
       setError(null)
 
+      // ⚠️ BYPASS pour le développement et l'environnement dev
+      // TODO: RETIRER CE BYPASS EN PRODUCTION
+      const isDevEnvironment =
+        process.env.NODE_ENV === 'development' ||
+        (typeof window !== 'undefined' &&
+          (window.location.hostname.includes('dev.beamo') ||
+           window.location.hostname.includes('localhost')))
+
+      if (isDevEnvironment) {
+        console.log('🚧 DEV MODE: Using mock data for integrations page')
+        setProfile({
+          id: 'dev-user',
+          metadata: {
+            social_publishing_preferences: getDefaultPreferences()
+          }
+        })
+        setIntegrations([])
+        setLoading(false)
+        return
+      }
+
       // Récupérer l'utilisateur connecté
       const supabase = createSupabaseBrowserClient()
       const { data: { user }, error: userError } = await supabase.auth.getUser()
@@ -61,18 +93,30 @@ export default function IntegrationsPage() {
       }
 
       // Récupérer les intégrations via API
-      const response = await fetch('/api/integrations', {
+      const integrationsResponse = await fetch('/api/integrations', {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
         }
       })
 
-      if (!response.ok) {
+      if (!integrationsResponse.ok) {
         throw new Error('Erreur lors du chargement des intégrations')
       }
 
-      const data = await response.json()
-      setIntegrations(data.integrations || [])
+      const integrationsData = await integrationsResponse.json()
+      setIntegrations(integrationsData.integrations || [])
+
+      // Récupérer le profil pour les préférences
+      const profileResponse = await fetch('/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json()
+        setProfile(profileData)
+      }
     } catch (err) {
       console.error('Error loading integrations:', err)
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
@@ -140,6 +184,63 @@ export default function IntegrationsPage() {
       console.error('Error refreshing token:', err)
       alert('Erreur lors du rafraîchissement. Veuillez vous reconnecter.')
     }
+  }
+
+  const handleSavePreferences = async (preferences: SocialPublishingPreferences) => {
+    if (!profile) return
+
+    // ⚠️ BYPASS pour le développement et l'environnement dev
+    // TODO: RETIRER CE BYPASS EN PRODUCTION
+    const isDevEnvironment =
+      process.env.NODE_ENV === 'development' ||
+      (typeof window !== 'undefined' &&
+        (window.location.hostname.includes('dev.beamo') ||
+         window.location.hostname.includes('localhost')))
+
+    if (isDevEnvironment) {
+      console.log('🚧 DEV MODE: Bypassing auth for saving preferences', preferences)
+      setProfile(prev => prev ? {
+        ...prev,
+        metadata: {
+          ...prev.metadata,
+          social_publishing_preferences: preferences
+        }
+      } : null)
+      return
+    }
+
+    const supabase = createSupabaseBrowserClient()
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      throw new Error('Session expirée')
+    }
+
+    const response = await fetch('/api/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({
+        metadata: {
+          ...profile.metadata,
+          social_publishing_preferences: preferences
+        }
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error('Erreur lors de la sauvegarde')
+    }
+
+    setProfile(prev => prev ? {
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        social_publishing_preferences: preferences
+      }
+    } : null)
   }
 
   // Trouver les intégrations expirées ou avec erreurs
@@ -238,12 +339,21 @@ export default function IntegrationsPage() {
         })}
       </div>
 
+      {/* Publication automatique preferences */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Paramètres de publication automatique</h2>
+        <SocialPublishingPreferencesComponent
+          initialPreferences={profile?.metadata?.social_publishing_preferences || getDefaultPreferences()}
+          onSave={handleSavePreferences}
+        />
+      </div>
+
       {/* Help text */}
       <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h3 className="font-medium text-blue-900 mb-2">💡 Comment ça marche ?</h3>
         <ul className="text-sm text-blue-800 space-y-1">
           <li>• Connectez vos comptes de réseaux sociaux en cliquant sur "Connecter"</li>
-          <li>• Configurez vos préférences de publication dans votre profil</li>
+          <li>• Configurez les horaires de publication automatique ci-dessus</li>
           <li>• Vos articles seront automatiquement publiés selon vos préférences</li>
           <li>• Les tokens expirent après un certain temps et doivent être rafraîchis</li>
         </ul>
