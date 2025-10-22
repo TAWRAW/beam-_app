@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const metadata: Metadata = {
   title: 'Conditions d\'utilisation - Beamô',
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function ConditionsUtilisationPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative -mt-20 md:-mt-24 pt-20 md:pt-24 bg-primary">
         <div className="container mx-auto px-4 py-16">
@@ -36,7 +37,8 @@ export default function ConditionsUtilisationPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto prose prose-lg">
-            <div className="bg-white rounded-lg shadow-sm border p-8">
+            <Card>
+              <CardContent className="p-8">
               
               <h2>1. Acceptation des conditions</h2>
               <p>
@@ -164,7 +166,8 @@ export default function ConditionsUtilisationPage() {
                 <strong>Dernière mise à jour :</strong> 22 septembre 2025
               </p>
 
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

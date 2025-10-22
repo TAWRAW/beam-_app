@@ -96,7 +96,7 @@ export default async function RessourcesPage({
             {articles.length > 0 ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {articles.map((article) => (
-                  <Card key={article.id} className="border-2 border-black bg-white p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <Card key={article.id} className="bg-card p-6 shadow-lg hover:shadow-xl transition-shadow">
                     <CardContent className="p-0">
                     {article.featured_image_url && (
                       <img
@@ -107,11 +107,11 @@ export default async function RessourcesPage({
                     )}
                     
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">
                         {article.category}
                       </span>
                       {article.type && (
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-secondary/10 text-secondary">
                           {article.type}
                         </span>
                       )}
@@ -148,13 +148,13 @@ export default async function RessourcesPage({
                     </div>
                     
                       <div className="mt-4 flex gap-2">
-                        <Button asChild className="border-2 border-black hover:bg-primary/90">
+                        <Button asChild variant="default">
                           <Link href={`/ressources/${article.slug}`}>
                             Lire l'article
                           </Link>
                         </Button>
                         {article.attachment_url && (
-                          <Button asChild className="border-2 border-black bg-green-600 text-white hover:bg-green-700">
+                          <Button asChild variant="secondary">
                             <a
                               href={article.attachment_url}
                               target="_blank"
@@ -181,7 +181,7 @@ export default async function RessourcesPage({
                   }
                 </p>
                 {((searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')) && (
-                  <Button asChild className="border-2 border-black">
+                  <Button asChild variant="outline">
                     <Link href="/ressources">
                       Voir tous les articles
                     </Link>

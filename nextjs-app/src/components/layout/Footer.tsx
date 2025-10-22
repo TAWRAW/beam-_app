@@ -112,7 +112,7 @@ export default function Footer() {
             <li><a className="hover:text-primary" href="/mentions-legales">Mentions légales</a></li>
             <li><a className="hover:text-primary" href="/politique-de-confidentialite">Politique de confidentialité</a></li>
             <li><a className="hover:text-primary" href="/conditions-utilisation">Conditions d'utilisation</a></li>
-            <li><a className="hover:text-primary" href="#">Sources</a></li>
+            <li><a className="hover:text-primary" href="/sources">Sources</a></li>
           </ul>
         </div>
       </div>
