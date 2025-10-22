@@ -186,7 +186,7 @@ export const validatePublishingPreferences = (
       if (config.enabled && config.hours.length === 0) {
         scheduleErrors[day] = 'Au moins une heure doit être définie pour ce jour'
       } else if (config.enabled) {
-        const invalidHours = config.hours.filter(h => !isValidHourFormat(h))
+        const invalidHours = config.hours.filter((h: string) => !isValidHourFormat(h))
         if (invalidHours.length > 0) {
           scheduleErrors[day] = `Format d'heure invalide: ${invalidHours.join(', ')}`
         }
