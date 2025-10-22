@@ -15,6 +15,7 @@ interface Article {
   slug: string
   title: string
   excerpt: string | null
+  content: string
   featured_image_url: string | null
   tags: string[]
   user_id: string
@@ -119,7 +120,7 @@ export async function GET(request: NextRequest) {
         const platformColumn = `published_on_${platform}`
         const { data: articles, error: articlesError } = await supabase
           .from('articles')
-          .select('id, slug, title, excerpt, featured_image_url, tags, user_id, published_on_facebook, published_on_linkedin, published_on_instagram')
+          .select('id, slug, title, excerpt, content, featured_image_url, tags, user_id, published_on_facebook, published_on_linkedin, published_on_instagram')
           .eq('user_id', profile.id)
           .eq('status', 'published') // Uniquement les articles publiés
           .is(platformColumn, null) // Non encore publié sur cette plateforme
@@ -195,11 +196,14 @@ async function publishArticle(
   try {
     // Préparer les paramètres de publication
     const publishParams: PublishParams = {
+      article_id: article.id,
       article_slug: article.slug,
       article_title: article.title,
       article_excerpt: article.excerpt || undefined,
+      article_content: article.content,
       featured_image_url: article.featured_image_url || undefined,
-      tags: article.tags
+      tags: article.tags,
+      author_id: article.user_id
     }
 
     // Décrypter les tokens
