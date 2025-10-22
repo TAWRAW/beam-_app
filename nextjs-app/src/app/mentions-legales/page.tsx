@@ -47,7 +47,7 @@ export default function MentionsLegalesPage() {
                 <p><strong>Forme juridique :</strong> Société par Actions Simplifiée Unipersonnelle (SASU)</p>
                 <p><strong>Capital social :</strong> 2 500 €</p>
                 <p><strong>SIREN :</strong> 989 101 829 Évreux</p>
-                <p><strong>Dirigeant :</strong> Tom LEMEILLE - Gestionnaire de Copropriétés</p>
+                <p><strong>Président :</strong> Tom LEMEILLE - Gestionnaire de Copropriétés</p>
                 <p><strong>Siège social :</strong> 8 rue du général Leclerc, 27950 Saint-Marcel</p>
                 <p><strong>Cabinet :</strong> La Manufacture des Capucins, 2 Place Jean Paul II, 27200 Vernon</p>
                 <p><strong>Téléphone :</strong> 07 75 70 70 99</p>
