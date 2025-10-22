@@ -14,11 +14,5 @@
       "destination": "https://www.xn--beam-yqa.fr/:path*",
       "permanent": true
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/cron/social-publishing",
-      "schedule": "*/15 * * * *"
-    }
   ]
 }
