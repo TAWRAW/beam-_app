@@ -304,8 +304,7 @@ export function errorToPublishResult(
   return {
     success: false,
     error: error.message,
-    platform,
-    timestamp: new Date().toISOString()
+    platform
   }
 }
 
