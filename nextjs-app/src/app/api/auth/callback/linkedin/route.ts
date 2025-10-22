@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     // Calculer la date d'expiration
     const expiresAt = tokenResponse.expires_in
       ? new Date(Date.now() + tokenResponse.expires_in * 1000).toISOString()
-      : null
+      : undefined
 
     // Chiffrer les tokens avant stockage
     const encryptedAccessToken = encryptToken(tokenResponse.access_token)
