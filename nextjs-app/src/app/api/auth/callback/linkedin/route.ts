@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     const encryptedAccessToken = encryptToken(tokenResponse.access_token)
     const encryptedRefreshToken = tokenResponse.refresh_token
       ? encryptToken(tokenResponse.refresh_token)
-      : null
+      : undefined
 
     // Préparer les données d'intégration
     const integrationData: Partial<SocialIntegration> = {
