@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
       scope: tokenResponse.scope?.split(' '),
       is_active: true,
       error_count: 0,
-      last_error_message: null
+      last_error_message: undefined
     }
 
     // Upsert dans la table social_integrations
