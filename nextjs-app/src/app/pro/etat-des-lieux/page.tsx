@@ -260,10 +260,10 @@ export default function EtatDesLieuxPage() {
             ].map((item, index) => (
               <Card key={index} className="border-2 border-white bg-white p-8 text-center">
                 <CardHeader className="p-0">
-                  <CardTitle className="text-4xl text-foreground">{item.discount}</CardTitle>
+                  <CardTitle className="text-4xl text-black">{item.discount}</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0 pt-3">
-                  <CardDescription className="whitespace-pre-line text-lg text-muted-foreground">{item.condition}</CardDescription>
+                  <CardDescription className="whitespace-pre-line text-lg text-black">{item.condition}</CardDescription>
                 </CardContent>
               </Card>
             ))}
