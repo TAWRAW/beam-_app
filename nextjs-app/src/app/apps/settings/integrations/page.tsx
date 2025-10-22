@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createSupabaseBrowserClient } from '@/lib/supabase/client'
@@ -21,7 +21,7 @@ interface Profile {
   }
 }
 
-export default function IntegrationsPage() {
+function IntegrationsPageContent() {
   const [integrations, setIntegrations] = useState<SocialIntegration[]>([])
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
@@ -359,5 +359,17 @@ export default function IntegrationsPage() {
         </ul>
       </div>
     </div>
+  )
+}
+
+export default function IntegrationsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    }>
+      <IntegrationsPageContent />
+    </Suspense>
   )
 }
