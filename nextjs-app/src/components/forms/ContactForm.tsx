@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import Link from 'next/link'
 
 const PUB_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
@@ -14,6 +16,7 @@ const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
 
 export default function ContactForm() {
   const [status, setStatus] = useState<null | { ok: boolean; message: string }>(null)
+  const [rgpdConsent, setRgpdConsent] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -26,6 +29,12 @@ export default function ContactForm() {
     e.preventDefault()
     const form = e.currentTarget
     const formData = new FormData(form)
+
+    // Vérification du consentement RGPD
+    if (!rgpdConsent) {
+      setStatus({ ok: false, message: 'Vous devez accepter la politique de confidentialité pour envoyer votre message.' })
+      return
+    }
 
     // Honeypot
     const hp = (formData.get('company') as string) || ''
@@ -53,6 +62,7 @@ export default function ContactForm() {
       await emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
       setStatus({ ok: true, message: 'Votre message a été envoyé avec succès !' })
       form.reset()
+      setRgpdConsent(false) // Reset RGPD consent
       // Analytics event (if GA enabled)
       trackEvent('contact_submit_success', { location: 'contact_page' })
       // Redirect to thank you page after a short delay
@@ -99,6 +109,29 @@ export default function ContactForm() {
       <div className="space-y-2">
         <Label htmlFor="message">Votre message</Label>
         <Textarea id="message" name="message" required rows={6} placeholder="Votre question ou demande..." />
+      </div>
+
+      {/* Checkbox RGPD */}
+      <div className="flex items-start space-x-3 rounded-md border border-muted p-4">
+        <Checkbox
+          id="rgpd-consent"
+          checked={rgpdConsent}
+          onCheckedChange={(checked) => setRgpdConsent(checked === true)}
+          required
+        />
+        <div className="flex-1">
+          <Label
+            htmlFor="rgpd-consent"
+            className="text-sm font-normal leading-relaxed cursor-pointer"
+          >
+            J'accepte que mes données personnelles soient collectées et utilisées par Beamô pour répondre à ma demande de contact.
+            Conformément au Règlement Général sur la Protection des Données (RGPD), je dispose d'un droit d'accès,
+            de rectification, de suppression et d'opposition au traitement de mes données.{' '}
+            <Link href="/mentions-legales" className="underline text-primary hover:text-primary/80">
+              En savoir plus sur la gestion de vos données
+            </Link>.
+          </Label>
+        </div>
       </div>
 
       <Button type="submit" size="lg" className="border-2 border-black">
