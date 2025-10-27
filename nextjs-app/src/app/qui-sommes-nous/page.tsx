@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import OfficeMap from '@/components/maps/OfficeMap'
 
 export const metadata: Metadata = {
   title: 'Qui sommes-nous ? | Beamô',
@@ -28,7 +29,24 @@ export default function AboutPage() {
     name: 'Beamô',
     url: 'https://xn--beam-yqa.fr',
     logo: 'https://xn--beam-yqa.fr/favicon.ico',
-    sameAs: ['https://xn--beam-yqa.fr'],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Manufacture des Capucins, Place Jean Paul II',
+      addressLocality: 'Vernon',
+      postalCode: '27200',
+      addressCountry: 'FR'
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 49.0937,
+      longitude: 1.4850
+    },
+    telephone: '+33-7-75-70-70-99',
+    email: 'contact@xn--beam-yqa.fr',
+    sameAs: [
+      'https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true',
+      'https://www.facebook.com/profile.php?id=61582074458665'
+    ],
   }
 
   return (
@@ -221,6 +239,13 @@ export default function AboutPage() {
               </p>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Localisation bureau */}
+      <section className="section bg-muted">
+        <div className="container">
+          <OfficeMap />
         </div>
       </section>
 

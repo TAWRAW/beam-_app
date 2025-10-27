@@ -1,5 +1,6 @@
 import ContactForm from '@/components/forms/ContactForm'
 import { Card, CardContent } from '@/components/ui/card'
+import OfficeMap from '@/components/maps/OfficeMap'
 
 export const metadata = {
   title: 'Contactez Beamô - Le Syndic Hybride Nouvelle Génération',
@@ -46,6 +47,18 @@ export default function ContactPage() {
     mainEntity: {
       '@type': 'LocalBusiness',
       name: 'Beamô',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Manufacture des Capucins, Place Jean Paul II',
+        addressLocality: 'Vernon',
+        postalCode: '27200',
+        addressCountry: 'FR'
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 49.0937,
+        longitude: 1.4850
+      },
       contactPoint: {
         '@type': 'ContactPoint',
         telephone: '+33-7-75-70-70-99',
@@ -53,14 +66,11 @@ export default function ContactPage() {
         email: 'contact@xn--beam-yqa.fr',
         availableLanguage: 'French',
         areaServed: ['Vernon', 'Évreux', 'Les Andelys', 'Normandie'],
-        hoursAvailable: {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-          opens: '09:00',
-          closes: '18:00'
-        },
+        contactOption: 'TollFree',
         serviceType: 'Property Management'
-      }
+      },
+      openingHours: 'Mo-Fr by appointment',
+      hasMap: 'https://maps.google.com/maps?q=Manufacture+des+Capucins,+Place+Jean+Paul+II,+27200+Vernon'
     },
     potentialAction: {
       '@type': 'ContactAction',
@@ -123,6 +133,13 @@ export default function ContactPage() {
               </p>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Localisation bureau */}
+      <section className="section bg-muted">
+        <div className="container">
+          <OfficeMap />
         </div>
       </section>
 
