@@ -1,7 +1,16 @@
 import { ReactNode } from 'react'
+import { Metadata } from 'next'
 import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { AlignJustify } from 'lucide-react'
+
+// Bloquer l'indexation de toutes les pages admin
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default function AppsLayout({ children }: { children: ReactNode }) {
   return (

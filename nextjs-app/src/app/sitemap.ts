@@ -34,6 +34,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9
     },
     {
+      url: `${base}/tarifs`,
+      lastModified: lastModDates.commercial,
+      changeFrequency: 'monthly',
+      priority: 0.9 // Page commerciale critique
+    },
+    {
       url: `${base}/qui-sommes-nous`,
       lastModified: lastModDates.info,
       changeFrequency: 'monthly',
@@ -78,6 +84,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: lastModDates.legal,
       changeFrequency: 'yearly',
       priority: 0.4
+    },
+    {
+      url: `${base}/sources`,
+      lastModified: lastModDates.legal,
+      changeFrequency: 'yearly',
+      priority: 0.3
     },
   ]
 
