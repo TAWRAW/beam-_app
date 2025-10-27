@@ -1,9 +1,10 @@
 import { Card, CardContent } from '@/components/ui/card'
 
 export default function OfficeMap() {
-  // Adresse complète encodée pour Google Maps
-  const address = encodeURIComponent('Manufacture des Capucins, Place Jean Paul II, 27200 Vernon')
-  const mapUrl = `https://maps.google.com/maps?q=${address}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+  // Lien direct vers la fiche Google My Business de Beamô
+  // Place ID: 0x47e6cb7c4ce8bd77:0xc55ae46bcb08f2f1
+  // Utilise la fiche GMB pour booster le référencement de Beamô (pas celui de la Manufacture)
+  const mapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d164.82487719288778!2d1.4748482!3d49.0970241!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6cb7c4ce8bd77%3A0xc55ae46bcb08f2f1!2sBeam%C3%B4!5e0!3m2!1sfr!2sfr!4v1234567890!5m2!1sfr!2sfr'
 
   return (
     <Card className="border-2 border-black bg-white shadow-xl overflow-hidden">

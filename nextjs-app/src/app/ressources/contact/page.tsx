@@ -70,7 +70,12 @@ export default function ContactPage() {
         serviceType: 'Property Management'
       },
       openingHours: 'Mo-Fr by appointment',
-      hasMap: 'https://maps.google.com/maps?q=Manufacture+des+Capucins,+Place+Jean+Paul+II,+27200+Vernon'
+      hasMap: 'https://maps.app.goo.gl/7ySUYESYdiaxkiNX8',
+      sameAs: [
+        'https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true',
+        'https://www.facebook.com/profile.php?id=61582074458665',
+        'https://maps.app.goo.gl/7ySUYESYdiaxkiNX8'
+      ]
     },
     potentialAction: {
       '@type': 'ContactAction',

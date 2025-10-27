@@ -45,7 +45,8 @@ export default function AboutPage() {
     email: 'contact@xn--beam-yqa.fr',
     sameAs: [
       'https://www.linkedin.com/company/beam%C3%B4/posts/?feedView=all&viewAsMember=true',
-      'https://www.facebook.com/profile.php?id=61582074458665'
+      'https://www.facebook.com/profile.php?id=61582074458665',
+      'https://maps.app.goo.gl/7ySUYESYdiaxkiNX8'
     ],
   }
 
