@@ -1,9 +1,11 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import CategoryGallery from '@/components/ressources/CategoryGallery'
 import { createClient } from '@supabase/supabase-js'
 import { ArticleWithAuthor } from '@/types/article'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,8 +18,8 @@ export const metadata = {
   alternates: { canonical: '/ressources' },
 }
 
-// Force dynamic rendering for search params
-export const dynamic = 'force-dynamic'
+// Revalidate every hour for ISR (better performance than force-dynamic)
+export const revalidate = 3600
 
 export default async function RessourcesPage({
   searchParams
@@ -68,7 +70,13 @@ export default async function RessourcesPage({
   return (
     <main className="section">
       <div className="container">
-        <h1 className="h1">Ressources</h1>
+        <Breadcrumbs
+          items={[
+            { label: 'Accueil', href: '/' },
+            { label: 'Ressources' }
+          ]}
+        />
+        <h1 className="h1 mt-6">Ressources</h1>
         <p className="mt-2 text-muted-foreground">
           Explorez nos contenus par type et catégorie. 
           {searchParams.cat && searchParams.cat !== 'all' && (
@@ -99,11 +107,16 @@ export default async function RessourcesPage({
                   <Card key={article.id} className="bg-card p-6 shadow-lg hover:shadow-xl transition-shadow">
                     <CardContent className="p-0">
                     {article.featured_image_url && (
-                      <img
-                        src={article.featured_image_url}
-                        alt={article.title}
-                        className="w-full h-48 object-cover rounded mb-4"
-                      />
+                      <div className="relative w-full h-48 mb-4">
+                        <Image
+                          src={article.featured_image_url}
+                          alt={article.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover rounded"
+                          loading="lazy"
+                        />
+                      </div>
                     )}
                     
                     <div className="flex items-center gap-2 mb-3">
@@ -129,11 +142,16 @@ export default async function RessourcesPage({
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center gap-2">
                         {article.author?.avatar_url ? (
-                          <img
-                            src={article.author.avatar_url}
-                            alt={article.author.full_name || 'Auteur'}
-                            className="w-6 h-6 rounded-full"
-                          />
+                          <div className="relative w-6 h-6 rounded-full overflow-hidden">
+                            <Image
+                              src={article.author.avatar_url}
+                              alt={article.author.full_name || 'Auteur'}
+                              fill
+                              sizes="24px"
+                              className="object-cover"
+                              loading="lazy"
+                            />
+                          </div>
                         ) : (
                           <div className="w-6 h-6 rounded-full bg-muted"></div>
                         )}

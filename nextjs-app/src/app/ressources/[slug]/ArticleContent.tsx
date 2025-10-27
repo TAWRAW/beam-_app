@@ -18,7 +18,7 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // URL de l'article pour le partage
-  const articleUrl = `https://www.beamô.fr/ressources/${article.slug}`
+  const articleUrl = `https://www.xn--beam-yqa.fr/ressources/${article.slug}`
   const shareTitle = encodeURIComponent(article.title)
   const shareText = encodeURIComponent(article.meta_description || article.title)
 
@@ -56,19 +56,19 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
     author: {
       '@type': 'Person',
       name: article.author?.full_name || 'Beamô',
-      url: 'https://www.beamô.fr/qui-sommes-nous'
+      url: 'https://www.xn--beam-yqa.fr/qui-sommes-nous'
     },
     publisher: {
       '@type': 'Organization',
       name: 'Beamô',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://www.beamô.fr/logo.png'
+        url: 'https://www.xn--beam-yqa.fr/logo.png'
       }
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://www.beamô.fr/ressources/${article.slug}`
+      '@id': `https://www.xn--beam-yqa.fr/ressources/${article.slug}`
     },
     keywords: article.tags?.join(', ') || undefined,
     articleSection: article.category || 'Copropriété',
@@ -85,19 +85,19 @@ export function ArticleContent({ article, effectiveFeaturedImage, formattedDate 
         '@type': 'ListItem',
         position: 1,
         name: 'Accueil',
-        item: 'https://www.beamô.fr'
+        item: 'https://www.xn--beam-yqa.fr'
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Ressources',
-        item: 'https://www.beamô.fr/ressources'
+        item: 'https://www.xn--beam-yqa.fr/ressources'
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: article.title,
-        item: `https://www.beamô.fr/ressources/${article.slug}`
+        item: `https://www.xn--beam-yqa.fr/ressources/${article.slug}`
       }
     ]
   }

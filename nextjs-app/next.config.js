@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'worthy-basketball-cc30a2b320.strapiapp.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'zhtstxdbersquchtlkzm.supabase.co',
+      },
     ],
   },
   async redirects() {

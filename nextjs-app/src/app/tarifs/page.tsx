@@ -37,6 +37,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { CheckCircle2, AlertCircle, TrendingDown } from 'lucide-react'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export const metadata: Metadata = {
   title: 'Tarifs Syndic de Copropriété | Transparence Totale | Beamô',
@@ -185,8 +186,20 @@ export default function TarifsPage() {
 
   return (
     <main className="bg-primary">
-      {/* Hero */}
+      {/* Breadcrumbs */}
       <section className="section relative -mt-20 md:-mt-24 pt-20 md:pt-24">
+        <div className="container">
+          <Breadcrumbs
+            items={[
+              { label: 'Accueil', href: '/' },
+              { label: 'Tarifs' }
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* Hero */}
+      <section className="section">
         <div className="container">
           <header className="text-center">
             <Badge variant="secondary" className="mb-4">Transparence Totale</Badge>

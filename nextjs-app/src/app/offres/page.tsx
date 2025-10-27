@@ -69,6 +69,7 @@ import {
 } from '@/components/ui/accordion'
 import Link from 'next/link'
 import { CheckCircle2, Shield } from 'lucide-react'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export default function OffresPage() {
   const offersJsonLd = {
@@ -133,7 +134,13 @@ export default function OffresPage() {
     <main className="bg-primary">
       <section className="section relative -mt-20 md:-mt-24 pt-20 md:pt-24">
         <div className="container">
-          <header className="text-center">
+          <Breadcrumbs
+            items={[
+              { label: 'Accueil', href: '/' },
+              { label: 'Offres' }
+            ]}
+          />
+          <header className="text-center mt-6">
             <h1 className="h1">Nos Offres</h1>
             <p className="mt-2 text-muted-foreground">Découvrez nos solutions adaptées aux copropriétés.</p>
           </header>

@@ -44,6 +44,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     return {
       title: article.seo_title || `${article.title} — Beamô`,
       description: article.meta_description || undefined,
+      alternates: {
+        canonical: `/ressources/${params.slug}`
+      },
       openGraph: {
         title: article.title,
         description: article.meta_description || undefined,
