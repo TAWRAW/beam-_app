@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, Eye, Edit, Trash2, ExternalLink, Facebook, Linkedin, Check, X } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Eye, Edit, Trash2, ExternalLink, Facebook, Linkedin, Check, X, Share2 } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ArticleWithAuthor, ARTICLE_STATUSES, ARTICLE_CATEGORIES } from "@/types/article"
+import { SocialPublishModal } from "./social-publish-modal"
 
 const statusColors = {
   draft: 'bg-yellow-100 text-yellow-800',
@@ -330,12 +331,24 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
             </DropdownMenuItem>
 
             {article.status === 'published' && (
-              <DropdownMenuItem asChild>
-                <Link href={`/ressources/${article.slug}`} target="_blank">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Voir sur le site
-                </Link>
-              </DropdownMenuItem>
+              <>
+                <DropdownMenuItem asChild>
+                  <Link href={`/ressources/${article.slug}`} target="_blank">
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Voir sur le site
+                  </Link>
+                </DropdownMenuItem>
+
+                <SocialPublishModal
+                  article={article}
+                  trigger={
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <Share2 className="mr-2 h-4 w-4" />
+                      Publier sur les réseaux
+                    </DropdownMenuItem>
+                  }
+                />
+              </>
             )}
 
             <DropdownMenuSeparator />
