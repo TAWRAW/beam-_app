@@ -175,14 +175,32 @@ export default function MentionsLegalesPage() {
                 </ul>
               </div>
 
-              <h2>12. Médiation</h2>
+              <h2>12. Médiation de la consommation</h2>
               <p>
-                En qualité de syndic professionnel, Beamô adhère au dispositif de médiation
-                de la consommation. En cas de litige, vous pouvez saisir le médiateur compétent :
+                Conformément à l'article R 616-1 du Code de la Consommation, Beamô informe
+                les consommateurs de l'existence d'un médiateur de la consommation.
               </p>
-              <div className="bg-muted p-6 rounded-lg mb-6">
-                <p><strong>Médiateur :</strong> IMMO MÉDIATEURS</p>
-                <p><strong>Site web :</strong> <a href="https://www.immomediateurs.com/nous-contacter" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://www.immomediateurs.com/nous-contacter</a></p>
+              <p>
+                En cas de litige, vous pouvez saisir gratuitement le médiateur compétent :
+              </p>
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-6">
+                <p className="font-semibold text-lg mb-3">IMMOMEDIATEURS</p>
+                <p><strong>Adresse :</strong> 55 avenue Marceau, 75116 Paris</p>
+                <p><strong>Téléphone :</strong> 01 47 20 73 21</p>
+                <p><strong>Site internet :</strong>{' '}
+                  <a
+                    href="https://conso.immomediateurs.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    conso.immomediateurs.com
+                  </a>
+                </p>
+                <p className="text-sm text-muted-foreground mt-3">
+                  La saisine du médiateur est gratuite et peut intervenir après une tentative
+                  de résolution directe auprès de Beamô restée infructueuse.
+                </p>
               </div>
 
               <h2>13. Contact</h2>
@@ -197,7 +215,7 @@ export default function MentionsLegalesPage() {
               </div>
 
               <p className="text-sm text-muted-foreground mt-8">
-                <strong>Dernière mise à jour :</strong> 22 octobre 2025
+                <strong>Dernière mise à jour :</strong> {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
 
               </CardContent>
