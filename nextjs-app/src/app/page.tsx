@@ -31,16 +31,16 @@ import FinalCta from '@/components/sections/FinalCta'
 
 // Configuration SEO principale - Point d'entrée du site
 export const metadata = {
-  title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Réponse 48h | Beamô',
+  title: 'Tom Lemeille – Syndic Indépendant à Vernon',
   description:
-    "Syndic de copropriété à Vernon, Gaillon et Évreux. Réactivité 48h, transparence totale, tarifs clairs. Votre syndic local en Normandie.",
+    "Syndic à Vernon depuis 2023. Pas de franchise, pas de plateforme. Un interlocuteur, pas dix. Je réponds sous 48h, souvent avant. 07 75 70 70 99",
   keywords: [
-    'syndic', 'syndic de copropriété', 'gestion copropriété', 'Vernon', 'Gaillon', 'Évreux', 'Les Andelys',
-    'assemblée générale', 'Normandie', 'Eure', 'transparence', 'proximité', 'réactivité', 'syndic local'
+    'syndic indépendant', 'Tom Lemeille', 'syndic Vernon', 'gestion copropriété', 'Vernon', 'Gaillon', 'Évreux', 'Les Andelys',
+    'assemblée générale', 'Normandie', 'Eure', 'transparence', 'proximité', 'réactivité', 'syndic local', 'pas de franchise'
   ],
   openGraph: {
-    title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Beamô',
-    description: "Syndic de copropriété à Vernon, Gaillon et Évreux. Réactivité 48h, transparence totale, tarifs clairs.",
+    title: 'Tom Lemeille – Syndic Indépendant à Vernon',
+    description: "Syndic à Vernon depuis 2023. Pas de franchise, pas de plateforme. Un interlocuteur, pas dix. Je réponds sous 48h.",
     url: '/',
     type: 'website',
     locale: 'fr_FR',
@@ -55,8 +55,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Syndic Copropriété Vernon, Gaillon, Évreux | Beamô',
-    description: "Syndic local en Normandie : Vernon, Gaillon, Évreux. Réponse garantie sous 48h.",
+    title: 'Tom Lemeille – Syndic Indépendant à Vernon',
+    description: "Pas de franchise, pas de plateforme. Un interlocuteur, pas dix. Je réponds sous 48h, souvent avant.",
   },
   alternates: { canonical: 'https://www.xn--beam-yqa.fr/' },
   robots: {

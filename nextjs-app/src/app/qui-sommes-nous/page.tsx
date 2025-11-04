@@ -6,20 +6,20 @@ import { Card, CardContent } from '@/components/ui/card'
 import OfficeMap from '@/components/maps/OfficeMap'
 
 export const metadata: Metadata = {
-  title: 'Qui sommes-nous ? | Beamô',
+  title: 'Tom Lemeille | J'ai créé Beamô à Vernon',
   description:
-    "Beamô est un syndic de copropriété local et réactif. Découvrez notre mission, nos valeurs et notre approche de gestion transparente et efficace.",
+    "J'ai lancé Beamô après avoir vu trop de copropriétaires galérer avec leur syndic. C'est pas compliqué : répondre vite, être clair, tenir parole. Ça devrait être la base.",
   alternates: { canonical: 'https://www.xn--beam-yqa.fr/qui-sommes-nous' },
   openGraph: {
-    title: 'Qui sommes-nous ? | Beamô',
+    title: 'Tom Lemeille | J'ai créé Beamô à Vernon',
     description:
-      "Syndic local et réactif. Notre mission : une gestion claire et efficace au service des copropriétaires.",
+      "J'ai lancé Beamô après avoir vu trop de copropriétaires galérer avec leur syndic. Répondre vite, être clair, tenir parole.",
     url: '/qui-sommes-nous',
     type: 'website',
     locale: 'fr_FR',
   },
   robots: { index: true, follow: true },
-  keywords: ['Beamô', 'syndic', 'copropriété', 'équipe', 'valeurs', 'Eure', 'Normandie'],
+  keywords: ['Tom Lemeille', 'Beamô', 'syndic indépendant', 'Vernon', 'copropriété', 'fondateur', 'Eure', 'Normandie'],
 }
 
 export default function AboutPage() {
@@ -172,10 +172,13 @@ export default function AboutPage() {
             <Card className="border-2 border-black bg-white p-8 shadow-xl">
               <CardContent className="p-0">
                 <blockquote className="text-muted-foreground">
-                  « Beamô est né d'une idée simple: si c'était ma copropriété, qu'est‑ce que j'exigerais? De la visibilité,
-                  des délais tenus et des comptes propres. Mon ambition est claire: mettre fin aux habitudes qui font perdre du temps
-                  et de l'argent aux copropriétaires. Ma volonté: un syndic local, responsable, lisible. »
-                  <br />— Tom, fondateur de Beamô
+                  « J'ai créé Beamô parce que je voyais les mêmes problèmes partout.
+                  <br /><br />
+                  Des copropriétaires qui attendent 3 semaines une réponse. Des assemblées générales où l'on ne comprend rien.
+                  Des changements de gestionnaire permanents.
+                  <br /><br />
+                  Ma conviction : un bon syndic, c'est quelqu'un de joignable qui fait ce qu'il dit. »
+                  <br /><br />— Tom Lemeille, Vernon
                 </blockquote>
               </CardContent>
             </Card>
