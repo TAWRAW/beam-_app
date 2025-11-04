@@ -337,7 +337,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Lien vers les réglages d'intégrations sociales */}
-      {profile.role === 'admin' || profile.role === 'employe' ? (
+      {/* DEPRECATED: Old OAuth integration system removed - now using n8n webhooks */}
+      {/* {profile.role === 'admin' || profile.role === 'employe' ? (
         <div className="mt-6 bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-2">Intégrations sociales</h2>
           <p className="text-gray-600 mb-4">
@@ -351,7 +352,7 @@ export default function ProfilePage() {
             Gérer les intégrations
           </Link>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   )
 }

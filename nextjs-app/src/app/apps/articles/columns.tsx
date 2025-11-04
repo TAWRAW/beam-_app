@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal, Eye, Edit, Trash2, ExternalLink, Facebook, Linkedin, Check, X, Share2 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +21,139 @@ const statusColors = {
   draft: 'bg-yellow-100 text-yellow-800',
   published: 'bg-green-100 text-green-800',
   archived: 'bg-gray-100 text-gray-800'
+}
+
+function ActionsCell({ article }: { article: ArticleWithAuthor }) {
+  const [showSocialModal, setShowSocialModal] = useState(false)
+
+  const handleDelete = async () => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/articles/${article.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la suppression')
+      }
+
+      // Refresh the page to show updated data
+      window.location.reload()
+    } catch (error) {
+      console.error('Error deleting article:', error)
+      alert('Erreur lors de la suppression de l\'article')
+    }
+  }
+
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      const response = await fetch(`/api/articles/${article.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: article.id,
+          status: newStatus
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la mise à jour')
+      }
+
+      // Refresh the page to show updated data
+      window.location.reload()
+    } catch (error) {
+      console.error('Error updating article status:', error)
+      alert('Erreur lors de la mise à jour du statut')
+    }
+  }
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Ouvrir le menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+          <DropdownMenuItem asChild>
+            <Link href={`/apps/articles/${article.id}/edit`}>
+              <Edit className="mr-2 h-4 w-4" />
+              Modifier
+            </Link>
+          </DropdownMenuItem>
+
+          {article.status === 'published' && (
+            <>
+              <DropdownMenuItem asChild>
+                <Link href={`/ressources/${article.slug}`} target="_blank">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Voir sur le site
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault()
+                  setShowSocialModal(true)
+                }}
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                Publier sur les réseaux
+              </DropdownMenuItem>
+            </>
+          )}
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuLabel>Changer le statut</DropdownMenuLabel>
+
+          {article.status !== 'published' && (
+            <DropdownMenuItem onClick={() => handleStatusChange('published')}>
+              Publier
+            </DropdownMenuItem>
+          )}
+
+          {article.status !== 'draft' && (
+            <DropdownMenuItem onClick={() => handleStatusChange('draft')}>
+              Mettre en brouillon
+            </DropdownMenuItem>
+          )}
+
+          {article.status !== 'archived' && (
+            <DropdownMenuItem onClick={() => handleStatusChange('archived')}>
+              Archiver
+            </DropdownMenuItem>
+          )}
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            onClick={handleDelete}
+            className="text-red-600 focus:text-red-600"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Supprimer
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <SocialPublishModal
+        article={article}
+        open={showSocialModal}
+        onOpenChange={setShowSocialModal}
+      />
+    </>
+  )
 }
 
 const categoryColors = {
@@ -262,129 +396,6 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const article = row.original
-
-      const handleDelete = async () => {
-        if (!confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
-          return
-        }
-
-        try {
-          const response = await fetch(`/api/articles/${article.id}`, {
-            method: 'DELETE',
-          })
-
-          if (!response.ok) {
-            throw new Error('Erreur lors de la suppression')
-          }
-
-          // Refresh the page to show updated data
-          window.location.reload()
-        } catch (error) {
-          console.error('Error deleting article:', error)
-          alert('Erreur lors de la suppression de l\'article')
-        }
-      }
-
-      const handleStatusChange = async (newStatus: string) => {
-        try {
-          const response = await fetch(`/api/articles/${article.id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              id: article.id,
-              status: newStatus 
-            }),
-          })
-
-          if (!response.ok) {
-            throw new Error('Erreur lors de la mise à jour')
-          }
-
-          // Refresh the page to show updated data
-          window.location.reload()
-        } catch (error) {
-          console.error('Error updating article status:', error)
-          alert('Erreur lors de la mise à jour du statut')
-        }
-      }
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Ouvrir le menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            
-            <DropdownMenuItem asChild>
-              <Link href={`/apps/articles/${article.id}/edit`}>
-                <Edit className="mr-2 h-4 w-4" />
-                Modifier
-              </Link>
-            </DropdownMenuItem>
-
-            {article.status === 'published' && (
-              <>
-                <DropdownMenuItem asChild>
-                  <Link href={`/ressources/${article.slug}`} target="_blank">
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Voir sur le site
-                  </Link>
-                </DropdownMenuItem>
-
-                <SocialPublishModal
-                  article={article}
-                  trigger={
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <Share2 className="mr-2 h-4 w-4" />
-                      Publier sur les réseaux
-                    </DropdownMenuItem>
-                  }
-                />
-              </>
-            )}
-
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuLabel>Changer le statut</DropdownMenuLabel>
-            
-            {article.status !== 'published' && (
-              <DropdownMenuItem onClick={() => handleStatusChange('published')}>
-                Publier
-              </DropdownMenuItem>
-            )}
-            
-            {article.status !== 'draft' && (
-              <DropdownMenuItem onClick={() => handleStatusChange('draft')}>
-                Mettre en brouillon
-              </DropdownMenuItem>
-            )}
-            
-            {article.status !== 'archived' && (
-              <DropdownMenuItem onClick={() => handleStatusChange('archived')}>
-                Archiver
-              </DropdownMenuItem>
-            )}
-
-            <DropdownMenuSeparator />
-            
-            <DropdownMenuItem
-              onClick={handleDelete}
-              className="text-red-600 focus:text-red-600"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Supprimer
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
+    cell: ({ row }) => <ActionsCell article={row.original} />,
   },
 ]

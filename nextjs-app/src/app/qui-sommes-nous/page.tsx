@@ -6,12 +6,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import OfficeMap from '@/components/maps/OfficeMap'
 
 export const metadata: Metadata = {
-  title: 'Tom Lemeille | J'ai créé Beamô à Vernon',
+  title: "Tom Lemeille | J'ai créé Beamô à Vernon",
   description:
     "J'ai lancé Beamô après avoir vu trop de copropriétaires galérer avec leur syndic. C'est pas compliqué : répondre vite, être clair, tenir parole. Ça devrait être la base.",
   alternates: { canonical: 'https://www.xn--beam-yqa.fr/qui-sommes-nous' },
   openGraph: {
-    title: 'Tom Lemeille | J'ai créé Beamô à Vernon',
+    title: "Tom Lemeille | J'ai créé Beamô à Vernon",
     description:
       "J'ai lancé Beamô après avoir vu trop de copropriétaires galérer avec leur syndic. Répondre vite, être clair, tenir parole.",
     url: '/qui-sommes-nous',

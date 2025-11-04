@@ -7,6 +7,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server'
 const PublishSchema = z.object({
   article_id: z.string().uuid(),
   platforms: z.array(z.enum(['facebook', 'linkedin', 'instagram', 'tiktok'])).min(1),
+  publish_mode: z.enum(['now', 'schedule', 'queue']).default('now'),
   scheduled_for: z.string().datetime().optional(), // ISO 8601 datetime for scheduling
   custom_message: z.string().optional(), // Optional custom message override
 })
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ error: 'Invalid payload', issues: parsed.error.issues }, { status: 400 })
     }
-    const { article_id, platforms, scheduled_for, custom_message } = parsed.data
+    const { article_id, platforms, publish_mode, scheduled_for, custom_message } = parsed.data
 
     // Fetch article from Supabase
     const { data: article, error: articleError } = await supabase
@@ -63,10 +64,18 @@ export async function POST(req: NextRequest) {
 
     const authMode = basicUser && basicPass ? 'basic' : token ? 'bearer' : 'none'
 
+    // Calculate scheduled_for for queue mode
+    let finalScheduledFor = scheduled_for
+    if (publish_mode === 'queue') {
+      // For queue mode, we'll let n8n handle the scheduling based on queue settings
+      // Send a special marker to indicate it's a queue item
+      finalScheduledFor = 'queue'
+    }
+
     const payload = {
       source: 'site-app',
       userId: user.id,
-      action: scheduled_for ? 'schedule' : 'publish',
+      action: publish_mode, // 'now', 'schedule', or 'queue'
       payload: {
         article: {
           id: article.id,
@@ -78,7 +87,7 @@ export async function POST(req: NextRequest) {
           tags: article.tags,
         },
         platforms,
-        scheduled_for,
+        scheduled_for: finalScheduledFor,
         custom_message,
       },
     }

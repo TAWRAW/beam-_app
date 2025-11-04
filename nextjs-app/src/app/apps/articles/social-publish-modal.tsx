@@ -1,15 +1,7 @@
 "use client"
 
-import { useState } from 'react'
-import { Share2, Facebook, Linkedin, Instagram, Clock } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { useState, useEffect } from 'react'
+import { Share2, Facebook, Linkedin, Instagram, Clock, CheckSquare } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -17,9 +9,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Input } from "@/components/ui/input"
 import { ArticleWithAuthor } from '@/types/article'
 
+const STORAGE_KEY = 'social-publish-last-platforms'
+
 interface SocialPublishModalProps {
   article: ArticleWithAuthor
   trigger?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 type Platform = 'facebook' | 'linkedin' | 'instagram' | 'tiktok'
@@ -38,24 +34,71 @@ const platformLabels: Record<Platform, string> = {
   tiktok: 'TikTok',
 }
 
-export function SocialPublishModal({ article, trigger }: SocialPublishModalProps) {
-  const [open, setOpen] = useState(false)
+export function SocialPublishModal({ article, trigger, open: controlledOpen, onOpenChange }: SocialPublishModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
   const [platforms, setPlatforms] = useState<Platform[]>([])
-  const [publishMode, setPublishMode] = useState<'now' | 'schedule'>('now')
+  const [publishMode, setPublishMode] = useState<'now' | 'schedule' | 'queue'>('now')
   const [scheduledDate, setScheduledDate] = useState('')
   const [scheduledTime, setScheduledTime] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
+  // Use controlled open state if provided, otherwise use internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
+
   const allPlatforms: Platform[] = ['facebook', 'linkedin', 'instagram', 'tiktok']
 
+  // Load last used platforms from localStorage on mount
+  useEffect(() => {
+    if (open) {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (stored) {
+          const parsed = JSON.parse(stored) as Platform[]
+          // Only set valid platforms
+          const valid = parsed.filter(p => allPlatforms.includes(p))
+          if (valid.length > 0) {
+            setPlatforms(valid)
+          }
+        }
+      } catch (e) {
+        console.error('Error loading platforms from localStorage:', e)
+      }
+    }
+  }, [open])
+
   const togglePlatform = (platform: Platform) => {
-    setPlatforms(prev =>
-      prev.includes(platform)
+    setPlatforms(prev => {
+      const next = prev.includes(platform)
         ? prev.filter(p => p !== platform)
         : [...prev, platform]
-    )
+
+      // Save to localStorage
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      } catch (e) {
+        console.error('Error saving platforms to localStorage:', e)
+      }
+
+      return next
+    })
+  }
+
+  const toggleAll = () => {
+    setPlatforms(prev => {
+      const next = prev.length === allPlatforms.length ? [] : allPlatforms
+
+      // Save to localStorage
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      } catch (e) {
+        console.error('Error saving platforms to localStorage:', e)
+      }
+
+      return next
+    })
   }
 
   const handleSubmit = async () => {
@@ -76,6 +119,7 @@ export function SocialPublishModal({ article, trigger }: SocialPublishModalProps
       const payload: any = {
         article_id: article.id,
         platforms,
+        publish_mode: publishMode,
       }
 
       if (publishMode === 'schedule') {
@@ -100,7 +144,7 @@ export function SocialPublishModal({ article, trigger }: SocialPublishModalProps
       setTimeout(() => {
         setOpen(false)
         setSuccess(false)
-        setPlatforms([])
+        // Keep platforms selected for next time (saved in localStorage)
         setPublishMode('now')
         setScheduledDate('')
         setScheduledTime('')
@@ -113,63 +157,94 @@ export function SocialPublishModal({ article, trigger }: SocialPublishModalProps
     }
   }
 
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="outline" size="sm">
-            <Share2 className="mr-2 h-4 w-4" />
-            Publier sur les réseaux
-          </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Publier sur les réseaux sociaux</DialogTitle>
-          <DialogDescription>
-            Partagez &quot;{article.title}&quot; sur vos réseaux sociaux
-          </DialogDescription>
-        </DialogHeader>
+  // Custom modal without Radix Dialog (which has issues with DropdownMenu)
+  if (!open) return <></>
 
+  return (
+    <div
+      className="fixed inset-0 z-[99999] bg-black/80 flex items-center justify-center p-4"
+      onClick={() => setOpen(false)}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {success ? (
-          <div className="p-6 text-center">
+          <div className="p-6 text-center bg-white">
             <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <p className="text-lg font-medium text-gray-900">
-              {publishMode === 'now' ? 'Publication en cours...' : 'Publication programmée !'}
+              {publishMode === 'now' && 'Publication en cours...'}
+              {publishMode === 'schedule' && 'Publication programmée !'}
+              {publishMode === 'queue' && 'Ajouté à la file !'}
             </p>
             <p className="text-sm text-gray-500 mt-2">
               Fermeture automatique...
             </p>
           </div>
         ) : (
-          <div className="space-y-6 py-4">
+          <>
+            {/* Header */}
+            <div className="p-6 border-b border-gray-200 bg-white">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold leading-none tracking-tight text-gray-900">
+                    Publier sur les réseaux sociaux
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1.5">
+                    Partagez "{article.title}" sur vos réseaux sociaux
+                  </p>
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="rounded-sm opacity-70 hover:opacity-100 transition-opacity text-gray-900"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6 bg-white">
             {/* Platform Selection */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold">Plateformes</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold">Plateformes</Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleAll}
+                  className="h-8 text-xs"
+                >
+                  <CheckSquare className="mr-1.5 h-3.5 w-3.5" />
+                  {platforms.length === allPlatforms.length ? 'Tout désélectionner' : 'Tout sélectionner'}
+                </Button>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 {allPlatforms.map((platform) => {
                   const Icon = platformIcons[platform]
                   const isSelected = platforms.includes(platform)
 
                   return (
-                    <button
+                    <div
                       key={platform}
-                      type="button"
                       onClick={() => togglePlatform(platform)}
-                      className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                      className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
                         isSelected
                           ? 'border-primary bg-primary/5'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
-                      <Checkbox checked={isSelected} />
+                      <Checkbox checked={isSelected} onCheckedChange={() => togglePlatform(platform)} />
                       <Icon className="h-5 w-5 text-gray-700" />
                       <span className="text-sm font-medium">{platformLabels[platform]}</span>
-                    </button>
+                    </div>
                   )
                 })}
               </div>
@@ -189,6 +264,12 @@ export function SocialPublishModal({ article, trigger }: SocialPublishModalProps
                   <RadioGroupItem value="schedule" id="schedule" />
                   <Label htmlFor="schedule" className="font-normal cursor-pointer">
                     Programmer la publication
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="queue" id="queue" />
+                  <Label htmlFor="queue" className="font-normal cursor-pointer">
+                    Ajouter à la file
                   </Label>
                 </div>
               </RadioGroup>
@@ -253,14 +334,17 @@ export function SocialPublishModal({ article, trigger }: SocialPublishModalProps
                 ) : (
                   <>
                     <Share2 className="mr-2 h-4 w-4" />
-                    {publishMode === 'now' ? 'Publier' : 'Programmer'}
+                    {publishMode === 'now' && 'Publier'}
+                    {publishMode === 'schedule' && 'Programmer'}
+                    {publishMode === 'queue' && 'Ajouter à la file'}
                   </>
                 )}
               </Button>
             </div>
           </div>
+          </>
         )}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }
