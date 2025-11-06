@@ -7,6 +7,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Revalider le sitemap toutes les heures (3600 secondes)
+// Cela permet d'inclure automatiquement les nouveaux articles publiés
+export const revalidate = 3600
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://www.xn--beam-yqa.fr'
   const now = new Date()

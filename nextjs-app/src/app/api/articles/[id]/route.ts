@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { revalidatePath } from 'next/cache'
 import slugify from 'slugify'
-import { 
+import {
   UpdateArticleRequest,
   ArticleResponse,
   validateArticle
@@ -182,6 +183,18 @@ export async function PUT(
 
     if (error) {
       throw error
+    }
+
+    // Si l'article vient d'être publié, revalider le sitemap
+    // pour qu'il apparaisse immédiatement dans les résultats de recherche
+    if (article.status === 'published') {
+      try {
+        revalidatePath('/sitemap.xml')
+        console.log('✅ Sitemap revalidated after article publication')
+      } catch (revalidateError) {
+        console.error('⚠️ Failed to revalidate sitemap:', revalidateError)
+        // Ne pas bloquer la réponse si la revalidation échoue
+      }
     }
 
     const response: ArticleResponse = {
