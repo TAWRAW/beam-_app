@@ -12,27 +12,42 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
-    // Vérifier que l'utilisateur courant est admin
-    const supabase = createRouteHandlerClient({ cookies })
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-    }
+    // ⚠️ BYPASS pour le développement et l'environnement dev
+    // TODO: RETIRER CE BYPASS EN PRODUCTION
+    const host = request.headers.get('host')
+    const nodeEnv = process.env.NODE_ENV
+    const isDevEnvironment =
+      nodeEnv === 'development' ||
+      host?.includes('localhost') ||
+      host?.includes('dev.beamo')
 
-    // Vérifier le rôle admin
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    console.log('🔍 /api/admin/users - NODE_ENV:', nodeEnv, 'HOST:', host, 'isDev:', isDevEnvironment)
 
-    if (profileError || !profile || !['admin', 'employe'].includes(profile.role)) {
-      return NextResponse.json({ error: 'Accès interdit' }, { status: 403 })
+    if (!isDevEnvironment) {
+      // Vérifier que l'utilisateur courant est admin
+      const supabase = createRouteHandlerClient({ cookies })
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+      if (authError || !user) {
+        return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+      }
+
+      // Vérifier le rôle admin
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      if (profileError || !profile || !['admin', 'employe'].includes(profile.role)) {
+        return NextResponse.json({ error: 'Accès interdit' }, { status: 403 })
+      }
+    } else {
+      console.log('🚧 DEV MODE: Bypassing auth check for /api/admin/users')
     }
 
     // Récupérer tous les profils
-    const { data: profiles, error: profilesError } = await supabase
+    const { data: profiles, error: profilesError } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .order('created_at', { ascending: false })

@@ -174,7 +174,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     }
 
     const validationErrors = validateArticle(updateData)
-    
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       setSaving(false)
@@ -204,7 +204,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       // Mettre à jour l'état local
       setArticle(result.article)
       setFormData(prev => ({ ...prev, status: result.article.status }))
-      
+
       // Afficher un message de succès
       alert('Article mis à jour avec succès!')
     } catch (error) {

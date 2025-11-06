@@ -1,7 +1,13 @@
 import type { MetadataRoute } from 'next'
 import { getCitySlugs } from '@/lib/cities'
+import { createClient } from '@supabase/supabase-js'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://www.xn--beam-yqa.fr'
   const now = new Date()
 
@@ -102,6 +108,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: isMainCity ? 'weekly' : 'monthly',
       priority: isMainCity ? 0.85 : 0.6
     })
+  }
+
+  // Articles publiés - priorité haute pour le contenu
+  try {
+    const { data: articles, error } = await supabase
+      .from('articles')
+      .select('slug, updated_at, published_at')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+
+    if (!error && articles) {
+      for (const article of articles) {
+        entries.push({
+          url: `${base}/ressources/${article.slug}`,
+          lastModified: new Date(article.updated_at || article.published_at),
+          changeFrequency: 'monthly',
+          priority: 0.8 // Priorité élevée pour le contenu éditorial
+        })
+      }
+      console.log(`✅ Sitemap: Added ${articles.length} published articles`)
+    } else {
+      console.error('❌ Sitemap: Error fetching articles:', error)
+    }
+  } catch (error) {
+    console.error('❌ Sitemap: Exception fetching articles:', error)
   }
 
   return entries
