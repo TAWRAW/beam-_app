@@ -1,0 +1,598 @@
+{
+  "name": "Social Publishing - Queue Processor (Cron)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Schedule - Every 15 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "social_queue",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "keyValue": "pending"
+            },
+            {
+              "keyName": "scheduled_for",
+              "keyValue": "={{ $now.toISO() }}",
+              "operator": "lte"
+            }
+          ]
+        }
+      },
+      "id": "supabase-query",
+      "name": "Supabase - Récupérer items pending",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.length }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-has-items",
+      "name": "IF - Has items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-items",
+      "name": "Loop - Pour chaque item",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mark as processing first\nconst item = $input.item.json;\n\nreturn {\n  json: {\n    id: item.id,\n    article_id: item.article_id,\n    article_title: item.article_title,\n    article_url: item.article_url,\n    article_excerpt: item.article_excerpt,\n    article_image_url: item.article_image_url,\n    article_category: item.article_category,\n    article_tags: item.article_tags,\n    platforms: item.platforms,\n    custom_message: item.custom_message,\n    user_id: item.user_id\n  }\n};"
+      },
+      "id": "prepare-item",
+      "name": "Code - Préparer item",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "social_queue",
+        "filterType": "manual",
+        "filterValues": {
+          "id": "={{ $json.id }}"
+        },
+        "dataMode": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "status",
+              "fieldValue": "processing"
+            },
+            {
+              "fieldName": "updated_at",
+              "fieldValue": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "mark-processing",
+      "name": "Supabase - Marquer processing",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create message for publication\nconst item = $input.item.json;\nconst customMessage = item.custom_message;\n\nconst message = customMessage || `${item.article_title}\\n\\n${item.article_excerpt}\\n\\nLire la suite : ${item.article_url}\\n\\n#${item.article_category || ''} ${item.article_tags ? item.article_tags.map(t => '#' + t).join(' ') : ''}`;\n\n// Return array of items, one per platform\nreturn item.platforms.map(platform => ({\n  json: {\n    queue_id: item.id,\n    article_id: item.article_id,\n    platform,\n    message,\n    article_url: item.article_url,\n    imageUrl: item.article_image_url\n  }\n}));"
+      },
+      "id": "prepare-publications",
+      "name": "Code - Préparer publications",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "facebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "linkedin",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "linkedin"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "instagram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "instagram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "tiktok",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "tiktok"
+            }
+          ]
+        }
+      },
+      "id": "platform-router",
+      "name": "Switch - Router par plateforme",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1650, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v18.0/{{ $env.FACEBOOK_PAGE_ID }}/feed",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "name": "link",
+              "value": "={{ $json.article_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "publish-facebook",
+      "name": "Facebook - Publier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1850, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "facebook-auth",
+          "name": "Facebook Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"author\": \"urn:li:organization:\" + $env.LINKEDIN_ORGANIZATION_ID,\n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n        \"text\": $json.message\n      },\n      \"shareMediaCategory\": \"ARTICLE\",\n      \"media\": [\n        {\n          \"status\": \"READY\",\n          \"originalUrl\": $json.article_url\n        }\n      ]\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n  }\n} }}",
+        "options": {}
+      },
+      "id": "publish-linkedin",
+      "name": "LinkedIn - Publier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1850, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "linkedin-auth",
+          "name": "LinkedIn Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate results from all platforms\nconst items = $input.all();\nconst queueId = items[0].json.queue_id;\nconst articleId = items[0].json.article_id;\n\n// Check if any publication failed\nconst hasError = items.some(item => item.json.error);\n\nreturn {\n  json: {\n    queue_id: queueId,\n    article_id: articleId,\n    status: hasError ? 'failed' : 'completed',\n    error_message: hasError ? 'One or more publications failed' : null,\n    published_at: new Date().toISOString()\n  }\n};"
+      },
+      "id": "aggregate-results",
+      "name": "Code - Agréger résultats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2050, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "social_queue",
+        "filterType": "manual",
+        "filterValues": {
+          "id": "={{ $json.queue_id }}"
+        },
+        "dataMode": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "status",
+              "fieldValue": "={{ $json.status }}"
+            },
+            {
+              "fieldName": "published_at",
+              "fieldValue": "={{ $json.published_at }}"
+            },
+            {
+              "fieldName": "error_message",
+              "fieldValue": "={{ $json.error_message }}"
+            },
+            {
+              "fieldName": "updated_at",
+              "fieldValue": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "mark-completed",
+      "name": "Supabase - Marquer completed",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2250, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "articles",
+        "filterType": "manual",
+        "filterValues": {
+          "id": "={{ $json.article_id }}"
+        },
+        "dataMode": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "published_on_facebook",
+              "fieldValue": "={{ $json.published_at }}"
+            }
+          ]
+        }
+      },
+      "id": "update-article-facebook",
+      "name": "Update Article - Facebook",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2050, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "articles",
+        "filterType": "manual",
+        "filterValues": {
+          "id": "={{ $json.article_id }}"
+        },
+        "dataMode": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldName": "published_on_linkedin",
+              "fieldValue": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "update-article-linkedin",
+      "name": "Update Article - LinkedIn",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2050, 350],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Instructions:\n\n1. **Activer le workflow** après configuration\n\n2. **Credentials requis:**\n   - Supabase API\n   - Facebook Header Auth\n   - LinkedIn Header Auth\n\n3. **Fréquence:**\n   Cron s'exécute toutes les 15 minutes\n   → Ajustez si besoin dans Schedule node\n\n4. **Test:**\n   Ajoutez un article à la queue depuis l'UI\n   Vérifiez la table social_queue dans Supabase\n   Attendez que le cron s'exécute"
+      },
+      "id": "sticky-note",
+      "name": "Note - Configuration",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [250, 100]
+    },
+    {
+      "parameters": {},
+      "id": "no-op",
+      "name": "NoOp - Aucun item",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [850, 500]
+    }
+  ],
+  "connections": {
+    "Schedule - Every 15 minutes": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Récupérer items pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Récupérer items pending": {
+      "main": [
+        [
+          {
+            "node": "IF - Has items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Has items?": {
+      "main": [
+        [
+          {
+            "node": "Loop - Pour chaque item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NoOp - Aucun item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop - Pour chaque item": {
+      "main": [
+        [
+          {
+            "node": "Code - Préparer item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Préparer item": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Marquer processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Marquer processing": {
+      "main": [
+        [
+          {
+            "node": "Code - Préparer publications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Préparer publications": {
+      "main": [
+        [
+          {
+            "node": "Switch - Router par plateforme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Router par plateforme": {
+      "main": [
+        [
+          {
+            "node": "Facebook - Publier",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LinkedIn - Publier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook - Publier": {
+      "main": [
+        [
+          {
+            "node": "Update Article - Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn - Publier": {
+      "main": [
+        [
+          {
+            "node": "Update Article - LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Article - Facebook": {
+      "main": [
+        [
+          {
+            "node": "Code - Agréger résultats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Article - LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Code - Agréger résultats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Agréger résultats": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Marquer completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Marquer completed": {
+      "main": [
+        [
+          {
+            "node": "Loop - Pour chaque item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "id": "social-publishing-queue-processor",
+  "meta": {
+    "instanceId": "your-instance-id"
+  },
+  "tags": []
+}

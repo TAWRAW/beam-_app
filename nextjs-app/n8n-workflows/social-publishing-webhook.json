@@ -1,0 +1,491 @@
+{
+  "name": "Social Publishing - Webhook Receiver",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "social-publishing",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook - Publication réseaux sociaux",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "social-publishing"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "now",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "now"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "schedule",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "schedule"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "queue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "queue"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-router",
+      "name": "Switch - Router par action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Route NOW - Publication immédiate\nconst platforms = $input.item.json.payload.platforms;\nconst article = $input.item.json.payload.article;\nconst customMessage = $input.item.json.payload.custom_message;\n\n// Create message\nconst message = customMessage || `${article.title}\\n\\n${article.excerpt}\\n\\nLire la suite : ${article.url}\\n\\n#${article.category || ''} ${article.tags ? article.tags.map(t => '#' + t).join(' ') : ''}`;\n\n// Return array of items, one per platform\nreturn platforms.map(platform => ({\n  json: {\n    platform,\n    message,\n    article,\n    imageUrl: article.image_url\n  }\n}));"
+      },
+      "id": "now-prepare",
+      "name": "NOW - Préparer publications",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Route SCHEDULE - Attendre puis publier\nconst scheduledFor = $input.item.json.payload.scheduled_for;\nconst platforms = $input.item.json.payload.platforms;\nconst article = $input.item.json.payload.article;\nconst customMessage = $input.item.json.payload.custom_message;\n\n// Create message\nconst message = customMessage || `${article.title}\\n\\n${article.excerpt}\\n\\nLire la suite : ${article.url}\\n\\n#${article.category || ''} ${article.tags ? article.tags.map(t => '#' + t).join(' ') : ''}`;\n\nreturn {\n  json: {\n    scheduledFor,\n    platforms,\n    message,\n    article,\n    imageUrl: article.image_url\n  }\n};"
+      },
+      "id": "schedule-prepare",
+      "name": "SCHEDULE - Préparer données",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.scheduledFor }}",
+        "unit": "seconds"
+      },
+      "id": "schedule-wait",
+      "name": "Wait - Attendre scheduled_for",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "webhookId": "{{ $json.id }}"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate next scheduled_for for queue\nconst queueTime = '09:00'; // TODO: Récupérer depuis settings Supabase\n\n// Create tomorrow's date at the configured time\nconst tomorrow = new Date();\ntomorrow.setDate(tomorrow.getDate() + 1);\nconst [hours, minutes] = queueTime.split(':');\ntomorrow.setHours(parseInt(hours), parseInt(minutes), 0, 0);\n\nconst platforms = $input.item.json.payload.platforms;\nconst article = $input.item.json.payload.article;\nconst customMessage = $input.item.json.payload.custom_message;\nconst userId = $input.item.json.userId;\n\nreturn {\n  json: {\n    article_id: article.id,\n    article_title: article.title,\n    article_url: article.url,\n    article_excerpt: article.excerpt,\n    article_image_url: article.image_url,\n    article_category: article.category,\n    article_tags: article.tags,\n    platforms,\n    custom_message: customMessage,\n    user_id: userId,\n    status: 'pending',\n    scheduled_for: tomorrow.toISOString()\n  }\n};"
+      },
+      "id": "queue-calculate",
+      "name": "QUEUE - Calculer scheduled_for",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "social_queue",
+        "dataMode": "autoMapInputData",
+        "options": {}
+      },
+      "id": "queue-insert",
+      "name": "Supabase - Insérer dans queue",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [850, 400],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Article ajouté à la file d'attente\", \"scheduled_for\": $json.scheduled_for } }}"
+      },
+      "id": "queue-response",
+      "name": "Response - Queue OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 400]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "facebook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "facebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "linkedin",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "linkedin"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "instagram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "instagram"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.platform }}",
+                    "rightValue": "tiktok",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "tiktok"
+            }
+          ]
+        }
+      },
+      "id": "platform-router",
+      "name": "Switch - Router par plateforme",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v18.0/{{ $env.FACEBOOK_PAGE_ID }}/feed",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "name": "link",
+              "value": "={{ $json.article.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "publish-facebook",
+      "name": "Facebook - Publier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 100],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "facebook-auth",
+          "name": "Facebook Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"author\": \"urn:li:organization:\" + $env.LINKEDIN_ORGANIZATION_ID,\n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n        \"text\": $json.message\n      },\n      \"shareMediaCategory\": \"ARTICLE\",\n      \"media\": [\n        {\n          \"status\": \"READY\",\n          \"originalUrl\": $json.article.url\n        }\n      ]\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n  }\n} }}",
+        "options": {}
+      },
+      "id": "publish-linkedin",
+      "name": "LinkedIn - Publier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 200],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "linkedin-auth",
+          "name": "LinkedIn Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Publications en cours\", \"platforms\": $json.platforms } }}"
+      },
+      "id": "now-response",
+      "name": "Response - NOW OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Publication programmée\", \"scheduled_for\": $json.scheduledFor } }}"
+      },
+      "id": "schedule-response",
+      "name": "Response - SCHEDULE OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "content": "## Instructions:\n\n1. **Credentials à configurer:**\n   - Supabase API (pour queue)\n   - Facebook Header Auth: Authorization: Bearer YOUR_FACEBOOK_TOKEN\n   - LinkedIn Header Auth: Authorization: Bearer YOUR_LINKEDIN_TOKEN\n\n2. **Variables d'environnement:**\n   - FACEBOOK_PAGE_ID\n   - LINKEDIN_ORGANIZATION_ID\n\n3. **Instagram & TikTok:**\n   Ajoutez des noeuds HTTP Request similaires avec vos credentials\n\n4. **Test:**\n   Activez le workflow et testez depuis l'UI Next.js"
+      },
+      "id": "sticky-note",
+      "name": "Note - Configuration",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [250, 100]
+    }
+  ],
+  "connections": {
+    "Webhook - Publication réseaux sociaux": {
+      "main": [
+        [
+          {
+            "node": "Switch - Router par action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Router par action": {
+      "main": [
+        [
+          {
+            "node": "NOW - Préparer publications",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SCHEDULE - Préparer données",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "QUEUE - Calculer scheduled_for",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NOW - Préparer publications": {
+      "main": [
+        [
+          {
+            "node": "Switch - Router par plateforme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SCHEDULE - Préparer données": {
+      "main": [
+        [
+          {
+            "node": "Wait - Attendre scheduled_for",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait - Attendre scheduled_for": {
+      "main": [
+        [
+          {
+            "node": "Response - SCHEDULE OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QUEUE - Calculer scheduled_for": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Insérer dans queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Insérer dans queue": {
+      "main": [
+        [
+          {
+            "node": "Response - Queue OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Router par plateforme": {
+      "main": [
+        [
+          {
+            "node": "Facebook - Publier",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LinkedIn - Publier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook - Publier": {
+      "main": [
+        [
+          {
+            "node": "Response - NOW OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn - Publier": {
+      "main": [
+        [
+          {
+            "node": "Response - NOW OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "id": "social-publishing-webhook",
+  "meta": {
+    "instanceId": "your-instance-id"
+  },
+  "tags": []
+}
