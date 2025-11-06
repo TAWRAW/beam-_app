@@ -209,7 +209,7 @@ CLAUDE_CONTEXT.md                                  ← Ce fichier
 
 ### n8n:
 - **URL Instance**: https://n8n.srv982695.hstgr.cloud
-- **API Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MDRmYzU1Ny01ZGM1LTRhNmMtYWE3NC03ZThjZmU1ODc1ZmUiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyMjcxNDY5fQ.G7g3kV9R67yHfliheYsqHEBdohOt15bektSUL_iOkjI`
+- **API Key**: *(générer depuis n8n Settings → API → Create API Key - NE JAMAIS commiter)*
 - **Workflow existant**: https://n8n.srv982695.hstgr.cloud/workflow/7tYWNjElDzyEhmHK
 
 ### Next.js:

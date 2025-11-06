@@ -11,7 +11,7 @@
 3. Remplis :
    - **Credential name :** `Facebook Header Auth`
    - **Name :** `Authorization`
-   - **Value :** `Bearer EAAKVgUO5yTkBP5ZAG1LqiQ6UZAmG0VzVomiaipY0EdlYTEQuUNe0ZBnGWyUEOwDYGB9FgVZBZBZBuXBmECpVnmUESj47hPBkgSarXBPpi98aXhpRYYu1QlJqncgf0qlin8kpFLr0DNtzZAuhZCg1CkMpMksbG2OapUNDZCyNKWVU8jm5zpxLscHY5OQPSuc6mRN2UMOChDDyem20DTWaB4bbWyYSfJ10I3ThRjELGZAnUh`
+   - **Value :** `Bearer YOUR_FACEBOOK_ACCESS_TOKEN` *(génère un nouveau token depuis Facebook Developers - voir SETUP_WORKFLOWS_N8N.md)*
 4. **Save**
 
 ---
@@ -38,7 +38,7 @@
 3. Remplis :
    - **Credential name :** `Supabase API`
    - **Host :** `https://zhtstxdbersquchtlkzm.supabase.co`
-   - **Service Role Key :** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodHN0eGRiZXJzcXVjaHRsa3ptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODA5NTQxMSwiZXhwIjoyMDczNjcxNDExfQ.irakmwUMOjVYqw5Vx_KBPsp44oTtLnYSHtMvjcbp8w0`
+   - **Service Role Key :** *(récupère depuis ton fichier `.env.local` local - NE JAMAIS commiter)*
 4. **Save**
 
 ---

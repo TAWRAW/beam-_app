@@ -29,9 +29,9 @@
 **Configuration:**
 - **Host:** `https://zhtstxdbersquchtlkzm.supabase.co`
 - **Service Role Key:** Disponible dans `.env.local` → `SUPABASE_SERVICE_ROLE_KEY`
-  ```
-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpodHN0eGRiZXJzcXVjaHRsa3ptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODA5NTQxMSwiZXhwIjoyMDczNjcxNDExfQ.irakmwUMOjVYqw5Vx_KBPsp44oTtLnYSHtMvjcbp8w0
-  ```
+  - ⚠️ **NE JAMAIS commiter cette clé dans Git**
+  - Récupérer depuis votre fichier `.env.local` local
+  - Format: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
 
 **Note:** Ces credentials sont disponibles via le MCP Supabase si besoin.
 
