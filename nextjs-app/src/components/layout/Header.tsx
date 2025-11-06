@@ -67,6 +67,15 @@ export default function Header() {
                   >
                     Application
                   </Link>
+                  <a
+                    href="https://www.le-comptoir-de-la-copropriete.fr/?utm_source=beamo&utm_medium=navbar"
+                    rel="noopener external"
+                    target="_blank"
+                    className="block rounded px-3 py-2 text-sm text-neutral hover:bg-primary/10"
+                    role="menuitem"
+                  >
+                    Comptoir de la copropriété
+                  </a>
                 </div>
               )}
             </div>
