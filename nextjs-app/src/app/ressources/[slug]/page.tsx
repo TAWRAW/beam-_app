@@ -10,6 +10,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Revalider la page toutes les heures (3600 secondes)
+// Permet d'afficher automatiquement les modifications d'articles sans redéploiement
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   try {
     const { data: articles } = await supabase
