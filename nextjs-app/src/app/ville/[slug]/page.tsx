@@ -57,11 +57,11 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const name = city.displayName || city.name
   const dept = city.department ? ` ${city.department.split('(')[1]?.replace(')', '') || ''}` : ''
 
-  // Titre unique et optimisé pour chaque ville
-  const title = `Tom Lemeille – Syndic Indépendant ${prep} ${name}${dept}`
+  // Titre unique et optimisé pour chaque ville - Double ciblage forme courte + longue
+  const title = `Syndic ${name} | Syndic de Copropriété ${prep} ${name} | Beamô`
 
-  // Description enrichie avec éléments différenciants
-  const description = `Syndic indépendant ${prep} ${name}, basé à Vernon. Pas de franchise. Réponse sous 48h maximum, pas 3 semaines. Transparent et disponible.`
+  // Description enrichie avec "nouveau" et éléments différenciants
+  const description = `Nouveau syndic de copropriété pour ${name}, basé à Vernon. Indépendant, sans franchise, proximité garantie. L'alternative locale et moderne. Devis gratuit.`
 
   return {
     title,
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       canonical: `https://www.xn--beam-yqa.fr/ville/${city.slug}`,
     },
     openGraph: {
-      title: `Tom Lemeille – Syndic Indépendant ${prep} ${name}`,
+      title: `Syndic ${name} | Syndic de Copropriété ${prep} ${name}`,
       description,
       url: `/ville/${city.slug}`,
       type: 'website',
@@ -86,8 +86,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Tom Lemeille – Syndic Indépendant ${prep} ${name}`,
-      description: `Syndic indépendant, pas de franchise. Réponse sous 48h maximum, pas 3 semaines.`,
+      title: `Syndic ${name} | Beamô`,
+      description,
       images: ['/outils/images/beamocomptearebour.png'],
     },
     robots: {

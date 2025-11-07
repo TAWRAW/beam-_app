@@ -29,12 +29,12 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep }: Carou
             <h1 className="drop-shadow text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight break-words">
               {hasCity ? (
                 <>
-                  Le <span className="text-primary">syndic</span> local et efficace {cityPrep ?? 'à'} {cityLabel}.
+                  <span className="text-primary">Syndic {cityPrep ?? 'à'} {cityLabel}</span> : votre syndic de copropriété local et efficace.
                 </>
               ) : (
                 <>
                   {title ?? (
-                    <>Le <span className="text-primary">syndic</span> local et efficace.</>
+                    <><span className="text-primary">Syndic à Vernon</span> : votre syndic de copropriété local et efficace.</>
                   )}
                 </>
               )}

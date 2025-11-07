@@ -31,16 +31,16 @@ import FinalCta from '@/components/sections/FinalCta'
 
 // Configuration SEO principale - Point d'entrée du site
 export const metadata = {
-  title: 'Tom Lemeille – Syndic Indépendant à Vernon',
+  title: 'Syndic de Copropriété Vernon | Syndic Local Beamô | Tom Lemeille',
   description:
-    "Syndic à Vernon depuis 2023. Pas de franchise, pas de plateforme. Un interlocuteur, pas dix. Je réponds sous 48h, souvent avant. 07 75 70 70 99",
+    "Nouveau syndic de copropriété créé en 2025 à Vernon. Indépendant, transparent, sans franchise. Changez pour un syndic qui vous écoute vraiment. Devis gratuit.",
   keywords: [
     'syndic indépendant', 'Tom Lemeille', 'syndic Vernon', 'gestion copropriété', 'Vernon', 'Gaillon', 'Évreux', 'Les Andelys',
     'assemblée générale', 'Normandie', 'Eure', 'transparence', 'proximité', 'réactivité', 'syndic local', 'pas de franchise'
   ],
   openGraph: {
-    title: 'Tom Lemeille – Syndic Indépendant à Vernon',
-    description: "Syndic à Vernon depuis 2023. Pas de franchise, pas de plateforme. Un interlocuteur, pas dix. Je réponds sous 48h.",
+    title: 'Syndic de Copropriété Vernon | Syndic Local Beamô',
+    description: "Nouveau syndic de copropriété créé en 2025 à Vernon. Indépendant, transparent, sans franchise. Changez pour un syndic qui vous écoute vraiment.",
     url: '/',
     type: 'website',
     locale: 'fr_FR',
@@ -55,8 +55,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Tom Lemeille – Syndic Indépendant à Vernon',
-    description: "Pas de franchise, pas de plateforme. Un interlocuteur, pas dix. Je réponds sous 48h, souvent avant.",
+    title: 'Syndic de Copropriété Vernon | Beamô',
+    description: "Nouveau syndic de copropriété créé en 2025 à Vernon. Indépendant, transparent, sans franchise.",
   },
   alternates: { canonical: 'https://www.xn--beam-yqa.fr/' },
   robots: {
