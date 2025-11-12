@@ -25,7 +25,7 @@ export default function Features() {
             iconBgColor="bg-purple-100"
             iconColor="text-purple-600"
             title="Expertise"
-            desc="Une équipe qualifiée et passionnée, à l'écoute de vos besoins spécifiques."
+            desc="Un service qualifié et passionné, à l'écoute de vos besoins spécifiques."
           />
         </div>
       </div>

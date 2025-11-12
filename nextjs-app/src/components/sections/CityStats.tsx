@@ -47,10 +47,10 @@ export default function CityStats({ stats, ville }: CityStatsProps) {
               <div className="text-3xl font-bold text-foreground">
                 {stats.nbCoproprietes}
               </div>
-              {stats.rangDepartemental && (
+              {stats.rangDepartemental && stats.departement && (
                 <p className="text-xs text-muted-foreground mt-1">
                   {stats.rangDepartemental}
-                  <sup>e</sup> ville de l'Eure
+                  <sup>e</sup> ville {stats.departement}
                 </p>
               )}
             </CardContent>

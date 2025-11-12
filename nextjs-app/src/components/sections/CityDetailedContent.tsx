@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card'
 import { MapPin, Clock, Shield, Euro, Zap, Users } from 'lucide-react'
+import Link from 'next/link'
 
 interface CityDetailedContentProps {
   ville: string
@@ -13,6 +14,7 @@ const LOCAL_CONTEXTS: Record<string, string> = {
   vernon: "Vernon compte des copropriétés très hétérogènes : des ensembles neufs modernes côtoient des immeubles anciens chargés d'histoire, des petites copropriétés de quelques lots comme de plus grandes résidences. Le principal défi pour les copropriétaires vernonnais est de trouver un syndic capable de faire intervenir des prestataires de qualité, à la hauteur des exigences de chaque type de bien.",
   gaillon: "Gaillon bénéficie d'une position stratégique à proximité de l'A13, avec un parc immobilier diversifié allant des petites copropriétés résidentielles aux ensembles plus importants. Les copropriétaires recherchent un syndic réactif capable de gérer efficacement leurs besoins spécifiques.",
   evreux: "Préfecture de l'Eure, Évreux dispose d'un parc de copropriétés varié, des résidences récentes du centre-ville aux grands ensembles de La Madeleine et Nétreville. Les copropriétaires ébroïciens attendent un syndic moderne capable d'accompagner les projets de rénovation énergétique.",
+  rouen: "Rouen représente le marché le plus dynamique de la copropriété en Normandie, avec 2 785 copropriétés recensées gérant plus de 103 000 lots. Cette concentration fait de la capitale normande un écosystème immobilier unique, où cohabitent immeubles haussmanniens du centre historique et résidences des années 70 de la rive gauche. Contrairement aux idées reçues, 49,3 % des copropriétés rouennaises comptent entre 11 et 50 lots, un segment où Beamô souhaite se développer. Ces structures à taille humaine, souvent négligées par les grands syndics, cumulent les défis : conseils syndicaux actifs cherchant réactivité et transparence, budgets serrés nécessitant une gestion rigoureuse, et enjeux de rénovation énergétique prégnants dans un parc immobilier vieillissant. Avec un ratio parking/logement de 0,58, Rouen souffre d'un déficit structurel de stationnement qui complique la gestion quotidienne des copropriétés. Le secteur sauvegardé du centre-ville impose des contraintes architecturales strictes pour toute rénovation de façade ou amélioration énergétique. Les copropriétés des quartiers Vieux-Marché, Beauvoisine ou Jardin des Plantes nécessitent une expertise réglementaire pointue pour concilier patrimoine et performance thermique. Malgré 46 syndics actifs, le marché rouennais présente une concentration modérée laissant place à une réelle concurrence. Cette professionnalisation massive n'a pas résolu les irritants récurrents : manque de réactivité, facturation opaque des prestations, turnover des gestionnaires, difficultés à joindre son interlocuteur. C'est précisément ces frustrations que Beamô souhaite adresser avec une approche moderne : plateforme numérique accessible 24/7, tarification transparente, gestionnaire dédié joignable.",
 }
 
 export default function CityDetailedContent({ ville, prep, neighborhoods, citySlug }: CityDetailedContentProps) {
@@ -70,7 +72,7 @@ export default function CityDetailedContent({ ville, prep, neighborhoods, citySl
                     Flexibilité et déplacements
                   </h3>
                   <p className="text-muted-foreground">
-                    <strong className="text-foreground">Nous nous déplaçons chez vous plutôt que de vous faire venir à nos bureaux.</strong> Visites techniques, réunions de conseil syndical, états des lieux : notre équipe se rend sur place {prep} {ville} aussi souvent que nécessaire. Un syndic vraiment de proximité.
+                    <strong className="text-foreground">Nous nous déplaçons chez vous plutôt que de vous faire venir à nos bureaux.</strong> Visites techniques, réunions de conseil syndical, états des lieux : nous nous rendons sur place {prep} {ville} aussi souvent que nécessaire. Un syndic vraiment de proximité.
                   </p>
                 </div>
               </div>
@@ -102,7 +104,7 @@ export default function CityDetailedContent({ ville, prep, neighborhoods, citySl
                 de prestataires de confiance implantés localement.
               </p>
               <p className="text-muted-foreground">
-                Notre équipe connaît les enjeux spécifiques des copropriétés {prep} {ville} : climat normand nécessitant
+                Nous connaissons les enjeux spécifiques des copropriétés {prep} {ville} : climat normand nécessitant
                 un entretien régulier des toitures et façades, problématiques d'isolation thermique des bâtiments anciens,
                 et réglementations locales d'urbanisme.
               </p>
@@ -111,12 +113,16 @@ export default function CityDetailedContent({ ville, prep, neighborhoods, citySl
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Clock className="h-5 w-5 text-primary" />
-                Réactivité garantie 48h
+                Réactivité garantie
               </h3>
               <p className="text-muted-foreground mb-4">
                 Contrairement aux grands groupes nationaux où vos demandes peuvent mettre des semaines avant d'être traitées,
-                nous nous engageons à vous répondre sous 48h ouvrées maximum. Fuite d'eau, problème de chauffage collectif,
-                ou simple question administrative : vous avez toujours un interlocuteur disponible.
+                nous nous engageons à vous répondre sous 48h ouvrées maximum pour toute demande administrative.
+              </p>
+              <p className="text-muted-foreground mb-4">
+                <strong className="text-foreground">Pour les urgences (fuite d'eau, inondation, problème de chauffage, sécurité),
+                nous intervenons ou faisons intervenir le bon prestataire dès les premières minutes suivant votre appel.</strong> Nous ne laissons
+                jamais une copropriété seule face à une situation critique. Vous avez toujours un interlocuteur joignable.
               </p>
               <p className="text-muted-foreground">
                 Chaque copropriété dispose d'un gestionnaire dédié qui connaît votre immeuble et son historique.
@@ -196,7 +202,7 @@ export default function CityDetailedContent({ ville, prep, neighborhoods, citySl
                 Réseau de prestataires qualifiés {prep} {ville}
               </h3>
               <p className="text-muted-foreground mb-3">
-                <strong className="text-foreground">L'un des défis majeurs {prep} {ville} est de faire intervenir des prestataires de qualité, à la hauteur des exigences de chaque copropriété.</strong> Chez Beamô, nous avons constitué au fil des années un réseau d'artisans et d'entreprises locales sélectionnées avec soin :
+                <strong className="text-foreground">L'un des défis majeurs {prep} {ville} est de faire intervenir des prestataires de qualité, à la hauteur des exigences de chaque copropriété.</strong> Chez Beamô, nous constituons un réseau d'artisans et d'entreprises locales sélectionnées avec soin :
               </p>
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-start gap-2">
@@ -226,7 +232,7 @@ export default function CityDetailedContent({ ville, prep, neighborhoods, citySl
             </Card>
 
             <p className="text-muted-foreground">
-              <strong className="text-foreground">Syndic de proximité</strong> : Nos gestionnaires se déplacent
+              <strong className="text-foreground">Syndic de proximité</strong> : Nous nous déplaçons
               régulièrement dans votre copropriété pour les visites techniques, les états des lieux, et le suivi
               des travaux. La proximité géographique nous permet d'être présents quand vous en avez besoin, sans
               délai d'intervention excessif comme avec les syndics parisiens ou nationaux.
@@ -291,39 +297,44 @@ export default function CityDetailedContent({ ville, prep, neighborhoods, citySl
             </Card>
           </div>
 
-          <Card className="border-2 border-black bg-white p-6 mt-6">
+          <Card className="border-2 border-primary bg-primary/5 p-6 mt-6">
             <h3 className="text-xl font-semibold text-foreground mb-3">
-              Changement de syndic {prep} {ville} : nous nous occupons de tout
+              Changement de syndic {prep} {ville} : nous gérons tout de A à Z
             </h3>
             <p className="text-muted-foreground mb-3">
-              Vous souhaitez changer de syndic pour Beamô ? Le processus est simple et nous vous accompagnons
-              à chaque étape :
+              Vous envisagez de changer de syndic {prep} {ville} ? Vous n'êtes pas seul :
+              de nombreuses copropriétés franchissent le pas chaque année pour retrouver
+              proximité, réactivité et transparence.
             </p>
-            <ol className="list-decimal list-inside space-y-2 text-muted-foreground mb-3">
-              <li>
-                <strong className="text-foreground">Audit gratuit</strong> : Nous analysons votre situation
-                actuelle et vous proposons un devis détaillé
-              </li>
-              <li>
-                <strong className="text-foreground">Préparation de l'AG</strong> : Nous rédigeons la résolution
-                de changement de syndic conforme à la loi Alur
-              </li>
-              <li>
-                <strong className="text-foreground">Vote en assemblée</strong> : Le changement est voté par
-                les copropriétaires (majorité simple)
-              </li>
-              <li>
-                <strong className="text-foreground">Transfert des documents</strong> : Nous récupérons tous
-                les documents auprès de l'ancien syndic (dossiers, archives, comptabilité)
-              </li>
-              <li>
-                <strong className="text-foreground">Prise en main</strong> : Nous prenons immédiatement le relais
-                de la gestion courante sans interruption de service
-              </li>
-            </ol>
-            <p className="text-muted-foreground">
-              Aucun frais de changement de syndic ne vous sera facturé. La transition est totalement gratuite
-              et sécurisée, conformément à la réglementation en vigueur.
+
+            {/* CTA vers article guide - uniquement pour Évreux pour l'instant */}
+            {citySlug === 'evreux' && (
+              <div className="bg-white border-2 border-black rounded-lg p-5 mb-4">
+                <div className="flex items-start gap-4">
+                  <div className="text-4xl">📖</div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-foreground mb-2">
+                      Guide complet : Changer de syndic à Évreux
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Procédure détaillée, délais réels, spécificités du marché ébroïcien
+                      (410 copros, 23 syndics), témoignages et retours d'expérience.
+                      <strong className="text-foreground"> Lecture 8 min.</strong>
+                    </p>
+                    <Link
+                      href="/ressources/changer-syndic-copropriete-evreux"
+                      className="inline-block bg-primary text-black font-semibold px-5 py-2 rounded-lg hover:bg-primary/90 transition text-sm"
+                    >
+                      Lire le guide complet →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <p className="text-muted-foreground text-sm">
+              <strong className="text-foreground">Aucun frais de changement</strong> :
+              La transition est gratuite et sécurisée, conformément à la réglementation.
             </p>
           </Card>
         </div>

@@ -91,6 +91,7 @@ export function formatVilleStats(
     pourcentageSyndicPro,
     pourcentageSyndicBenevole,
     periodePrincipalConstruction: periodePrincipale.periode,
+    departement: data.territoire.departement,
     rangDepartemental: data.metadata.rang_departemental,
     rangNational: data.metadata.rang_national,
   }

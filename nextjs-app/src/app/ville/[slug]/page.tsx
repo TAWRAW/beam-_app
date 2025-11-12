@@ -58,10 +58,14 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const dept = city.department ? ` ${city.department.split('(')[1]?.replace(')', '') || ''}` : ''
 
   // Titre unique et optimisé pour chaque ville - Double ciblage forme courte + longue
-  const title = `Syndic ${name} | Syndic de Copropriété ${prep} ${name} | Beamô`
+  const title = city.slug === 'rouen'
+    ? `Syndic de copropriété à Rouen | Beamô Normandie`
+    : `Syndic ${name} | Syndic de Copropriété ${prep} ${name} | Beamô`
 
   // Description enrichie avec "nouveau" et éléments différenciants
-  const description = `Nouveau syndic de copropriété pour ${name}, basé à Vernon. Indépendant, sans franchise, proximité garantie. L'alternative locale et moderne. Devis gratuit.`
+  const description = city.slug === 'rouen'
+    ? `2 785 copropriétés à Rouen cherchent réactivité et transparence. Beamô propose un syndic tech, local et accessible, spécialisé dans les copros de 11-50 lots.`
+    : `Nouveau syndic de copropriété pour ${name}, basé à Vernon. Indépendant, sans franchise, proximité garantie. L'alternative locale et moderne. Devis gratuit.`
 
   return {
     title,
@@ -248,13 +252,21 @@ export default async function CityPage({ params }: { params: Params }) {
       <Services />
 
       {/* Stats copropriétés ANAH - Contenu unique vs concurrence */}
-      {stats && <CityStats stats={stats} ville={label} />}
+      {/* Masqué pour Rouen car données API incorrectes (en attente correction API) */}
+      {stats && city.slug !== 'rouen' && <CityStats stats={stats} ville={label} />}
 
       {/* Contenu enrichi SEO - 800-1000 mots */}
       <CityDetailedContent ville={label} prep={prep} neighborhoods={city.neighborhoods} citySlug={city.slug} />
 
       <FAQ
-        items={[
+        items={city.slug === 'rouen' ? [
+          { q: `Combien coûte un syndic de copropriété à ${label} ?`, a: 'À Rouen, les honoraires de syndic varient généralement entre 15 et 30 € par lot/an pour une copropriété moyenne (11-50 lots). Beamô pratique une tarification transparente, sans frais cachés ni prestations facturées en supplément. Nous détaillons chaque poste dans le contrat, conformément à la loi ALUR.' },
+          { q: `Pourquoi changer de syndic à ${label} ?`, a: 'Sur 2 785 copropriétés rouennaises, beaucoup rencontrent les mêmes difficultés : gestionnaire injoignable, facturation opaque, manque de réactivité sur les urgences (fuites, pannes ascenseur). La loi ALUR facilite le changement : il suffit d\'un vote en assemblée générale à la majorité absolue.' },
+          { q: `Quelle est votre zone d'intervention autour de ${label} ?`, a: 'Depuis notre siège à Vernon, nous couvrons toute la métropole Rouen Normandie et les communes limitrophes (Bois-Guillaume, Mont-Saint-Aignan, Sotteville-lès-Rouen, Le Petit-Quevilly, etc.). Notre organisation moderne nous permet d\'assurer la même réactivité qu\'un syndic local, avec des visites régulières programmées et des interventions d\'urgence sous 24h.' },
+          { q: `Proposez-vous un extranet pour gérer la copropriété ?`, a: 'Oui, nous mettons à disposition un extranet moderne accessible 24h/24 où vous pouvez consulter tous les documents de votre copropriété (PV, contrats, factures), suivre les interventions en temps réel, et communiquer avec votre gestionnaire.' },
+          { q: `Intervenez-vous ${prep} ${label} et dans quels quartiers ?`, a: `Oui, nous couvrons ${label} et tous ses quartiers${city.neighborhoods ? ` (${city.neighborhoods.join(', ')})` : ''}, ainsi que les communes limitrophes. Notre proximité nous permet d'intervenir rapidement partout dans la zone.` },
+          { q: `Organisez-vous les assemblées générales ${prep} ${label} ?`, a: `Oui, nous nous occupons de toute l'organisation : convocations dans les délais légaux, préparation de l'ordre du jour avec le conseil syndical, rédaction du budget prévisionnel, tenue de l'AG (en présentiel ou visioconférence), et rédaction du procès-verbal dans les délais impartis.` },
+        ] : [
           { q: `Quel est le délai de réponse de votre syndic ${prep} ${label} ?`, a: 'Nous nous engageons à répondre sous 48h ouvrées maximum à toutes vos demandes. Pour les urgences (fuite d\'eau, problème de chauffage, sécurité), nous intervenons dans les plus brefs délais, souvent le jour même.' },
           { q: `Comment se passe un changement de syndic ${prep} ${label} ?`, a: `Le changement de syndic est simple : après un audit gratuit de votre copropriété, nous préparons la résolution pour l'assemblée générale. Une fois votée en AG (majorité simple), nous récupérons tous les documents auprès de votre ancien syndic et prenons le relais immédiatement. Aucun frais de changement ne vous sera facturé.` },
           { q: `Proposez-vous un extranet pour gérer la copropriété ?`, a: 'Oui, nous mettons à disposition un extranet moderne accessible 24h/24 où vous pouvez consulter tous les documents de votre copropriété (PV, contrats, factures), suivre les interventions en temps réel, et communiquer avec votre gestionnaire.' },
@@ -289,7 +301,14 @@ export default async function CityPage({ params }: { params: Params }) {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
-            mainEntity: [
+            mainEntity: city.slug === 'rouen' ? [
+              { '@type': 'Question', name: `Combien coûte un syndic de copropriété à ${label} ?`, acceptedAnswer: { '@type': 'Answer', text: 'À Rouen, les honoraires de syndic varient généralement entre 15 et 30 € par lot/an pour une copropriété moyenne (11-50 lots). Beamô pratique une tarification transparente, sans frais cachés ni prestations facturées en supplément.' } },
+              { '@type': 'Question', name: `Pourquoi changer de syndic à ${label} ?`, acceptedAnswer: { '@type': 'Answer', text: 'Sur 2 785 copropriétés rouennaises, beaucoup rencontrent les mêmes difficultés : gestionnaire injoignable, facturation opaque, manque de réactivité. La loi ALUR facilite le changement : vote en AG à la majorité absolue.' } },
+              { '@type': 'Question', name: `Quelle est votre zone d'intervention autour de ${label} ?`, acceptedAnswer: { '@type': 'Answer', text: 'Depuis notre siège à Vernon, nous couvrons toute la métropole Rouen Normandie et communes limitrophes avec la même réactivité qu\'un syndic local.' } },
+              { '@type': 'Question', name: 'Proposez-vous un extranet pour gérer la copropriété ?', acceptedAnswer: { '@type': 'Answer', text: 'Oui, extranet accessible 24h/24 pour consulter documents, suivre interventions et communiquer avec votre gestionnaire.' } },
+              { '@type': 'Question', name: `Intervenez-vous ${prep} ${label} et dans quels quartiers ?`, acceptedAnswer: { '@type': 'Answer', text: `Oui, nous couvrons ${label} et tous ses quartiers${city.neighborhoods ? ` (${city.neighborhoods.join(', ')})` : ''}, ainsi que les communes limitrophes.` } },
+              { '@type': 'Question', name: `Organisez-vous les assemblées générales ${prep} ${label} ?`, acceptedAnswer: { '@type': 'Answer', text: 'Oui, organisation complète : convocations, ordre du jour, budget, tenue AG (présentiel ou visio), PV dans les délais.' } },
+            ] : [
               { '@type': 'Question', name: `Quel est le délai de réponse de votre syndic ${prep} ${label} ?`, acceptedAnswer: { '@type': 'Answer', text: 'Nous nous engageons à répondre sous 48h ouvrées maximum à toutes vos demandes. Pour les urgences, nous intervenons dans les plus brefs délais, souvent le jour même.' } },
               { '@type': 'Question', name: `Comment se passe un changement de syndic ${prep} ${label} ?`, acceptedAnswer: { '@type': 'Answer', text: `Audit gratuit, préparation de la résolution AG, vote en assemblée (majorité simple), récupération des documents, prise en main immédiate. Aucun frais de changement facturé.` } },
               { '@type': 'Question', name: 'Proposez-vous un extranet pour gérer la copropriété ?', acceptedAnswer: { '@type': 'Answer', text: 'Oui, extranet accessible 24h/24 pour consulter documents, suivre interventions et communiquer avec votre gestionnaire.' } },

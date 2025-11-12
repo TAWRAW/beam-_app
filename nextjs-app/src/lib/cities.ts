@@ -18,6 +18,7 @@ export type City = {
 export const cities: City[] = [
   { slug: 'vernon', name: 'Vernon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27200', neighborhoods: ['Vernonnet', 'Les Blanchères', 'Les Boutardes', 'Le Moussel', 'Le Parc', 'Glatigny', 'Fieschi', 'Le Petit Val', 'Ma Campagne', 'Valmeux'] },
   { slug: 'evreux', name: 'Évreux', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27000', neighborhoods: ['Centre-ville', 'La Madeleine', 'Nétreville', 'Saint-Michel', 'Saint-Léger', 'Navarre', 'Clos au Duc', 'La Poterie'] },
+  { slug: 'rouen', name: 'Rouen', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76000', neighborhoods: ['Vieux-Marché', 'Saint-Sever', 'Grammont', 'Pasteur', 'Jardin des Plantes', 'Beauvoisine', 'Jouvenet', 'Grand Mare', 'Quartier Sud', 'Quartier Ouest', 'Centre Historique', 'Rive Gauche'] },
   { slug: 'les-andelys', name: 'Les Andelys', displayName: 'Andelys', displayPrep: 'Aux', department: 'Eure (27)', region: 'Normandie', prep: 'aux', postalCode: '27700', neighborhoods: ['Grand Andely', 'Petit Andely', 'Centre historique'] },
   { slug: 'louviers', name: 'Louviers', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27400', neighborhoods: ['Centre-ville', 'Les Oiseaux', 'Maison Rouge'] },
   { slug: 'gaillon', name: 'Gaillon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27600', neighborhoods: ['Quartier Nord', 'Quartier Sud-Ouest', 'Aubevoye', 'Saint-Aubin-sur-Gaillon'] },

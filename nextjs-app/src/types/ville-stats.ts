@@ -68,6 +68,7 @@ export interface VilleStatsFormatted {
   pourcentageSyndicPro: number
   pourcentageSyndicBenevole: number
   periodePrincipalConstruction: string
+  departement?: string
   rangDepartemental?: number
   rangNational?: number
 }

@@ -22,7 +22,7 @@ export default function Footer() {
                   </li>
                 )
               })}
-              <li><a href="/comment-changer-syndic" className="hover:text-primary">Comment changer de syndic</a></li>
+              <li><a href="/ressources/comment-changer-de-syndic" className="hover:text-primary">Comment changer de syndic</a></li>
             </ul>
           </div>
 
@@ -30,7 +30,7 @@ export default function Footer() {
             <h3 className="text-primary relative mb-6 text-lg font-semibold after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-10 after:bg-primary">À propos</h3>
             <ul className="space-y-3 text-[#ccc]">
               <li><a href="/qui-sommes-nous" className="hover:text-primary">Notre histoire</a></li>
-              <li><a href="#" className="hover:text-primary">Notre équipe</a></li>
+              <li><a href="/ressources/origine-nom-beamo" className="hover:text-primary">D'où vient le nom Beamô ?</a></li>
               <li><a href="#" className="hover:text-primary">Notre approche</a></li>
               <li><a href="#" className="hover:text-primary">Actualités</a></li>
               <li><a href="#" className="hover:text-primary">Vitrine</a></li>
