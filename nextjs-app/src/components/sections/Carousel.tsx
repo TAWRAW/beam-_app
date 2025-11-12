@@ -34,7 +34,7 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep }: Carou
               ) : (
                 <>
                   {title ?? (
-                    <><span className="text-primary">Syndic à Vernon</span> : votre syndic de copropriété local et efficace.</>
+                    <><span className="text-primary">Syndic de copropriété</span> local et efficace.</>
                   )}
                 </>
               )}
