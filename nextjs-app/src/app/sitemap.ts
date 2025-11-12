@@ -2,6 +2,13 @@ import type { MetadataRoute } from 'next'
 import { getCitySlugs } from '@/lib/cities'
 import { createClient } from '@supabase/supabase-js'
 
+// Vérifier que les variables d'environnement sont définies
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('❌ Sitemap: Missing Supabase environment variables')
+  console.error('   NEXT_PUBLIC_SUPABASE_URL:', !!process.env.NEXT_PUBLIC_SUPABASE_URL)
+  console.error('   SUPABASE_SERVICE_ROLE_KEY:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -116,27 +123,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Articles publiés - priorité haute pour le contenu
   try {
+    console.log('🔍 Sitemap: Fetching published articles from Supabase...')
+
     const { data: articles, error } = await supabase
       .from('articles')
-      .select('slug, updated_at, published_at')
+      .select('slug, updated_at, published_at, title')
       .eq('status', 'published')
       .order('published_at', { ascending: false })
 
-    if (!error && articles) {
+    if (error) {
+      console.error('❌ Sitemap: Error fetching articles:', error.message)
+      console.error('   Error details:', JSON.stringify(error, null, 2))
+    } else if (!articles || articles.length === 0) {
+      console.warn('⚠️  Sitemap: No published articles found in database')
+      console.warn('   Make sure articles have status="published" and published_at is set')
+    } else {
+      console.log(`✅ Sitemap: Found ${articles.length} published article(s)`)
+
       for (const article of articles) {
+        const articleUrl = `${base}/ressources/${article.slug}`
         entries.push({
-          url: `${base}/ressources/${article.slug}`,
+          url: articleUrl,
           lastModified: new Date(article.updated_at || article.published_at),
           changeFrequency: 'monthly',
           priority: 0.8 // Priorité élevée pour le contenu éditorial
         })
+
+        console.log(`   - Added: ${articleUrl} (${article.title})`)
       }
-      console.log(`✅ Sitemap: Added ${articles.length} published articles`)
-    } else {
-      console.error('❌ Sitemap: Error fetching articles:', error)
     }
   } catch (error) {
     console.error('❌ Sitemap: Exception fetching articles:', error)
+    console.error('   This may indicate a connection issue with Supabase')
   }
 
   return entries
