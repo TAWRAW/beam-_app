@@ -6,7 +6,10 @@ import { z } from 'zod'
 
 const schema = z.object({
   name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  email: z.string().email('Adresse email invalide'),
+  email: z.string().min(1, 'L\'email est requis').refine(
+    (email) => email.includes('@'),
+    { message: 'L\'email doit contenir un @' }
+  ),
   message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
   phone: z.string().optional(),
   copro: z.string().optional(),
