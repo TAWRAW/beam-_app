@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trackEvent } from '@/components/analytics/GA'
-import emailjs from '@emailjs/browser'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,20 +9,11 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 
-const PUB_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
-const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
-
 export default function ContactForm() {
   const [status, setStatus] = useState<null | { ok: boolean; message: string }>(null)
   const [rgpdConsent, setRgpdConsent] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    if (PUB_KEY) {
-      try { emailjs.init(PUB_KEY) } catch {}
-    }
-  }, [])
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -47,34 +37,65 @@ export default function ContactForm() {
     const payload = {
       name: (formData.get('name') as string) || '',
       email: (formData.get('email') as string) || '',
-      phone: (formData.get('phone') as string) || 'Non spécifié',
-      copro: (formData.get('copro') as string) || 'Non spécifié',
+      phone: (formData.get('phone') as string) || '',
+      copro: (formData.get('copro') as string) || '',
       message: (formData.get('message') as string) || '',
-      to_email: process.env.NEXT_PUBLIC_EMAIL_TO || 'tom.lemeille@beamô.fr',
+      hp,
     }
 
-    if (!PUB_KEY || !SERVICE_ID || !TEMPLATE_ID) {
-      setStatus({ ok: false, message: 'Configuration EmailJS manquante. Merci de réessayer plus tard.' })
-      return
-    }
+    setIsSubmitting(true)
+    setStatus(null)
 
     try {
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        // Handle error responses - show server error message if available
+        let errorMessage = "Une erreur est survenue lors de l'envoi de votre message."
+
+        if (response.status === 429) {
+          errorMessage = 'Trop de tentatives. Veuillez patienter 30 secondes.'
+        } else if (response.status === 400) {
+          // Show validation errors from server
+          if (data.error) {
+            errorMessage = `Erreur: ${data.error}`
+          }
+          if (data.issues && Array.isArray(data.issues)) {
+            const issueMessages = data.issues.map((issue: any) =>
+              `${issue.path?.join('.')}: ${issue.message}`
+            ).join(', ')
+            errorMessage = `Veuillez corriger: ${issueMessages}`
+          }
+        } else if (data.error) {
+          errorMessage = `Erreur: ${data.error}`
+        }
+
+        console.error('Contact form error:', { status: response.status, data })
+        setStatus({ ok: false, message: errorMessage })
+        setIsSubmitting(false)
+        return
+      }
+
+      // Success
       setStatus({ ok: true, message: 'Votre message a été envoyé avec succès !' })
       form.reset()
-      setRgpdConsent(false) // Reset RGPD consent
+      setRgpdConsent(false)
+
       // Analytics event (if GA enabled)
       trackEvent('contact_submit_success', { location: 'contact_page' })
+
       // Redirect to thank you page after a short delay
       setTimeout(() => router.push('/merci'), 300)
     } catch (err: any) {
-      let message = "Une erreur est survenue lors de l'envoi de votre message."
-      const status = err?.status
-      if (status === 400) message = 'Erreur de configuration EmailJS (400).'
-      else if (status === 401) message = 'Clé EmailJS invalide (401).'
-      else if (status === 403) message = 'Service EmailJS non autorisé (403).'
-      else if (status === 404) message = 'Service ou template EmailJS introuvable (404).'
-      setStatus({ ok: false, message })
+      console.error('Contact form error:', err)
+      setStatus({ ok: false, message: "Une erreur est survenue. Veuillez réessayer plus tard." })
+      setIsSubmitting(false)
     }
   }
 
@@ -134,8 +155,13 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <Button type="submit" size="lg" className="border-2 border-black">
-        Envoyer mon message
+      <Button
+        type="submit"
+        size="lg"
+        className="border-2 border-black"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Envoi en cours...' : 'Envoyer mon message'}
       </Button>
       {status && (
         <p className={`mt-2 text-sm ${status.ok ? 'text-green-600' : 'text-red-600'}`}>{status.message}</p>

@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -21,8 +21,11 @@ const WINDOW_MS = 30 * 1000
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
+    console.log('📧 Contact form submission:', { name: body.name, email: body.email })
+
     const parsed = schema.safeParse(body)
     if (!parsed.success) {
+      console.error('❌ Validation failed:', parsed.error.issues)
       return NextResponse.json({ error: 'Bad request', issues: parsed.error.issues }, { status: 400 })
     }
     const { name, email, message, phone, copro, token, hp } = parsed.data
@@ -53,33 +56,35 @@ export async function POST(req: NextRequest) {
       if (!data.success) return NextResponse.json({ error: 'Captcha failed' }, { status: 400 })
     }
 
-    // SMTP transporter (OVH)
-    const host = process.env.SMTP_HOST || 'ssl0.ovh.net'
-    const port = Number(process.env.SMTP_PORT || 465)
-    const secure = String(process.env.SMTP_SECURE || 'true') === 'true'
-    const user = process.env.SMTP_USER
-    const pass = process.env.SMTP_PASS
-    const to = process.env.CONTACT_TO || user
-    if (!user || !pass || !to) {
+    // Resend configuration
+    const apiKey = process.env.RESEND_API_KEY
+    const to = process.env.CONTACT_TO || 'tom.lemeille@beamo.fr'
+
+    if (!apiKey) {
+      console.error('RESEND_API_KEY is not configured')
       return NextResponse.json({ error: 'Server email not configured' }, { status: 500 })
     }
 
-    const transporter = nodemailer.createTransport({ host, port, secure, auth: { user, pass } })
+    const resend = new Resend(apiKey)
 
-    const subject = `Nouveau message Beamô — ${name}`
-    const text = `Nom: ${name}\nEmail: ${email}\nTéléphone: ${phone || '-'}\nCopro: ${copro || '-'}\n\nMessage:\n${message}`
-
-    await transporter.sendMail({
-      from: user,
-      to,
-      subject,
-      text,
+    // Send email using Resend
+    // Note: Using the root domain verified in Resend
+    const { data, error } = await resend.emails.send({
+      from: 'Beamô Contact <contact@xn--beam-yqa.fr>',
+      to: [to],
       replyTo: email,
+      subject: `Nouveau message Beamô — ${name}`,
+      text: `Nom: ${name}\nEmail: ${email}\nTéléphone: ${phone || '-'}\nCopro: ${copro || '-'}\n\nMessage:\n${message}`,
     })
 
-    return NextResponse.json({ ok: true })
+    if (error) {
+      console.error('Resend error:', error)
+      return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    }
+
+    return NextResponse.json({ ok: true, id: data?.id })
   } catch (err: any) {
+    console.error('Contact form error:', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
-
