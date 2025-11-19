@@ -56,26 +56,8 @@ export default function ContactForm() {
       const data = await response.json()
 
       if (!response.ok) {
-        // Handle error responses - show server error message if available
-        let errorMessage = "Une erreur est survenue lors de l'envoi de votre message."
-
-        if (response.status === 429) {
-          errorMessage = 'Trop de tentatives. Veuillez patienter 30 secondes.'
-        } else if (response.status === 400) {
-          // Show validation errors from server
-          if (data.error) {
-            errorMessage = `Erreur: ${data.error}`
-          }
-          if (data.issues && Array.isArray(data.issues)) {
-            const issueMessages = data.issues.map((issue: any) =>
-              `${issue.path?.join('.')}: ${issue.message}`
-            ).join(', ')
-            errorMessage = `Veuillez corriger: ${issueMessages}`
-          }
-        } else if (data.error) {
-          errorMessage = `Erreur: ${data.error}`
-        }
-
+        // Display server error message directly (already in French)
+        const errorMessage = data.error || "Une erreur est survenue lors de l'envoi de votre message."
         console.error('Contact form error:', { status: response.status, data })
         setStatus({ ok: false, message: errorMessage })
         setIsSubmitting(false)

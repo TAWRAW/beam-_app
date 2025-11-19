@@ -5,9 +5,9 @@ import { Resend } from 'resend'
 import { z } from 'zod'
 
 const schema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  message: z.string().min(10),
+  name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
+  email: z.string().email('Adresse email invalide'),
+  message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
   phone: z.string().optional(),
   copro: z.string().optional(),
   token: z.string().optional(), // Turnstile token
@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
     const parsed = schema.safeParse(body)
     if (!parsed.success) {
       console.error('❌ Validation failed:', parsed.error.issues)
-      return NextResponse.json({ error: 'Bad request', issues: parsed.error.issues }, { status: 400 })
+      // Format validation errors in French
+      const errors = parsed.error.issues.map(issue => issue.message).join(', ')
+      return NextResponse.json({ error: errors, issues: parsed.error.issues }, { status: 400 })
     }
     const { name, email, message, phone, copro, token, hp } = parsed.data
 
@@ -40,20 +42,20 @@ export async function POST(req: NextRequest) {
     const now = Date.now()
     const last = lastHit.get(ip) || 0
     if (now - last < WINDOW_MS) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+      return NextResponse.json({ error: 'Trop de tentatives. Veuillez patienter 30 secondes.' }, { status: 429 })
     }
     lastHit.set(ip, now)
 
     // Optional Turnstile verification
     if (process.env.TURNSTILE_SECRET_KEY) {
-      if (!token) return NextResponse.json({ error: 'Captcha required' }, { status: 400 })
+      if (!token) return NextResponse.json({ error: 'Veuillez valider le captcha' }, { status: 400 })
       const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ secret: process.env.TURNSTILE_SECRET_KEY, response: token }),
       })
       const data = await verifyRes.json()
-      if (!data.success) return NextResponse.json({ error: 'Captcha failed' }, { status: 400 })
+      if (!data.success) return NextResponse.json({ error: 'Échec de la validation du captcha' }, { status: 400 })
     }
 
     // Resend configuration
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       console.error('RESEND_API_KEY is not configured')
-      return NextResponse.json({ error: 'Server email not configured' }, { status: 500 })
+      return NextResponse.json({ error: 'Erreur de configuration du serveur' }, { status: 500 })
     }
 
     const resend = new Resend(apiKey)
@@ -79,12 +81,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error('Resend error:', error)
-      return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+      return NextResponse.json({ error: "Erreur lors de l'envoi du message" }, { status: 500 })
     }
 
     return NextResponse.json({ ok: true, id: data?.id })
   } catch (err: any) {
     console.error('Contact form error:', err)
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
