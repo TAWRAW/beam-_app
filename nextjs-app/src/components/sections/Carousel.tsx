@@ -26,7 +26,7 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep }: Carou
         {/* Centered copy; larger, responsive typography */}
         <div className="relative z-10 mx-auto flex h-full max-w-5xl items-center px-4 sm:px-6 text-white">
           <div>
-            <h1 className="drop-shadow text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight break-words">
+            <h2 className="drop-shadow text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight break-words">
               {hasCity ? (
                 <>
                   <span className="text-primary">Syndic {cityPrep ?? 'à'} {cityLabel}</span> : votre syndic de copropriété local et efficace.
@@ -38,7 +38,7 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep }: Carou
                   )}
                 </>
               )}
-            </h1>
+            </h2>
             <h2 className="mt-4 drop-shadow text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold">{subtitle ?? 'Une réponse en 48h garantie.'}</h2>
           </div>
         </div>

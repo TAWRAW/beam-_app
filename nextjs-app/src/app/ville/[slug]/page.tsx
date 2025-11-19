@@ -102,19 +102,19 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       'max-video-preview': -1,
     },
     keywords: [
-      `syndic ${city.name}`,
-      `syndic de copropriété ${city.name}`,
-      `gestion copropriété ${city.name}`,
+      `syndic copropriété ${city.name}`,
+      `syndic ${city.name} ${city.postalCode || ''}`,
       `changement syndic ${city.name}`,
-      `syndic ${city.postalCode || ''}`,
-      city.name,
-      name,
-      'syndic local',
-      'syndic proximité',
-      'syndic transparent',
-      'assemblée générale',
-      'charges copropriété',
-      ...(city.neighborhoods ? city.neighborhoods.slice(0, 3) : [])
+      `gestion copropriété ${city.name}`,
+      `syndic local ${city.name}`,
+      `syndic proximité ${city.name} ${city.department?.split('(')[0].trim() || ''}`,
+      `assemblée générale ${city.name}`,
+      `tarif syndic ${city.name}`,
+      `conseil syndical ${city.name}`,
+      `charges copropriété ${city.name}`,
+      `syndic petite copropriété ${city.name}`,
+      `gestionnaire copropriété ${city.name}`,
+      ...(city.neighborhoods || [])
     ],
   }
 }
