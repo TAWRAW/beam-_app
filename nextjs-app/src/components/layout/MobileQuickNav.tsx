@@ -88,7 +88,7 @@ export default function MobileQuickNav() {
               <div className="grid gap-2">
                 <Link href="/apps" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Application</Link>
                 <Link href="/ressources/contact" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Nous contacter</Link>
-                <Link href="/en-cours" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Extranet</Link>
+                <a href="https://estale.app/auth/signin" target="_blank" rel="noopener noreferrer" className="block rounded px-3 py-3 hover:bg-primary/10">Extranet</a>
                 <Link href="/ressources" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Ressources</Link>
               </div>
               <div className="mt-3 text-right">
