@@ -82,7 +82,7 @@ export default function Header() {
           </nav>
           <div className="nav-buttons flex items-center gap-2">
             <Button asChild variant="outline" size="sm" className="border-2 border-primary text-sm md:text-base">
-              <Link href="/en-cours">Extranet</Link>
+              <a href="https://estale.app/auth/signin" target="_blank" rel="noopener noreferrer">Extranet</a>
             </Button>
             <Button asChild size="sm" className="border-2 border-black text-sm md:text-base">
               <Link href="/ressources/contact">
