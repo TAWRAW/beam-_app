@@ -86,10 +86,11 @@ export default function MobileQuickNav() {
             <div className="rounded-t-2xl border border-black/10 bg-white p-4 shadow-xl">
               <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-gray-300" />
               <div className="grid gap-2">
+                <Link href="/ressources" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Articles</Link>
+                <Link href="/outils" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Outils</Link>
                 <Link href="/apps" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Application</Link>
                 <Link href="/ressources/contact" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Nous contacter</Link>
                 <Link href="/en-cours" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Extranet</Link>
-                <Link href="/ressources" className="block rounded px-3 py-3 hover:bg-primary/10" onClick={() => setOpen(false)}>Ressources</Link>
               </div>
               <div className="mt-3 text-right">
                 <button className="btn btn-extranet" onClick={() => setOpen(false)}>Fermer</button>

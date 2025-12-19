@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { MandatSchema, type MandatInput, computeDateFin, computeDureeHeures, computeTTC } from '@/schemas/mandat'
+import { CoproprietSearch } from '@/components/mandats/CoproprietSearch'
+import type { CoproprietePourMandat } from '@/lib/comptoir-api'
 
 const TVA_RATE = Number(process.env.NEXT_PUBLIC_TVA_TAUX ?? '0')
 
@@ -43,6 +45,17 @@ export default function MandatsPage() {
 
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<{ docUrl?: string; pdfUrl?: string; error?: string } | null>(null)
+
+  // Handler pour pré-remplir le formulaire depuis la recherche Comptoir
+  const handleCoproprietSelect = (copro: CoproprietePourMandat) => {
+    setValue('COPRO__NOM_USAGE', copro.nom)
+    setValue('COPRO__ADRESSE', copro.adresse)
+    setValue('COPRO__CP', copro.codePostal)
+    setValue('COPRO__VILLE', copro.ville)
+    setValue('COPRO__NUMERO_RNC', copro.numeroRNC)
+    setValue('COPRO__NB_LOT', copro.nbLots)
+    setValue('COPRO__NB_LOGT_BRX', copro.nbLogementsBureaux)
+  }
 
   // Derived fields on blur/change
   const dateDebut = watch('MANDAT__DATE_DEBUT')
@@ -229,8 +242,14 @@ export default function MandatsPage() {
         {/* Identité copropriété */}
         <div className="md:col-span-2">
           <h2 className="text-lg font-medium mb-2">Informations copropriété</h2>
+          <div className="mb-4">
+            <label className="block text-sm mb-1 text-muted-foreground">
+              Rechercher une copropriété pour pré-remplir le formulaire
+            </label>
+            <CoproprietSearch onSelect={handleCoproprietSelect} />
+          </div>
         </div>
-        {field('COPRO__NOM_USAGE', 'Nom d’usage de la copropriété', { type: 'text', placeholder: 'Ex: Résidence Les Tilleuls' })}
+        {field('COPRO__NOM_USAGE', "Nom d'usage de la copropriété", { type: 'text', placeholder: 'Ex: Résidence Les Tilleuls' })}
         {field('COPRO__NUMERO_RNC', 'Numéro RNC', { type: 'text', placeholder: 'Ex: RNC-123456' })}
         {field('COPRO__ADRESSE', 'Adresse', { type: 'text', placeholder: 'N° et voie' })}
         {field('COPRO__CP', 'Code postal', { type: 'text', inputMode: 'numeric', pattern: '\\d{5}', placeholder: '75001' })}

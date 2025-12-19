@@ -1,11 +1,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Route } from 'next'
 import CategoryGallery from '@/components/ressources/CategoryGallery'
 import { createClient } from '@supabase/supabase-js'
 import { ArticleWithAuthor } from '@/types/article'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
+import { SearchBar } from '@/components/ressources/SearchBar'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,15 +24,28 @@ export const metadata = {
 // Revalidate every hour for ISR (better performance than force-dynamic)
 export const revalidate = 3600
 
+const ARTICLES_PER_PAGE = 12
+
 export default async function RessourcesPage({
   searchParams
 }: {
-  searchParams: { cat?: string; type?: string }
+  searchParams: { cat?: string; type?: string; page?: string; q?: string }
 }) {
   let articles: ArticleWithAuthor[] = []
+  let totalCount = 0
   let error: string | null = null
-  
+
+  const currentPage = Math.max(1, parseInt(searchParams.page || '1'))
+  const searchQuery = searchParams.q?.trim() || ''
+
   try {
+    // Requête pour compter le total d'articles
+    let countQuery = supabase
+      .from('articles')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'published')
+
+    // Requête principale avec pagination
     let query = supabase
       .from('articles')
       .select(`
@@ -43,17 +59,33 @@ export default async function RessourcesPage({
       `)
       .eq('status', 'published')
       .order('published_at', { ascending: false })
-      .limit(12)
 
     // Filtrer par catégorie si spécifiée
     if (searchParams.cat && searchParams.cat !== 'all') {
       query = query.eq('category', searchParams.cat)
+      countQuery = countQuery.eq('category', searchParams.cat)
     }
-    
+
     // Filtrer par type si spécifié
     if (searchParams.type && searchParams.type !== 'all') {
       query = query.eq('type', searchParams.type)
+      countQuery = countQuery.eq('type', searchParams.type)
     }
+
+    // Recherche par mots-clés
+    if (searchQuery) {
+      const searchFilter = `title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%,tags.cs.{${searchQuery}}`
+      query = query.or(searchFilter)
+      countQuery = countQuery.or(searchFilter)
+    }
+
+    // Compter le total
+    const { count } = await countQuery
+    totalCount = count || 0
+
+    // Pagination
+    const offset = (currentPage - 1) * ARTICLES_PER_PAGE
+    query = query.range(offset, offset + ARTICLES_PER_PAGE - 1)
 
     const { data, error: supabaseError } = await query
 
@@ -67,6 +99,19 @@ export default async function RessourcesPage({
     console.error('Error loading articles:', e)
   }
 
+  const totalPages = Math.ceil(totalCount / ARTICLES_PER_PAGE)
+
+  // Construire les URLs de pagination
+  const buildPageUrl = (page: number): Route => {
+    const params = new URLSearchParams()
+    if (searchParams.cat && searchParams.cat !== 'all') params.set('cat', searchParams.cat)
+    if (searchParams.type && searchParams.type !== 'all') params.set('type', searchParams.type)
+    if (searchQuery) params.set('q', searchQuery)
+    if (page > 1) params.set('page', String(page))
+    const queryString = params.toString()
+    return `/ressources${queryString ? `?${queryString}` : ''}` as Route
+  }
+
   return (
     <main className="section">
       <div className="container">
@@ -78,18 +123,42 @@ export default async function RessourcesPage({
         />
         <h1 className="h1 mt-6">Ressources</h1>
         <p className="mt-2 text-muted-foreground">
-          Explorez nos contenus par type et catégorie. 
-          {searchParams.cat && searchParams.cat !== 'all' && (
-            <span className="text-primary font-medium">
-              Catégorie: {searchParams.cat}
-            </span>
-          )}
-          {searchParams.type && searchParams.type !== 'all' && (
-            <span className="text-primary font-medium ml-2">
-              Type: {searchParams.type}
-            </span>
-          )}
+          Explorez nos contenus par type et catégorie.
         </p>
+
+        {/* Barre de recherche */}
+        <div className="mt-6">
+          <SearchBar
+            defaultValue={searchQuery}
+            placeholder="Rechercher un article..."
+          />
+        </div>
+
+        {/* Filtres actifs */}
+        {(searchQuery || (searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')) && (
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-sm text-muted-foreground">Filtres actifs :</span>
+            {searchQuery && (
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
+                Recherche : "{searchQuery}"
+              </span>
+            )}
+            {searchParams.cat && searchParams.cat !== 'all' && (
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
+                Catégorie : {searchParams.cat}
+              </span>
+            )}
+            {searchParams.type && searchParams.type !== 'all' && (
+              <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-secondary/10 text-secondary">
+                Type : {searchParams.type}
+              </span>
+            )}
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/ressources">Effacer les filtres</Link>
+            </Button>
+          </div>
+        )}
+
         <CategoryGallery />
         
         {error ? (
@@ -101,6 +170,14 @@ export default async function RessourcesPage({
           </div>
         ) : (
           <div className="mt-8">
+            {/* Compteur de résultats */}
+            {totalCount > 0 && (
+              <div className="mb-4 text-sm text-muted-foreground">
+                {totalCount} article{totalCount > 1 ? 's' : ''} trouvé{totalCount > 1 ? 's' : ''}
+                {totalPages > 1 && ` • Page ${currentPage} sur ${totalPages}`}
+              </div>
+            )}
+
             {articles.length > 0 ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {articles.map((article) => (
@@ -190,15 +267,17 @@ export default async function RessourcesPage({
             ) : (
               <div className="text-center py-12">
                 <h3 className="text-lg font-semibold text-foreground mb-2">
-                  Aucun article disponible
+                  Aucun article trouvé
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  {(searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')
-                    ? `Aucun article trouvé${searchParams.cat && searchParams.cat !== 'all' ? ` dans la catégorie "${searchParams.cat}"` : ''}${searchParams.type && searchParams.type !== 'all' ? ` de type "${searchParams.type}"` : ''}.`
-                    : 'Aucun article n\'a encore été publié.'
+                  {searchQuery
+                    ? `Aucun article ne correspond à "${searchQuery}".`
+                    : (searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')
+                      ? `Aucun article trouvé${searchParams.cat && searchParams.cat !== 'all' ? ` dans la catégorie "${searchParams.cat}"` : ''}${searchParams.type && searchParams.type !== 'all' ? ` de type "${searchParams.type}"` : ''}.`
+                      : 'Aucun article n\'a encore été publié.'
                   }
                 </p>
-                {((searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')) && (
+                {(searchQuery || (searchParams.cat && searchParams.cat !== 'all') || (searchParams.type && searchParams.type !== 'all')) && (
                   <Button asChild variant="outline">
                     <Link href="/ressources">
                       Voir tous les articles
@@ -207,9 +286,82 @@ export default async function RessourcesPage({
                 )}
               </div>
             )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <nav className="mt-8 flex items-center justify-center gap-2" aria-label="Pagination">
+                {currentPage > 1 ? (
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={buildPageUrl(currentPage - 1)}>
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      Précédent
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" disabled>
+                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    Précédent
+                  </Button>
+                )}
+
+                <div className="flex items-center gap-1">
+                  {/* Première page */}
+                  {currentPage > 3 && (
+                    <>
+                      <Button asChild variant={currentPage === 1 ? 'default' : 'ghost'} size="sm">
+                        <Link href={buildPageUrl(1)}>1</Link>
+                      </Button>
+                      {currentPage > 4 && <span className="px-2 text-muted-foreground">...</span>}
+                    </>
+                  )}
+
+                  {/* Pages autour de la page courante */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => page >= currentPage - 2 && page <= currentPage + 2)
+                    .map((page) => (
+                      <Button
+                        key={page}
+                        asChild={page !== currentPage}
+                        variant={page === currentPage ? 'default' : 'ghost'}
+                        size="sm"
+                      >
+                        {page === currentPage ? (
+                          <span>{page}</span>
+                        ) : (
+                          <Link href={buildPageUrl(page)}>{page}</Link>
+                        )}
+                      </Button>
+                    ))}
+
+                  {/* Dernière page */}
+                  {currentPage < totalPages - 2 && (
+                    <>
+                      {currentPage < totalPages - 3 && <span className="px-2 text-muted-foreground">...</span>}
+                      <Button asChild variant={currentPage === totalPages ? 'default' : 'ghost'} size="sm">
+                        <Link href={buildPageUrl(totalPages)}>{totalPages}</Link>
+                      </Button>
+                    </>
+                  )}
+                </div>
+
+                {currentPage < totalPages ? (
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={buildPageUrl(currentPage + 1)}>
+                      Suivant
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" disabled>
+                    Suivant
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                )}
+              </nav>
+            )}
           </div>
         )}
-        
+
         {/* Tags populaires */}
         {articles.length > 0 && (
           <div className="mt-12">

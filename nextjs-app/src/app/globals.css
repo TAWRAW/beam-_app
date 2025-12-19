@@ -43,6 +43,17 @@ h2, h3, h4, h5, h6, p, a, li, button, input, textarea, label, span {
 /* Accessibility focus styles */
 :focus-visible { outline: 2px solid #FFC300; outline-offset: 2px; }
 
+/* Hide number input spinners (arrows) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 /* Sections and containers */
 .section { padding: 5rem 0; }
 
