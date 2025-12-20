@@ -37,6 +37,7 @@ const tools = [
     description:
       'Simulez les votes de votre assemblée générale de copropriété. Calculez les majorités (article 24, 25, 26) et anticipez les résultats avant votre AG.',
     href: '/outils/simulateur-vote' as Route,
+    guideHref: '/outils/simulateur-vote-guide' as Route,
     icon: Calculator,
     features: [
       'Calcul automatique des majorités',
@@ -95,12 +96,21 @@ export default function OutilsPage() {
                     </li>
                   ))}
                 </ul>
-                <Button asChild className="w-full">
-                  <Link href={tool.href}>
-                    {tool.cta}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <div className="space-y-2">
+                  <Button asChild className="w-full">
+                    <Link href={tool.href}>
+                      {tool.cta}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  {tool.guideHref && (
+                    <Button asChild variant="ghost" className="w-full text-muted-foreground">
+                      <Link href={tool.guideHref}>
+                        En savoir plus sur cet outil
+                      </Link>
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
