@@ -76,6 +76,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7
     },
 
+    // Outils - haute priorité pour le content marketing
+    {
+      url: `${base}/outils`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8
+    },
+    {
+      url: `${base}/outils/simulateur-vote`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85
+    },
+    {
+      url: `${base}/outils/simulateur-vote/notice`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.6
+    },
+    {
+      url: `${base}/outils/simulateur-vote-guide`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8
+    },
+
     // Pages légales - priorité basse mais importantes pour Google
     {
       url: `${base}/mentions-legales`,
