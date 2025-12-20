@@ -60,6 +60,14 @@ export default function Header() {
                     Articles
                   </Link>
                   <Link
+                    href="/outils"
+                    className="block rounded px-3 py-2 text-sm text-neutral hover:bg-primary/10"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                  >
+                    Outils
+                  </Link>
+                  <Link
                     href="/apps"
                     className="block rounded px-3 py-2 text-sm text-neutral hover:bg-primary/10"
                     role="menuitem"
