@@ -81,7 +81,7 @@ export default function Page() {
     ],
     description: 'Syndic de copropriété moderne à Vernon, Evreux et Les Andelys. Réactivité garantie sous 48h, transparence totale, suivi digitalisé 24/7.',
     telephone: '+33775707099',
-    email: 'tom.lemeille@beamô.fr',
+    email: 'bonjour@beamo-copro.fr',
     priceRange: '€€',
     address: {
       '@type': 'PostalAddress',

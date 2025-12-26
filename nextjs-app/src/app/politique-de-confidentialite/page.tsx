@@ -44,7 +44,7 @@ export default function PolitiqueConfidentialitePage() {
               <p>
                 <strong>Beamô</strong><br />
                 Représentée par Tom Lemeille<br />
-                Email : tom.lemeille@xn--beam-yqa.fr<br />
+                Email : bonjour@beamo-copro.fr<br />
                 Site web : https://xn--beam-yqa.fr
               </p>
 
@@ -102,7 +102,7 @@ export default function PolitiqueConfidentialitePage() {
                 <li><strong>Limitation :</strong> limiter le traitement</li>
               </ul>
               
-              <p>Pour exercer vos droits, contactez-nous à : <strong>tom.lemeille@xn--beam-yqa.fr</strong></p>
+              <p>Pour exercer vos droits, contactez-nous à : <strong>bonjour@beamo-copro.fr</strong></p>
 
               <h2>8. Cookies</h2>
               <p>Notre site utilise des cookies pour :</p>

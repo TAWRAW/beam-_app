@@ -745,7 +745,7 @@ export default function EtatDesLieuxPage() {
               '@type': 'Organization',
               name: 'SASU Beamo Immobilier',
               telephone: '+33775707099',
-              email: 'tom.lemeille@beamô.fr',
+              email: 'bonjour@beamo-copro.fr',
               address: {
                 '@type': 'PostalAddress',
                 streetAddress: '8 rue du général Leclerc',

@@ -161,7 +161,7 @@ export default function SourcesPage() {
                 n'hésitez pas à nous contacter :
               </p>
               <ul>
-                <li><strong>Email :</strong> tom.lemeille@xn--beam-yqa.fr</li>
+                <li><strong>Email :</strong> bonjour@beamo-copro.fr</li>
                 <li><strong>Téléphone :</strong> 07 75 70 70 99</li>
               </ul>
 
