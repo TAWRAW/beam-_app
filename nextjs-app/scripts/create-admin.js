@@ -1,7 +1,7 @@
 // Create an admin user in Supabase Auth and promote profile role to 'admin'.
 // Usage:
 //  SUPABASE_SERVICE_ROLE_KEY=... NEXT_PUBLIC_SUPABASE_URL=... \
-//    node scripts/create-admin.js --email="tom.lemeille@xn--beam-yqa.fr" [--password="Strong#Pass123!"]
+//    node scripts/create-admin.js --email="bonjour@beamo-copro.fr" [--password="Strong#Pass123!"]
 
 const { createClient } = require('@supabase/supabase-js')
 

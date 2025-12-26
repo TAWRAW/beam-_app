@@ -157,7 +157,7 @@ export default function ConditionsUtilisationPage() {
                 vous pouvez nous contacter :
               </p>
               <ul>
-                <li><strong>Email :</strong> tom.lemeille@xn--beam-yqa.fr</li>
+                <li><strong>Email :</strong> bonjour@beamo-copro.fr</li>
                 <li><strong>Téléphone :</strong> 07 75 70 70 99</li>
                 <li><strong>Adresse :</strong> 27950 Saint-Marcel</li>
               </ul>

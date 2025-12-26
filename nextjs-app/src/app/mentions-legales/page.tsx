@@ -51,7 +51,7 @@ export default function MentionsLegalesPage() {
                 <p><strong>Siège social :</strong> 8 rue du général Leclerc, 27950 Saint-Marcel</p>
                 <p><strong>Cabinet :</strong> La Manufacture des Capucins, 2 Place Jean Paul II, 27200 Vernon</p>
                 <p><strong>Téléphone :</strong> 07 75 70 70 99</p>
-                <p><strong>Email :</strong> tom.lemeille@beamô.fr</p>
+                <p><strong>Email :</strong> bonjour@beamo-copro.fr</p>
                 <p><strong>Site web :</strong> www.beamô.fr</p>
               </div>
 
@@ -208,7 +208,7 @@ export default function MentionsLegalesPage() {
                 Pour toute question concernant ces mentions légales ou le fonctionnement du site :
               </p>
               <div className="bg-muted p-6 rounded-lg mb-6">
-                <p><strong>Email :</strong> tom.lemeille@beamô.fr</p>
+                <p><strong>Email :</strong> bonjour@beamo-copro.fr</p>
                 <p><strong>Téléphone :</strong> 07 75 70 70 99</p>
                 <p><strong>Siège social :</strong> 8 rue du général Leclerc, 27950 Saint-Marcel</p>
                 <p><strong>Cabinet :</strong> La Manufacture des Capucins, 2 Place Jean Paul II, 27200 Vernon</p>

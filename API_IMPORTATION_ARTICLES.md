@@ -286,7 +286,7 @@ curl -X POST https://www.xn--beam-yqa.fr/api/articles/import \
 ## Support
 
 Pour toute question ou problème :
-- Email : tom.lemeille@xn--beam-yqa.fr
+- Email : bonjour@beamo-copro.fr
 - Documentation : Ce fichier
 - Logs serveur : Consultez les logs Next.js pour le débogage
 
