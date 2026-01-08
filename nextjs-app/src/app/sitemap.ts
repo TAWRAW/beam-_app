@@ -21,11 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     commercial: new Date('2025-10-10'),
     info: new Date('2025-09-20'),
     legal: new Date('2025-09-01'),
-    cities: new Date('2025-10-08')
+    cities: new Date('2026-01-08')
   }
 
   // Villes principales avec priorité élevée
-  const mainCities = ['vernon', 'evreux', 'les-andelys', 'gaillon', 'louviers']
+  const mainCities = ['vernon', 'evreux', 'rouen', 'les-andelys', 'gaillon', 'louviers']
 
   const entries: MetadataRoute.Sitemap = [
     // Page d'accueil - priorité maximale
