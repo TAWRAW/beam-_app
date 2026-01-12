@@ -21,14 +21,14 @@ export default function MandatsPage() {
     AG__DATE: undefined as any,
     MANDAT__DUREE: 12,
     MANDAT__DATE_DEBUT: undefined as any,
-    AG__PLAGE_HORAIRE_DEBUT: '18:00',
-    AG__PLAGE_HORAIRE_FIN: '20:00',
+    AG__PLAGE_HORAIRE_DEBUT: '09:00',
+    AG__PLAGE_HORAIRE_FIN: '18:00',
     COPRO__NOMBRE_VISITE: 0,
     COPRO__DUREE__VISITE: 1,
     CS__NOMBRE_REUNIONS: 0,
     CS__DUREE_REUNIONS: 1,
-    CS__HEURE_DEBUT: '18:00',
-    CS__HEURE_FIN: '20:00',
+    CS__HEURE_DEBUT: '09:00',
+    CS__HEURE_FIN: '18:00',
   }
 
   const {
@@ -57,17 +57,50 @@ export default function MandatsPage() {
     setValue('COPRO__NB_LOGT_BRX', copro.nbLogementsBureaux)
   }
 
-  // Derived fields on blur/change
+  // Derived fields - watched values
   const dateDebut = watch('MANDAT__DATE_DEBUT')
+  const dateFin = watch('MANDAT__DATE_FIN')
   const duree = watch('MANDAT__DUREE')
   const start = watch('AG__PLAGE_HORAIRE_DEBUT')
   const end = watch('AG__PLAGE_HORAIRE_FIN')
   const ht = watch('SYNDIC__HONORAIRES_HT')
 
-  function tryComputeFin() {
-    const d = (dateDebut && duree) ? computeDateFin(dateDebut, Number(duree)) : null
-    if (d) setValue('MANDAT__DATE_FIN', d)
+  // Track which field was last modified to avoid infinite loops
+  const [lastModified, setLastModified] = useState<'duree' | 'dateFin' | null>(null)
+
+  // Auto-compute date fin when duree or dateDebut changes
+  useEffect(() => {
+    if (lastModified === 'dateFin') return // Don't override if user just set dateFin
+    if (dateDebut && duree) {
+      const computed = computeDateFin(dateDebut, Number(duree))
+      if (computed && computed !== dateFin) {
+        setValue('MANDAT__DATE_FIN', computed)
+      }
+    }
+  }, [dateDebut, duree])
+
+  // Auto-compute duree when dateFin changes (user-initiated)
+  useEffect(() => {
+    if (lastModified !== 'dateFin') return // Only compute if user changed dateFin
+    if (dateDebut && dateFin) {
+      const d1 = new Date(dateDebut)
+      const d2 = new Date(dateFin)
+      const months = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth())
+      if (months > 0 && months !== duree) {
+        setValue('MANDAT__DUREE', months)
+      }
+    }
+    setLastModified(null) // Reset after computation
+  }, [dateFin, lastModified])
+
+  function onDureeChange() {
+    setLastModified('duree')
   }
+
+  function onDateFinChange() {
+    setLastModified('dateFin')
+  }
+
   function tryComputeAGDuree() {
     if (start && end) setValue('AG__DUREE', computeDureeHeures(start, end))
   }
@@ -158,9 +191,10 @@ export default function MandatsPage() {
     </label>
   )
 
-  // Presets (configurations) for horaires / réunions
+  // Presets (configurations) pour les paramètres du mandat
   type PresetValues = Pick<
     MandatInput,
+    | 'MANDAT__DUREE'
     | 'COPRO__NOMBRE_VISITE'
     | 'COPRO__DUREE__VISITE'
     | 'AG__PLAGE_HORAIRE_DEBUT'
@@ -192,6 +226,7 @@ export default function MandatsPage() {
 
   function collectCurrentValues(): Partial<PresetValues> {
     const names: (keyof PresetValues)[] = [
+      'MANDAT__DUREE',
       'COPRO__NOMBRE_VISITE',
       'COPRO__DUREE__VISITE',
       'AG__PLAGE_HORAIRE_DEBUT',
@@ -261,27 +296,27 @@ export default function MandatsPage() {
 
         <div className="md:col-span-2 h-2" />
 
-        {field('AG__DATE', 'AG__DATE', { type: 'date' })}
-        {field('MANDAT__DUREE', 'MANDAT__DUREE (mois)', { type: 'number', min: 1, onBlur: tryComputeFin })}
-        {field('MANDAT__DATE_DEBUT', 'MANDAT__DATE_DEBUT', { type: 'date', onBlur: tryComputeFin })}
-        {field('MANDAT__DATE_FIN', 'MANDAT__DATE_FIN', { type: 'date' })}
-        {field('COPRO__NOMBRE_VISITE', 'COPRO__NOMBRE_VISITE', { type: 'number', min: 0 })}
-        {field('COPRO__DUREE__VISITE', 'COPRO__DUREE__VISITE (heures)', { type: 'number', step: '0.25', min: 0 })}
-        {field('AG__PLAGE_HORAIRE_DEBUT', 'AG__PLAGE_HORAIRE_DEBUT', { type: 'time', onBlur: tryComputeAGDuree })}
-        {field('AG__PLAGE_HORAIRE_FIN', 'AG__PLAGE_HORAIRE_FIN', { type: 'time', onBlur: tryComputeAGDuree })}
-        {field('AG__DUREE', 'AG__DUREE (heures)', { type: 'number', step: '0.25', min: 0 })}
-        {field('CS__NOMBRE_REUNIONS', 'CS__NOMBRE_REUNIONS', { type: 'number', min: 0 })}
-        {field('CS__DUREE_REUNIONS', 'CS__DUREE_REUNIONS (heures)', { type: 'number', step: '0.25', min: 0 })}
-        {field('CS__HEURE_DEBUT', 'CS__HEURE_DEBUT', { type: 'time' })}
-        {field('CS__HEURE_FIN', 'CS__HEURE_FIN', { type: 'time' })}
+        {field('AG__DATE', "Date de l'AG", { type: 'date' })}
+        {field('MANDAT__DUREE', 'Durée du mandat (mois)', { type: 'number', min: 1, onChange: onDureeChange })}
+        {field('MANDAT__DATE_DEBUT', 'Date de début du mandat', { type: 'date' })}
+        {field('MANDAT__DATE_FIN', 'Date de fin du mandat', { type: 'date', onChange: onDateFinChange })}
+        {field('COPRO__NOMBRE_VISITE', 'Nombre de visites', { type: 'number', min: 0 })}
+        {field('COPRO__DUREE__VISITE', 'Durée des visites (heures)', { type: 'number', step: '0.25', min: 0 })}
+        {field('AG__PLAGE_HORAIRE_DEBUT', "Heure de début de l'AG", { type: 'time', onBlur: tryComputeAGDuree })}
+        {field('AG__PLAGE_HORAIRE_FIN', "Heure de fin de l'AG", { type: 'time', onBlur: tryComputeAGDuree })}
+        {field('AG__DUREE', "Durée de l'AG (heures)", { type: 'number', step: '0.25', min: 0 })}
+        {field('CS__NOMBRE_REUNIONS', 'Nombre de réunions CS', { type: 'number', min: 0 })}
+        {field('CS__DUREE_REUNIONS', 'Durée des réunions CS (heures)', { type: 'number', step: '0.25', min: 0 })}
+        {field('CS__HEURE_DEBUT', 'Heure de début CS', { type: 'time' })}
+        {field('CS__HEURE_FIN', 'Heure de fin CS', { type: 'time' })}
         <label className="block">
-          <span className="text-sm">SYNDIC__HONORAIRES_HT</span>
+          <span className="text-sm">Honoraires HT (€)</span>
           <input
             type="number"
             step="0.01"
             min={0}
             className="mt-1 w-full rounded border px-3 py-2"
-            aria-label="SYNDIC__HONORAIRES_HT"
+            aria-label="Honoraires HT"
             aria-invalid={errors['SYNDIC__HONORAIRES_HT'] ? 'true' : 'false'}
             {...register('SYNDIC__HONORAIRES_HT', {
               onChange: (e) => {
@@ -299,13 +334,13 @@ export default function MandatsPage() {
         </label>
 
         <label className="block">
-          <span className="text-sm">SYNDIC__HONORAIRES_TTC</span>
+          <span className="text-sm">Honoraires TTC (€)</span>
           <input
             type="number"
             step="0.01"
             min={0}
             className="mt-1 w-full rounded border px-3 py-2"
-            aria-label="SYNDIC__HONORAIRES_TTC"
+            aria-label="Honoraires TTC"
             aria-invalid={errors['SYNDIC__HONORAIRES_TTC'] ? 'true' : 'false'}
             {...register('SYNDIC__HONORAIRES_TTC', {
               onChange: (e) => {
