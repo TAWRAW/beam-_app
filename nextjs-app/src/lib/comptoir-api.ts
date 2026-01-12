@@ -3,7 +3,7 @@
  * Permet de rechercher des copropriétés pour pré-remplir les formulaires
  */
 
-const COMPTOIR_BASE_URL = 'https://le-comptoir-de-la-copropriete.fr'
+const COMPTOIR_BASE_URL = 'https://www.le-comptoir-de-la-copropriete.fr'
 
 // Types pour l'API Beamô (filtres géographiques)
 export interface BeamoSearchParams {
@@ -80,6 +80,26 @@ export interface SearchResponse {
   }
 }
 
+// Réponse de l'API copropriete/{id} (détails complets)
+export interface CoproprieteDetail {
+  id: string
+  numero_immatriculation: string
+  titre: string
+  nom_usage: string
+  adresse_1: string
+  code_postal: string
+  commune: string
+  departement: string
+  region: string
+  nombre_total_lots: number
+  lots_detail: {
+    nombre_lots_habitation: number
+    nombre_lots_commerces: number
+    nombre_lots_stationnement: number
+    total_calcule: number
+  }
+}
+
 // Données normalisées pour le formulaire de mandat
 export interface CoproprietePourMandat {
   nom: string
@@ -89,6 +109,17 @@ export interface CoproprietePourMandat {
   numeroRNC: string
   nbLots: number
   nbLogementsBureaux: number
+}
+
+// Regex pour détecter un numéro d'immatriculation (ex: AD1473222)
+const IMMATRICULATION_REGEX = /^[A-Z]{2}\d{5,}$/i
+
+/**
+ * Nettoie le code postal (retire le .0 si présent, ex: "75116.0" → "75116")
+ */
+export function cleanCodePostal(cp: string | null | undefined): string {
+  if (!cp) return ''
+  return cp.replace(/\.0$/, '')
 }
 
 /**
@@ -122,10 +153,71 @@ export class ComptoirCoproAPI {
   }
 
   /**
+   * Récupère une copropriété par son ID/numéro d'immatriculation
+   */
+  async getById(id: string): Promise<CoproprieteDetail | null> {
+    const url = new URL(`/api/coproprietes/${id}`, window.location.origin)
+    const response = await fetch(url.toString())
+    if (!response.ok) {
+      if (response.status === 404) return null
+      throw new Error(`Erreur API: ${response.status}`)
+    }
+    return response.json()
+  }
+
+  /**
+   * Convertit les détails d'une copropriété en format SearchCopropriete
+   */
+  private detailToSearchFormat(detail: CoproprieteDetail): SearchCopropriete {
+    return {
+      id: detail.id,
+      nom: detail.nom_usage || detail.titre,
+      adresse: {
+        complete: detail.adresse_1,
+        code_postal: cleanCodePostal(detail.code_postal),
+        commune: detail.commune,
+      },
+      lots: {
+        total: detail.nombre_total_lots,
+        habitation: detail.lots_detail?.nombre_lots_habitation || 0,
+        commerce: detail.lots_detail?.nombre_lots_commerces || 0,
+        parking: detail.lots_detail?.nombre_lots_stationnement || 0,
+      },
+      numero_immatriculation: detail.numero_immatriculation,
+    }
+  }
+
+  /**
    * API Search - Recherche textuelle avancée (nom, adresse, immatriculation)
+   * Utilise notre API proxy pour éviter les problèmes CORS
+   * Détecte automatiquement les numéros d'immatriculation pour une recherche directe
    */
   async search(params: SearchParams): Promise<SearchResponse> {
-    const url = new URL(`${this.baseUrl}/api/coproprietes/search`)
+    const query = params.q?.trim() || ''
+
+    // Si le terme ressemble à un numéro d'immatriculation, recherche directe
+    if (query && IMMATRICULATION_REGEX.test(query)) {
+      try {
+        const detail = await this.getById(query.toUpperCase())
+        if (detail) {
+          return {
+            data: [this.detailToSearchFormat(detail)],
+            meta: {
+              total: 1,
+              page: 1,
+              limit: 1,
+              execution_time_ms: 0,
+              cache_hit: false,
+            },
+          }
+        }
+      } catch {
+        // Si la recherche directe échoue, on continue avec la recherche textuelle
+      }
+    }
+
+    // Recherche textuelle classique via l'API proxy
+    const url = new URL('/api/coproprietes/search', window.location.origin)
 
     if (params.q) url.searchParams.append('q', params.q)
     if (params.commune) url.searchParams.append('commune', params.commune)
@@ -169,7 +261,7 @@ export class ComptoirCoproAPI {
       adresse: copro.adresse.numero && copro.adresse.voie
         ? `${copro.adresse.numero} ${copro.adresse.voie}`
         : copro.adresse.complete.split(',')[0] || '',
-      codePostal: copro.adresse.code_postal,
+      codePostal: cleanCodePostal(copro.adresse.code_postal),
       ville: copro.adresse.commune,
       numeroRNC: copro.numero_immatriculation || '',
       nbLots: copro.lots.total,
@@ -188,7 +280,7 @@ export class ComptoirCoproAPI {
     return {
       nom: copro.nom,
       adresse: adresseVoie,
-      codePostal: copro.code_postal,
+      codePostal: cleanCodePostal(copro.code_postal),
       ville: copro.ville,
       numeroRNC: copro.numero_immatriculation,
       nbLots: copro.nb_lots || 0,

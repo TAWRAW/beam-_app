@@ -13,7 +13,7 @@
 
 import type { VilleStatsResponse, VilleStatsFormatted } from '@/types/ville-stats'
 
-const API_BASE_URL = 'https://le-comptoir-de-la-copropriete.fr/api/villes'
+const API_BASE_URL = 'https://www.le-comptoir-de-la-copropriete.fr/api/villes'
 
 /**
  * Récupère les stats d'une ville depuis l'API
