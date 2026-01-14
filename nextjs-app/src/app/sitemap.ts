@@ -121,12 +121,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly',
       priority: 0.4
     },
-    {
-      url: `${base}/sources`,
-      lastModified: lastModDates.legal,
-      changeFrequency: 'yearly',
-      priority: 0.3
-    },
   ]
 
   // Pages villes - priorité selon importance commerciale

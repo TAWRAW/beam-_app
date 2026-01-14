@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export const metadata: Metadata = {
   title: 'Sources et crédits - Beamô',
   description: 'Sources, crédits et attributions du site web de Beamô, syndic de copropriété en Normandie.',
-  robots: 'index, follow',
+  robots: 'noindex, nofollow',
   openGraph: {
     title: 'Sources et crédits - Beamô',
     description: 'Sources, crédits et attributions du site web de Beamô, syndic de copropriété en Normandie.',
