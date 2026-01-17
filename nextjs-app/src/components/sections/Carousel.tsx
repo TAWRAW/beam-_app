@@ -13,7 +13,7 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
   const hasCity = Boolean(cityLabel)
   return (
     // Cancel the global header spacer so the hero starts at the very top (mobile + desktop)
-    <section className="relative -mt-20 md:-mt-24">
+    <section className="relative -mt-20 md:-mt-24" style={{ touchAction: 'pan-y' }}>
       {/* Full-viewport hero on desktop, comfortable height on mobile */}
       <div className="relative w-full overflow-hidden hero-viewport">
         <video
@@ -22,11 +22,11 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
           playsInline
           autoPlay
           id="background-video"
-          className="absolute inset-0 h-full w-full object-cover blur-sm"
+          className="absolute inset-0 h-full w-full object-cover blur-sm pointer-events-none"
         >
           <source src="/outils/images/video_drone.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
         {/* Centered copy; larger, responsive typography */}
         <div className="relative z-10 mx-auto flex h-full max-w-5xl items-center px-4 sm:px-6 text-white">
           <div>
