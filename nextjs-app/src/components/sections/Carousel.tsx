@@ -80,7 +80,7 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
         )}
         {/* CTA Devis - Onglet Mobile/Tablet (cote droit, centre) */}
         {showCta && (
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 md:hidden">
+          <div className="absolute right-0 top-[70%] -translate-y-1/2 z-20 md:hidden">
             <Link
               href="/devis"
               className="block bg-[#FFC300] hover:bg-[#e6b000] border border-r-0 border-black rounded-l-lg px-2 py-3 text-center transition-colors"
