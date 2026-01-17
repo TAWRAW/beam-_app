@@ -208,6 +208,20 @@ export default function TarifsPage() {
               Des forfaits clairs adaptés à votre copropriété. Pas de surprise, pas de frais cachés, pas de « petites lignes ».
             </p>
           </header>
+
+          {/* CTA Devis */}
+          <div className="mt-8 max-w-2xl mx-auto">
+            <Link href="/devis" className="block">
+              <div className="bg-[#FFC300] border-2 border-black rounded-lg p-4 text-center hover:shadow-lg transition-shadow">
+                <p className="font-semibold text-black">
+                  Ces tarifs sont indicatifs. Recevez une proposition adaptee a votre copropriete
+                </p>
+                <span className="inline-block mt-2 text-sm font-medium text-black underline">
+                  Demander un devis personnalise →
+                </span>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -500,7 +514,7 @@ export default function TarifsPage() {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="border-2 border-black">
-                  <Link href="/ressources/contact">Demander un devis gratuit</Link>
+                  <Link href="/devis">Demander un devis gratuit</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="border-2 border-primary">
                   <Link href="/offres">Voir nos offres détaillées</Link>
@@ -575,7 +589,7 @@ function PricingCard({
       </CardContent>
       <CardFooter className="p-0 pt-6">
         <Button asChild className="w-full border-2 border-black">
-          <Link href="/ressources/contact">Demander un devis</Link>
+          <Link href="/devis">Demander un devis</Link>
         </Button>
       </CardFooter>
     </Card>

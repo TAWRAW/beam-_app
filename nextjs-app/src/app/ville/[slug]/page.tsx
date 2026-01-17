@@ -223,7 +223,9 @@ export default async function CityPage({ params }: { params: Params }) {
 
   return (
     <main className="min-h-screen">
-      <div className="container pt-6">
+      <Carousel cityLabel={label} cityPrep={prep} showCta={true} />
+
+      <div className="sr-only">
         <Breadcrumbs
           items={[
             { label: 'Accueil', href: '/' },
@@ -231,7 +233,6 @@ export default async function CityPage({ params }: { params: Params }) {
           ]}
         />
       </div>
-      <Carousel cityLabel={label} cityPrep={prep} />
       <Features />
       <Squares />
       <section className="section">

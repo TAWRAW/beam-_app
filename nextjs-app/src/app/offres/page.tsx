@@ -131,8 +131,8 @@ export default function OffresPage() {
   }
 
   return (
-    <main className="bg-primary">
-      <section className="section relative -mt-20 md:-mt-24 pt-20 md:pt-24">
+    <main className="bg-primary min-h-screen">
+      <section className="section relative -mt-20 md:-mt-24 pt-20 md:pt-24 pb-16">
         <div className="container">
           <Breadcrumbs
             items={[
@@ -140,9 +140,16 @@ export default function OffresPage() {
               { label: 'Offres' }
             ]}
           />
-          <header className="text-center mt-6">
-            <h1 className="h1">Nos Offres</h1>
-            <p className="mt-2 text-muted-foreground">Découvrez nos solutions adaptées aux copropriétés.</p>
+          <header className="mt-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="text-center md:text-left">
+                <h1 className="h1">Nos Offres</h1>
+                <p className="mt-2 text-muted-foreground">Découvrez nos solutions adaptées aux copropriétés.</p>
+              </div>
+              <Button asChild size="lg" className="bg-black text-white hover:bg-black/90 border-2 border-black shrink-0">
+                <Link href="/devis">Demander un devis</Link>
+              </Button>
+            </div>
           </header>
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             <OffreCard
@@ -266,7 +273,7 @@ function OffreCard({ id, title, desc, cta, showLoading, showContractType }: {
       {cta && (
         <CardFooter className="mt-6 p-0">
           <Button asChild className="border-2 border-black">
-            <Link href="/ressources/contact">{cta}</Link>
+            <Link href="/devis">{cta}</Link>
           </Button>
         </CardFooter>
       )}

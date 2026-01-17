@@ -231,7 +231,7 @@ export default function Page() {
   return (
     <main className="min-h-screen">
       {/* Hero section avec slider principal */}
-      <Carousel />
+      <Carousel showCta={true} />
 
       {/* Section avantages et services Beamô */}
       <Features />
