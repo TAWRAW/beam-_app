@@ -83,32 +83,13 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
           <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 md:hidden">
             <Link
               href="/devis"
-              className="relative block bg-[#FFC300] hover:bg-[#e6b000] border border-r-0 border-black rounded-l-lg px-2 py-3 text-center transition-colors"
+              className="block bg-[#FFC300] hover:bg-[#e6b000] border border-r-0 border-black rounded-l-lg px-2 py-3 text-center transition-colors"
               style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
             >
               <span className="text-black font-bold text-xs whitespace-nowrap">
                 Devis gratuit
               </span>
             </Link>
-            {/* Coins inverses - oreilles de l'onglet lateral */}
-            <div
-              className="absolute right-0 -top-[5px] w-[6px] h-[6px]"
-              style={{
-                borderBottomLeftRadius: '6px',
-                boxShadow: '-3px 3px 0 0 #FFC300',
-                borderLeft: '1px solid #000',
-                borderBottom: '1px solid #000'
-              }}
-            />
-            <div
-              className="absolute right-0 -bottom-[5px] w-[6px] h-[6px]"
-              style={{
-                borderTopLeftRadius: '6px',
-                boxShadow: '-3px -3px 0 0 #FFC300',
-                borderLeft: '1px solid #000',
-                borderTop: '1px solid #000'
-              }}
-            />
           </div>
         )}
         <a href="#features" className="scroll-arrow" aria-label="Défiler vers le bas">
