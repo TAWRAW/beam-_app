@@ -38,7 +38,7 @@ function MerciContent() {
         </h1>
 
         <p className="text-slate-600 mb-6">
-          Votre demande a bien ete envoyee. Nous l'analysons avec attention.
+          Votre demande a bien été envoyée. Nous l'analysons avec attention.
         </p>
 
         <div className="bg-amber-50 rounded-lg p-4 mb-6 border border-[#FFC300]">
@@ -46,14 +46,14 @@ function MerciContent() {
             Tom vous recontacte sous 24h
           </p>
           <p className="text-slate-600 text-sm mt-1">
-            Pensez a verifier vos spams si vous ne recevez pas de nouvelles
+            Pensez à vérifier vos spams si vous ne recevez pas de nouvelles
           </p>
         </div>
 
         {/* Lead magnet */}
         <div className="border-t pt-6">
           <p className="text-slate-700 font-medium mb-3">
-            En attendant, telechargez votre cadeau :
+            En attendant, téléchargez votre cadeau :
           </p>
           <a
             href="/documents/modele-lettre-resiliation-syndic.pdf"
@@ -61,7 +61,7 @@ function MerciContent() {
             className="inline-flex items-center gap-2 bg-[#FFC300] hover:bg-[#e6b000] text-black px-6 py-3 rounded-lg transition font-medium"
           >
             <Download className="w-5 h-5" />
-            Modele de lettre de resiliation
+            Modèle de lettre de résiliation
           </a>
           <p className="text-sm text-slate-500 mt-2">
             Document gratuit - Format PDF
@@ -75,7 +75,7 @@ function MerciContent() {
         className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 transition"
       >
         <Home className="w-4 h-4" />
-        Retour a l'accueil
+        Retour à l'accueil
       </Link>
     </div>
   );
