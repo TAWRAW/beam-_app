@@ -190,3 +190,4 @@ Pour anticiper les résultats de vos votes, utilisez notre **[simulateur de vote
   NOW()
 )
 ON CONFLICT (slug) DO NOTHING;
+

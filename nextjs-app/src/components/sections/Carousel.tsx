@@ -46,7 +46,7 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
             <h2 className="mt-4 drop-shadow text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold">{subtitle ?? 'Une réponse en 48h garantie.'}</h2>
           </div>
         </div>
-        {/* CTA Devis - Onglet */}
+        {/* CTA Devis - Onglet Desktop (bas) */}
         {showCta && (
           <div className="absolute right-8 md:right-16 bottom-0 z-20 hidden md:block">
             <Link
@@ -74,6 +74,39 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
                 boxShadow: '-3px 3px 0 0 #FFC300',
                 borderLeft: '1px solid #000',
                 borderBottom: '1px solid #000'
+              }}
+            />
+          </div>
+        )}
+        {/* CTA Devis - Onglet Mobile/Tablet (cote droit, centre) */}
+        {showCta && (
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 md:hidden">
+            <Link
+              href="/devis"
+              className="relative block bg-[#FFC300] hover:bg-[#e6b000] border border-r-0 border-black rounded-l-lg px-2 py-3 text-center transition-colors"
+              style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+            >
+              <span className="text-black font-bold text-xs whitespace-nowrap">
+                Devis gratuit
+              </span>
+            </Link>
+            {/* Coins inverses - oreilles de l'onglet lateral */}
+            <div
+              className="absolute right-0 -top-[5px] w-[6px] h-[6px]"
+              style={{
+                borderBottomLeftRadius: '6px',
+                boxShadow: '-3px 3px 0 0 #FFC300',
+                borderLeft: '1px solid #000',
+                borderBottom: '1px solid #000'
+              }}
+            />
+            <div
+              className="absolute right-0 -bottom-[5px] w-[6px] h-[6px]"
+              style={{
+                borderTopLeftRadius: '6px',
+                boxShadow: '-3px -3px 0 0 #FFC300',
+                borderLeft: '1px solid #000',
+                borderTop: '1px solid #000'
               }}
             />
           </div>
