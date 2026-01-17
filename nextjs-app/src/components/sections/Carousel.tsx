@@ -46,9 +46,9 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
             <h2 className="mt-4 drop-shadow text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold">{subtitle ?? 'Une réponse en 48h garantie.'}</h2>
           </div>
         </div>
-        {/* CTA Devis - Onglet Desktop (bas) */}
+        {/* CTA Devis - Onglet Desktop (bas) - visible quand pas de navbar mobile (lg+) */}
         {showCta && (
-          <div className="absolute right-8 md:right-16 bottom-0 z-20 hidden md:block">
+          <div className="absolute right-8 lg:right-16 bottom-0 z-20 hidden lg:block">
             <Link
               href="/devis"
               className="relative block bg-[#FFC300] hover:bg-[#e6b000] border border-b-0 border-black rounded-t-lg px-4 pt-3 pb-4 text-center transition-colors"
@@ -78,9 +78,9 @@ export default function Carousel({ title, subtitle, cityLabel, cityPrep, showCta
             />
           </div>
         )}
-        {/* CTA Devis - Onglet Mobile/Tablet (cote droit, centre) */}
+        {/* CTA Devis - Onglet Mobile/Tablet (cote droit) - visible avec navbar mobile (<lg) */}
         {showCta && (
-          <div className="absolute right-0 top-[70%] -translate-y-1/2 z-20 md:hidden">
+          <div className="absolute right-0 top-[70%] -translate-y-1/2 z-20 lg:hidden">
             <Link
               href="/devis"
               className="block bg-[#FFC300] hover:bg-[#e6b000] border border-r-0 border-black rounded-l-lg px-2 py-3 text-center transition-colors"
