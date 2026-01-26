@@ -9,11 +9,23 @@
   --base: 1rem; /* 16px base */
 }
 
-html, body {
+html {
   min-height: 100%;
   height: auto;
-  overflow-x: hidden; /* Prevent horizontal scrolling on small screens */
   overscroll-behavior-y: none; /* Avoid rubber-banding creating visual gaps */
+}
+
+body {
+  min-height: 100%;
+  height: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling on small screens - only on body, not html */
+  overscroll-behavior-y: none;
+}
+
+/* Prevent scroll when modal is open - Chrome compatible */
+body.modal-open {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width, 0px); /* Prevent layout shift */
 }
 
 body {

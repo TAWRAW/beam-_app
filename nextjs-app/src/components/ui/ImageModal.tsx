@@ -20,12 +20,16 @@ export function ImageModal({ isOpen, onClose, src, alt }: ImageModalProps) {
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'hidden'
+      // Calculate scrollbar width to prevent layout shift on Chrome
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`)
+      document.body.classList.add('modal-open')
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'unset'
+      document.body.classList.remove('modal-open')
+      document.documentElement.style.removeProperty('--scrollbar-width')
     }
   }, [isOpen, onClose])
 

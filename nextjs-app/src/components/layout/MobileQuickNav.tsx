@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Lightweight inline icons to avoid external vendor chunks
 function IconHome(props: React.SVGProps<SVGSVGElement>) {
@@ -36,6 +36,22 @@ function IconMenu(props: React.SVGProps<SVGSVGElement>) {
 
 export default function MobileQuickNav() {
   const [open, setOpen] = useState(false)
+
+  // Block body scroll when menu is open - Chrome compatible
+  useEffect(() => {
+    if (open) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`)
+      document.body.classList.add('modal-open')
+    } else {
+      document.body.classList.remove('modal-open')
+      document.documentElement.style.removeProperty('--scrollbar-width')
+    }
+    return () => {
+      document.body.classList.remove('modal-open')
+      document.documentElement.style.removeProperty('--scrollbar-width')
+    }
+  }, [open])
 
   return (
     <>
