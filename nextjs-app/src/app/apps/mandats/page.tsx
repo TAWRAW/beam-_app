@@ -271,7 +271,7 @@ export default function MandatsPage() {
   }
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-semibold mb-4">Mandats</h1>
       <form onSubmit={onSubmit} className="grid md:grid-cols-2 gap-4">
         {/* Identité copropriété */}

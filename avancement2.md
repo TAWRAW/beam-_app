@@ -105,7 +105,7 @@ c94e23e Merge branch 'dev'
 
 ---
 
-## Prochaines étapes
+## Prochaines étapes SEO
 
 - [ ] Avis Google - Fiche Google Business Profile Vernon
 - [ ] Suivi positions Search Console sur requêtes "syndic + ville"
@@ -113,7 +113,7 @@ c94e23e Merge branch 'dev'
 
 ---
 
-## Fichiers modifiés
+## Fichiers modifiés (SEO)
 
 | Fichier | Modifications |
 |---------|--------------|
@@ -121,3 +121,136 @@ c94e23e Merge branch 'dev'
 | `src/components/sections/CityDetailedContent.tsx` | +26 LOCAL_CONTEXTS |
 | `src/components/sections/NearbyCities.tsx` | Utilise clusters géographiques |
 | `src/app/sitemap.ts` | Date + Rouen prioritaire |
+
+---
+---
+
+# Session 9 février 2026 — Fix Estale + Contrats + Réglages
+
+## Contexte
+
+Le nom de l'immeuble ne se chargeait plus depuis la modification de `getCondos()` pour récupérer les infos collaborateur. Cause : les champs `firstname`, `lastname`, `phone` n'existent pas sur le type `Collaborator` du schema GraphQL Estale → erreur GraphQL → zéro condo retourné.
+
+---
+
+## Phase 1 : Fix régression (CRITIQUE) — FAIT
+
+### 1.1 `executeQuery()` tolérant aux erreurs partielles
+**Fichier** : `src/lib/estale-api.ts` (lignes 156-169)
+
+GraphQL peut retourner `data` + `errors` en même temps. Avant : throw dès qu'il y a une erreur. Maintenant : warn dans la console, ne throw que si `json.data` est absent.
+
+### 1.2 `getCondos()` séparé en 2 requêtes
+**Fichier** : `src/lib/estale-api.ts` (lignes 227-280)
+
+- **Requête 1** (doit réussir) : condos avec `id`, `name`, `address`
+- **Requête 2** (try/catch) : `getCollaboratorInfo()` — si ça plante, les condos sont quand même retournés
+
+### 1.3 `getCondoDetails()` réécrit
+**Fichier** : `src/lib/estale-api.ts` (lignes 554-624)
+
+Utilise `serviceBook.mandate.manager` pour trouver le gestionnaire du condo. Fallback sur le collaborateur connecté.
+
+---
+
+## Phase 2 : Exploration schema Estale — FAIT
+
+### Découvertes clés du schema GraphQL
+
+```
+Collaborator : fullname (PAS firstname/lastname), email, NO phone → phone sur user.phone
+Condo : contracts, serviceBook { mandate { manager } }, suppliers, collaborators
+SupplierContract : label, category, supplier (→ SupplierCondo → contact { phone })
+CondoServiceBookMandate : manager, assistant, accountant (refs Collaborator)
+User : firstname, lastname, fullname, email, phone
+```
+
+### Endpoint d'introspection
+**Nouveau fichier** : `src/app/api/estale/introspect/route.ts`
+- GET `/api/estale/introspect` → dump complet du schema (446 types)
+- Usage diagnostic uniquement
+
+---
+
+## Phase 3 : Correction champs Collaborator + Contrats Estale — FAIT
+
+### 3.1 Champs collaborateur corrigés
+**Fichier** : `src/lib/estale-api.ts`
+
+- `getCollaboratorInfo()` : utilise `fullname` + `user { phone }` au lieu de `firstname`/`lastname`/`phone`
+- `getCondoDetails()` : utilise `serviceBook.mandate.manager.fullname` + `.user.phone`
+- Suppression de `getCollaboratorDetails()` (code mort après refactor)
+
+### 3.2 Contrats depuis Estale
+**Fichier** : `src/lib/estale-api.ts` (lignes 629-685)
+
+- Nouvelle interface `EstaleContract` : `{ id, label, category, supplierName, supplierPhone }`
+- Nouvelle fonction `getCondoContracts(condoId)` : query `condo.contracts` avec `supplier.contact.phone`
+
+**Nouveau fichier** : `src/app/api/estale/condos/contracts/route.ts`
+- GET `/api/estale/condos/contracts?condoId=X` → `{ contracts: EstaleContract[] }`
+
+### 3.3 Generate page mise à jour
+**Fichier** : `src/app/apps/documents/generate/page.tsx`
+
+- `fetchSuppliers()` : essaie contrats Estale d'abord, fallback `autoMatchContracts` (tag-matching)
+- `handleTemplateChange()` : même logique Estale-first au switch vers contacts
+- `handleCondoChange()` : appelle `/condos/details` pour le gestionnaire per-condo (au lieu du gestionnaire par défaut)
+
+---
+
+## Phase 4 : Supplier IDs par commune (Réglages) — FAIT
+
+### 4.1 Schema étendu
+**Fichier** : `src/schemas/document.ts`
+
+`CommuneContacts` a 3 nouveaux champs optionnels :
+- `mairieSupplierEstaleId`
+- `dechetterieSupplierEstaleId`
+- `eauSupplierEstaleId`
+
+### 4.2 Réglages mis à jour
+**Fichier** : `src/app/apps/reglages/page.tsx`
+
+- Boutons "Mairie" / "Déch." / "Eau" du picker stockent aussi `s.id`
+- `handleCommuneFieldChange()` efface l'ID Estale quand on édite manuellement un champ lié
+- Nouveau `useEffect` d'auto-sync : quand les fournisseurs Estale sont chargés, met à jour nom/tel si le fournisseur lié a changé dans Estale
+
+---
+
+## État du build
+
+- **TypeScript** : 0 nouvelles erreurs
+- 1 erreur pré-existante dans `calculations.test.ts` (pas liée)
+- Tous les changements sont rétro-compatibles
+
+---
+
+## Fichiers modifiés (Estale)
+
+| Fichier | Type | Modifications |
+|---------|------|---------------|
+| `src/lib/estale-api.ts` | Modifié | executeQuery tolérant, split getCondos, rewrite getCondoDetails (serviceBook.mandate.manager), fix champs Collaborator (fullname/user.phone), ajout getCondoContracts, ajout introspectAllTypeNames |
+| `src/schemas/document.ts` | Modifié | +mairieSupplierEstaleId, +dechetterieSupplierEstaleId, +eauSupplierEstaleId sur CommuneContacts |
+| `src/app/apps/reglages/page.tsx` | Modifié | Store IDs fournisseurs, auto-sync au chargement, clear ID sur édition manuelle |
+| `src/app/apps/documents/generate/page.tsx` | Modifié | Contrats Estale-first, gestionnaire per-condo via /condos/details |
+| `src/app/api/estale/introspect/route.ts` | **NOUVEAU** | Endpoint diagnostic schema GraphQL |
+| `src/app/api/estale/condos/contracts/route.ts` | **NOUVEAU** | Endpoint contrats par condo |
+
+---
+
+## À tester
+
+- [ ] Sélectionner un immeuble → nom, adresse, CP, ville se remplissent
+- [ ] Template Contacts Utiles → gestionnaire affiché (nom + tel + email)
+- [ ] Template Contacts Utiles → contrats Estale affichés
+- [ ] Réglages → configurer commune avec fournisseur Estale → recharger → valeurs synchronisées
+- [ ] Réglages → éditer manuellement un champ lié → l'ID Estale est effacé
+- [ ] Affiche Travaux et Règlement Intérieur fonctionnent toujours
+- [ ] GET `/api/estale/introspect` → JSON avec les types
+
+## À faire ensuite
+
+- [ ] Commit des changements
+- [ ] Tester en conditions réelles avec l'API Estale
+- [ ] Explorer les champs `serviceBook` pour enrichir d'autres templates (DPE, assurances, etc.)

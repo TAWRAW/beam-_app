@@ -10,9 +10,10 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   const pathname = usePathname()
   const isAuthPage = pathname.startsWith('/auth')
   const isAppsPage = pathname.startsWith('/apps')
+  const isDocumentsPage = pathname.startsWith('/documents')
 
-  if (isAuthPage) {
-    // Pages d'authentification : pas de header/footer, plein écran
+  if (isAuthPage || isDocumentsPage || isAppsPage) {
+    // Pages d'authentification, documents et apps : pas de header/footer, plein écran
     return <>{children}</>
   }
 

@@ -39,7 +39,7 @@ export default function AppsHome() {
 
   if (loading) {
     return (
-      <div>
+      <div className="p-4 md:p-8 max-w-5xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6">Tableau de bord</h1>
         <DashboardSkeleton />
       </div>
@@ -48,7 +48,7 @@ export default function AppsHome() {
 
   if (error) {
     return (
-      <div>
+      <div className="p-4 md:p-8 max-w-5xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6">Tableau de bord</h1>
         <Card className="border-red-200 bg-red-50">
           <CardContent className="pt-6">
@@ -79,7 +79,7 @@ export default function AppsHome() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Tableau de bord</h1>

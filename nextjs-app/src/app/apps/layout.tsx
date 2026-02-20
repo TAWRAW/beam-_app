@@ -25,7 +25,7 @@ export default function AppsLayout({ children }: { children: ReactNode }) {
           <h1 className="text-lg font-semibold">Menu</h1>
         </header>
 
-        <main className="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full">{children}</main>
+        <main className="flex-1 h-[calc(100vh-4rem)] lg:h-screen overflow-auto">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   )

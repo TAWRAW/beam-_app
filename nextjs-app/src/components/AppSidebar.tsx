@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
-import { LogOut, LayoutDashboard, FileText, Users, User, Settings } from 'lucide-react'
+import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -56,6 +56,18 @@ const adminItems: NavItem[] = [
     href: '/apps/articles',
     label: 'Articles',
     icon: FileText,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/documents/generate',
+    label: 'Documents',
+    icon: Printer,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/reglages',
+    label: 'Réglages',
+    icon: Settings2,
     adminOnly: true,
   },
 ]
