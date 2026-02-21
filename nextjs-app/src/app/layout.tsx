@@ -7,6 +7,7 @@ import { Poppins } from 'next/font/google'
 import { avenirBlack } from './fonts'
 import ConditionalAnalytics from '@/components/analytics/ConditionalAnalytics'
 import ConditionalLayout from '@/components/layout/ConditionalLayout'
+import { Analytics } from '@vercel/analytics/next'
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400','500','600','700'] })
 
@@ -78,6 +79,7 @@ export default function RootLayout({
         <ConditionalLayout>
           {children}
         </ConditionalLayout>
+        <Analytics />
       </body>
     </html>
   )
