@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <title>Le Registre des Mandats : obligations et conformité loi Hoguet | Oignon</title>
+    <meta name="description"
+        content="Tout ce qu'il faut savoir sur le registre des mandats obligatoire pour les syndics et les professionnels de l'immobilier, instauré par la loi Hoguet.">
+    <meta name="keywords"
+        content="registre des mandats, loi hoguet, syndic de copropriété, conformité, mandat de gestion, oignon">
+    <link rel="canonical" href="https://beamô.fr/oignon/ressources/registre-des-mandats-loi-hoguet/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Le Registre des Mandats : obligations et conformité loi Hoguet | Oignon">
+    <meta property="og:description"
+        content="Tout ce qu'il faut savoir sur le registre des mandats obligatoire pour les syndics et les professionnels de l'immobilier.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://beamô.fr/oignon/ressources/registre-des-mandats-loi-hoguet/">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://beamô.fr/oignon/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Fonts preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Georgia:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#F2F1E6',
+                        'cream-muted': '#E8E7DB',
+                        primary: '#FFC300',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'system-ui', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        pill: '9999px',
+                        card: '2rem',
+                    },
+                    boxShadow: {
+                        brutalist: '4px 4px 0px 0px #000',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-cream: #F2F1E6;
+            --primary: #FFC300;
+            --foreground: #000000;
+            --shadow-brutalist: 4px 4px 0px 0px #000;
+            --radius-card: 2rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #fff;
+            color: #111;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-sans {
+            font-family: 'Poppins', system-ui, sans-serif;
+        }
+
+        /* Brutalist components from Oignon UI */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-brutalist);
+            text-decoration: none;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 1rem;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: var(--shadow-brutalist);
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Nav bar styling */
+        nav {
+            position: sticky;
+            top: 1rem;
+            z-index: 50;
+            padding: 0 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-cream);
+            border: 2px solid #000;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-brutalist);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Article formatting */
+        article.prose {
+            font-size: 1.125rem;
+        }
+
+        article.prose h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        article.prose h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-top: 3.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+            color: #000;
+        }
+
+        article.prose h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        article.prose p {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        article.prose ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            list-style-type: none;
+        }
+
+        article.prose ul li {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        article.prose ul li::before {
+            content: '■';
+            color: var(--primary);
+            position: absolute;
+            left: -1.5rem;
+            font-size: 0.8em;
+            top: 0.4rem;
+        }
+
+        article.prose strong {
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Ad Box insert in article */
+        .ad-insert {
+            background: var(--bg-cream);
+            border: 2px solid #000;
+            border-radius: var(--radius-card);
+            padding: 2.5rem;
+            margin: 4rem 0;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: var(--shadow-brutalist);
+        }
+
+        .ad-insert h4 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+    </style>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Le Registre des Mandats : obligations et conformité loi Hoguet",
+      "description": "Tout ce qu'il faut savoir sur le registre des mandats obligatoire pour les syndics et les professionnels de l'immobilier, instauré par la loi Hoguet.",
+      "url": "https://beamô.fr/oignon/ressources/registre-des-mandats-loi-hoguet/",
+      "datePublished": "2026-01-22",
+      "dateModified": "2026-02-27",
+      "author": {
+        "@type": "Person",
+        "name": "Tom LEMEILLE",
+        "jobTitle": "Syndic indépendant",
+        "url": "https://beamô.fr/oignon/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Beamô Oignon",
+        "url": "https://beamô.fr/oignon/"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://beamô.fr/oignon/ressources/registre-des-mandats-loi-hoguet/"
+      }
+    }
+    </script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/oignon/" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:#000;">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="13" fill="#FFC300" stroke="#000" stroke-width="2" />
+                    <path d="M14 6C10 6 7 9.5 7 14C7 18.5 10 22 14 22C18 22 21 18.5 21 14C21 9.5 18 6 14 6Z" fill="#fff"
+                        stroke="#000" stroke-width="1.5" />
+                    <path d="M14 9C11.5 9 10 11 10 14C10 17 11.5 19 14 19C16.5 19 18 17 18 14C18 11 16.5 9 14 9Z"
+                        fill="#FFC300" stroke="#000" stroke-width="1.5" />
+                    <circle cx="14" cy="14" r="2.5" fill="#000" />
+                </svg>
+                <span style="font-weight:900;font-size:1.1rem;letter-spacing:-0.02em;">Beamô</span>
+                <span
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;background:#FFC300;border:1.5px solid #000;border-radius:9999px;padding:0.15rem 0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Oignon</span>
+            </a>
+            <a href="/oignon/ressources/" class="badge hover:bg-gray-50 transition" style="box-shadow:none;">
+                ← Ressources
+            </a>
+        </div>
+    </nav>
+
+    <!-- Article Header -->
+    <header
+        style="background: var(--bg-cream); padding: 5rem 1.5rem 6rem; text-align: center; border-bottom: 2px solid #000;">
+        <div style="max-width: 800px; margin: 0 auto; font-family: 'Poppins', sans-serif;">
+            <div style="margin-bottom: 1.5rem;">
+                <span class="badge" style="background: #fff;">📜 Obligation Légale</span>
+            </div>
+            <h1
+                style="font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em;">
+                Le Registre des Mandats : ce que dit la loi Hoguet
+            </h1>
+            <p style="font-size: 1.1rem; color: #444; font-weight: 500;">
+                Le registre des mandats est une obligation incontournable pour les professionnels de l'immobilier, créée
+                pour assurer la traçabilité et la validité des mandats.
+            </p>
+            <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1.5rem;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">✍️ Tom LEMEILLE, syndic indépendant</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">📅 Publié le 22 jan. 2026</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">⏱️ Lecture : ~6 min</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Body -->
+    <main style="max-width: 800px; margin: 0 auto; padding: 4rem 1.5rem;">
+        <article class="prose">
+            <p>
+                Le registre des mandats est un registre obligatoire pour la plupart des professionnels de l’immobilier
+                (transaction, gestion, syndic), créé par la loi Hoguet de 1970 et organisé par le décret de 1972, pour
+                assurer la traçabilité et la validité des mandats et protéger les clients.
+            </p>
+
+            <h2>Origine, date et finalité</h2>
+            <ul>
+                <li>La base légale est la loi n°70‑9 dite <strong>loi Hoguet</strong> du 2 janvier 1970, qui encadre
+                    l’exercice des professions immobilières (transaction, gestion, syndic). Pour comprendre comment ce cadre s’applique concrètement au mandat de syndic, consultez notre <a href="/oignon/ressources/mandat-syndic-histoire-jurisprudence/" style="color: #000; font-weight: 700; text-decoration: underline;">dossier sur l’histoire et la jurisprudence du mandat de syndic</a>.</li>
+                <li>Son décret d’application principal est le <strong>décret n°72‑678 du 20 juillet 1972</strong>, qui
+                    détaille l’obligation de tenir un registre des mandats.</li>
+                <li>L’objectif est de garantir que chaque opération passe par un mandat écrit numéroté, daté, traçable,
+                    pour protéger vendeurs, bailleurs, acquéreurs, locataires et copropriétaires et <strong>lutter
+                        contre les abus</strong> (mandats “fantômes”, rémunérations illicites, etc.).</li>
+            </ul>
+            <p>
+                <em>Exemple concret</em> : si un agent signe un mandat de vente sans l’inscrire au registre et sans
+                numéro, le mandat peut être frappé de <strong>nullité absolue</strong>, avec perte de droit à
+                honoraires.
+            </p>
+
+            <h2>Professions concernées (dont le syndic)</h2>
+            <p>Sont soumis à la tenue d’un registre des mandats :</p>
+            <ul>
+                <li>Titulaires de la <strong>carte professionnelle “Transactions sur immeubles et fonds de
+                        commerce”</strong> (agents immobiliers, mandataires agissant sous leur responsabilité).</li>
+                <li>Titulaires de la <strong>carte “Gestion immobilière”</strong> (administrateurs de biens).</li>
+                <li>Titulaires de la <strong>carte “Syndic de copropriété”</strong> : les décisions qui confient la
+                    gestion d’un syndicat de copropriétaires au syndic doivent être inscrites au registre à leur date.
+                </li>
+            </ul>
+
+            <h3>Pour le syndic :</h3>
+            <ul>
+                <li>Depuis le 1er juillet 2015, il existe un contrat type de syndic, mais la pratique et la
+                    jurisprudence rappellent que c’est <strong>la décision qui confie la gestion (AG de copropriété) qui
+                        doit être mentionnée au registre des mandats</strong>, à la date de la décision.</li>
+                <li>Le syndic professionnel reste soumis aux conditions générales de la loi Hoguet (carte, RCP, garantie
+                    financière) et à ses registres obligatoires.</li>
+            </ul>
+
+            <!-- AD INSERT 1 -->
+            <div class="ad-insert">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">📑</div>
+                <h4>Arrêtez de perdre vos honoraires de syndic.</h4>
+                <p style="margin-bottom: 2rem;">Un mandat en règle est la première étape. Oignon s'assure par la suite
+                    que toutes les vacations issues de vos mandats sont bien facturées sans faille.</p>
+                <a href="https://tally.so/r/Gxza4o" target="_blank" rel="noopener" class="btn-primary">
+                    Découvrir et soutenir le projet Oignon →
+                </a>
+            </div>
+
+            <h2>Ce que dit la loi / le décret (contenu obligatoire)</h2>
+            <p>Les grands principes des textes (loi Hoguet + décret du 20 juillet 1972) :</p>
+            <ul>
+                <li><strong>Obligation d’un mandat écrit</strong> pour toute opération (transaction, gestion, syndic),
+                    avec remise d’un exemplaire au client et conservation d’un exemplaire par le professionnel.</li>
+                <li>Tous les mandats visés par ces textes doivent être mentionnés sur un <strong>registre
+                        unique</strong>, par ordre chronologique.</li>
+                <li>Le registre est tenu sous la responsabilité du titulaire de la carte professionnelle (ou de son
+                    représentant légal si personne morale).</li>
+                <li><strong>Le numéro d’inscription</strong> attribué sur le registre doit être reporté sur l’exemplaire
+                    du mandat conservé par le mandant (client).</li>
+                <li>L’inscription (numéro/date) doit être faite <strong>le jour de la signature</strong> du mandat, sur
+                    les deux exemplaires, puis reportée le même jour sur le registre ; un numéro ajouté après coup est
+                    interdit, et l’absence de numéro est une cause de nullité absolue du mandat.</li>
+            </ul>
+            <p>Le contenu du registre (modèle fixé par arrêté) doit notamment permettre d’identifier :</p>
+            <ul>
+                <li>Date du mandat.</li>
+                <li>Numéro d’ordre.</li>
+                <li>Identité du ou des mandants.</li>
+                <li>Nature de l’opération (vente, location, gestion, recherche de bien, mandat de syndic, etc.).</li>
+                <li>Bien concerné.</li>
+                <li>Conditions principales (honoraires, objet du mandat…).</li>
+            </ul>
+
+            <h2>Format, tenue pratique (papier / électronique)</h2>
+
+            <h3>Format papier</h3>
+            <ul>
+                <li>Le registre doit être <strong>conforme à un modèle fixé par arrêté ministériel</strong> (on ne peut
+                    pas inventer un format libre).</li>
+                <li>Il doit être <strong>relié et “côté sans discontinuité”</strong> (pages numérotées à l’avance, pas
+                    de feuilles volantes, pas de pages intercalées).</li>
+                <li><strong>Aucune rature, blanc, surcharge ou rajout ultérieur</strong> n’est admis : la continuité et
+                    la chronologie doivent rester parfaitement lisibles.</li>
+                <li>Il doit être <strong>conservé pendant au moins 10 ans</strong>, à compter de la dernière
+                    inscription, sous peine de difficultés probatoires et de risques de sanction (nullité,
+                    responsabilité, contrôle DGCCRF, etc.).</li>
+            </ul>
+
+            <h3>Format électronique</h3>
+            <ul>
+                <li>Depuis un décret du 21 octobre 2005, les professionnels peuvent tenir le registre de mandats
+                    <strong>sous format électronique</strong>, sous réserve de respecter les exigences du Code civil sur
+                    la preuve électronique (identification de l’émetteur, intégrité du support, horodatage, etc.).</li>
+                <li>Les conditions sont similaires au papier : registre unique, chronologie, absence de modification non
+                    tracée, conservation 10 ans.</li>
+                <li>De nombreux logiciels marché (registres dématérialisés, solutions de signature électronique)
+                    intègrent l’attribution automatique du numéro de mandat lors de la signature.</li>
+            </ul>
+
+            <h3>Registre unique, pas de sous-registres</h3>
+            <ul>
+                <li>La Cour de cassation a jugé que <em>“tous les mandats visés par ce texte doivent être mentionnés sur
+                        un registre unique”</em>, interdisant la multiplication de registres distincts ou de
+                    sous‑registres pour une même carte professionnelle.</li>
+                <li>Une entité immobilière (agence, réseau) <strong>ne peut tenir qu’un seul registre</strong> pour la
+                    carte considérée, même si elle a plusieurs points de vente ; l’organisation interne doit donc se
+                    faire dans ce cadre unique.</li>
+            </ul>
+
+            <!-- AD INSERT 2 -->
+            <div class="ad-insert" style="background: #000; color: #fff; border: 2px solid #222;">
+                <h4 style="color: #FFC300;">Le Garde-Fou des Syndics Indépendants</h4>
+                <p style="color: #aaa; margin-bottom: 2rem;">Vos mandats sont au carré, mais qu'en est-il de votre
+                    facturation de vacations exceptionnelles ? Oignon lie chaque mandat à votre logiciel pour sécuriser
+                    vos revenus.</p>
+                <a href="https://tally.so/r/Gxza4o" target="_blank" rel="noopener" class="btn-primary"
+                    style="background:#fff;">
+                    Soutenir la création d'Oignon
+                </a>
+            </div>
+
+            <h2>Champs d’application et conséquences en cas de manquement</h2>
+
+            <h3>Opérations concernées</h3>
+            <ul>
+                <li>Mandats de vente ou d’achat (transaction sur immeubles et fonds de commerce).</li>
+                <li>Mandats de location, lorsque l’agence intervient pour la mise en location ou la gestion locative.
+                </li>
+                <li>Mandats de gestion immobilière (administration de biens, gestion de lots, locaux…).</li>
+                <li><strong>Décisions et contrats qui confient la gestion</strong> d’un syndicat de copropriété à un
+                    syndic professionnel.</li>
+            </ul>
+
+            <h3>Sanctions principales</h3>
+            <ul>
+                <li><strong>Nullité du mandat</strong> : l’absence de numéro d’inscription, ou un numéro attribué hors
+                    des règles, est une cause de nullité absolue.</li>
+                <li><strong>Perte du droit à rémunération</strong> : un mandat irrégulier est réputé nul, l’agent ou le
+                    syndic peut alors être privé de ses honoraires et/ou se voir reprocher un encaissement indu.</li>
+                <li>Exposition à des <strong>contrôles et sanctions administratives ou pénales</strong> au titre de la
+                    loi Hoguet (exercice irrégulier, manquements professionnels).</li>
+            </ul>
+
+            <hr />
+
+            <h2>Synthèse rapide</h2>
+            <ul>
+                <li><strong>Création</strong> : loi Hoguet du 2 janvier 1970, organisée par le décret du 20 juillet
+                    1972.</li>
+                <li><strong>Raison d’être</strong> : assurer une traçabilité chronologique, sûre et non falsifiable de
+                    tous les mandats immobiliers, protéger les clients et encadrer la rémunération des professionnels.
+                </li>
+                <li><strong>Professions visées</strong> : agents immobiliers transaction, administrateurs de biens
+                    (gestion), syndics de copropriété titulaires des cartes professionnelles correspondantes.</li>
+                <li><strong>Format</strong> : registre unique, côté et relié ou dématérialisé dans des conditions
+                    garantissant intégrité, inscription le jour de la signature, conservation 10 ans.</li>
+                <li><strong>Conséquences</strong> : mandat irrégulier = nullité possible et perte de droit à honoraires,
+                    avec risques disciplinaires et contentieux.</li>
+            </ul>
+
+        </article>
+    </main>
+
+    <!-- Articles connexes -->
+    <section style="background: var(--bg-cream); border-top: 2px solid #000; padding: 4rem 1.5rem; font-family: 'Poppins', sans-serif;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #666; margin-bottom: 1rem;">Pour aller plus loin</div>
+            <h2 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 2rem; letter-spacing: -0.02em;">Articles connexes</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <a href="/oignon/ressources/mandat-syndic-histoire-jurisprudence/" style="text-decoration: none; color: #000; display: block; background: #fff; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.1s ease, box-shadow 0.1s ease;" onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0px 0px #000'">
+                    <div style="font-size: 1.75rem; margin-bottom: 0.75rem;">📖</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 0.5rem;">Dossier juridique</div>
+                    <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3;">Le mandat de syndic : histoire et jurisprudences</div>
+                    <div style="font-size: 0.85rem; color: #555; line-height: 1.5;">De la loi de 1938 à la loi Habitat dégradé 2024 — les fondations juridiques du métier.</div>
+                    <div style="margin-top: 1rem; font-weight: 700; font-size: 0.9rem; color: #000;">Lire l'article →</div>
+                </a>
+                <a href="/oignon/ressources/facturation-electronique-2026/" style="text-decoration: none; color: #000; display: block; background: #fff; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.1s ease, box-shadow 0.1s ease;" onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0px 0px #000'">
+                    <div style="font-size: 1.75rem; margin-bottom: 0.75rem;">🗓️</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 0.5rem;">Réforme 2026</div>
+                    <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3;">Facturation électronique obligatoire dès 2026</div>
+                    <div style="font-size: 0.85rem; color: #555; line-height: 1.5;">Calendrier, plateformes agréées (PDP) et sanctions pour votre cabinet syndic.</div>
+                    <div style="margin-top: 1rem; font-weight: 700; font-size: 0.9rem; color: #000;">Lire l'article →</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer
+        style="background: #000; color: #555; border-top: 1px solid #1a1a1a; padding: 3rem 1.5rem; font-family: 'Poppins', sans-serif;">
+        <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+            <a href="/oignon/"
+                style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:#fff;margin-bottom:1rem;">
+                <span style="font-weight:900;font-size:1.25rem;">Beamô</span>
+                <span
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#EEB400;border:1px solid #555;border-radius:9999px;padding:0.1rem 0.4rem;text-transform:uppercase;">Oignon</span>
+            </a>
+            <p style="font-size:0.85rem;line-height:1.6;font-weight:500;margin:0 0 2rem;">
+                Un projet expérimental pour améliorer la vie des syndics.
+            </p>
+            <div style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+                <a href="/mentions-legales/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Mentions légales</a>
+                <a href="/politique-de-confidentialite/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Confidentialité</a>
+                <a href="/conditions-utilisation/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Conditions
+                    d'utilisation</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

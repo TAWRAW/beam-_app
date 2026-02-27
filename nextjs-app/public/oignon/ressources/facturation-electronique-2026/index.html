@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <title>Facturation Électronique 2026 : obligations, calendrier, sanctions | Oignon</title>
+    <meta name="description"
+        content="Découvrez tout ce qu'il faut savoir sur le passage obligatoire à la facturation électronique en France en 2026 : calendrier, PDP, sanctions et opportunités.">
+    <meta name="keywords"
+        content="facturation électronique 2026, e-invoicing france, PDP facturation, sanctions facturation électronique, oignon, syndic">
+    <link rel="canonical" href="https://beamô.fr/oignon/ressources/facturation-electronique-2026/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Facturation Électronique 2026 : obligations, calendrier, sanctions | Oignon">
+    <meta property="og:description"
+        content="Découvrez tout ce qu'il faut savoir sur le passage obligatoire à la facturation électronique en France en 2026.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://beamô.fr/oignon/ressources/facturation-electronique-2026/">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://beamô.fr/oignon/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Fonts preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Georgia:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#F2F1E6',
+                        'cream-muted': '#E8E7DB',
+                        primary: '#FFC300',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'system-ui', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        pill: '9999px',
+                        card: '2rem',
+                    },
+                    boxShadow: {
+                        brutalist: '4px 4px 0px 0px #000',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-cream: #F2F1E6;
+            --primary: #FFC300;
+            --foreground: #000000;
+            --shadow-brutalist: 4px 4px 0px 0px #000;
+            --radius-card: 2rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #fff;
+            color: #111;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-sans {
+            font-family: 'Poppins', system-ui, sans-serif;
+        }
+
+        /* Brutalist components from Oignon UI */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-brutalist);
+            text-decoration: none;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 1rem;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: var(--shadow-brutalist);
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Nav bar styling */
+        nav {
+            position: sticky;
+            top: 1rem;
+            z-index: 50;
+            padding: 0 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-cream);
+            border: 2px solid #000;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-brutalist);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Article formatting */
+        article.prose {
+            font-size: 1.125rem;
+        }
+
+        article.prose h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        article.prose h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-top: 3.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+            color: #000;
+        }
+
+        article.prose h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        article.prose p {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        article.prose ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            list-style-type: none;
+        }
+
+        article.prose ul li {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        article.prose ul li::before {
+            content: '■';
+            color: var(--primary);
+            position: absolute;
+            left: -1.5rem;
+            font-size: 0.8em;
+            top: 0.4rem;
+        }
+
+        article.prose strong {
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Ad Box insert in article */
+        .ad-insert {
+            background: var(--bg-cream);
+            border: 2px solid #000;
+            border-radius: var(--radius-card);
+            padding: 2.5rem;
+            margin: 4rem 0;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: var(--shadow-brutalist);
+        }
+
+        .ad-insert h4 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+    </style>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Facturation Électronique 2026 : obligations, calendrier, sanctions",
+      "description": "Découvrez tout ce qu'il faut savoir sur le passage obligatoire à la facturation électronique en France en 2026 : calendrier, PDP, sanctions et opportunités.",
+      "url": "https://beamô.fr/oignon/ressources/facturation-electronique-2026/",
+      "datePublished": "2026-02-10",
+      "dateModified": "2026-02-27",
+      "author": {
+        "@type": "Person",
+        "name": "Tom LEMEILLE",
+        "jobTitle": "Syndic indépendant",
+        "url": "https://beamô.fr/oignon/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Beamô Oignon",
+        "url": "https://beamô.fr/oignon/"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://beamô.fr/oignon/ressources/facturation-electronique-2026/"
+      }
+    }
+    </script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/oignon/" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:#000;">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="13" fill="#FFC300" stroke="#000" stroke-width="2" />
+                    <path d="M14 6C10 6 7 9.5 7 14C7 18.5 10 22 14 22C18 22 21 18.5 21 14C21 9.5 18 6 14 6Z" fill="#fff"
+                        stroke="#000" stroke-width="1.5" />
+                    <path d="M14 9C11.5 9 10 11 10 14C10 17 11.5 19 14 19C16.5 19 18 17 18 14C18 11 16.5 9 14 9Z"
+                        fill="#FFC300" stroke="#000" stroke-width="1.5" />
+                    <circle cx="14" cy="14" r="2.5" fill="#000" />
+                </svg>
+                <span style="font-weight:900;font-size:1.1rem;letter-spacing:-0.02em;">Beamô</span>
+                <span
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;background:#FFC300;border:1.5px solid #000;border-radius:9999px;padding:0.15rem 0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Oignon</span>
+            </a>
+            <a href="/oignon/ressources/" class="badge hover:bg-gray-50 transition" style="box-shadow:none;">
+                ← Ressources
+            </a>
+        </div>
+    </nav>
+
+    <!-- Article Header -->
+    <header
+        style="background: var(--bg-cream); padding: 5rem 1.5rem 6rem; text-align: center; border-bottom: 2px solid #000;">
+        <div style="max-width: 800px; margin: 0 auto; font-family: 'Poppins', sans-serif;">
+            <div style="margin-bottom: 1.5rem;">
+                <span class="badge" style="background: #fff;">🗓️ Réforme 2026</span>
+            </div>
+            <h1
+                style="font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em;">
+                La facturation électronique obligatoire en France dès 2026
+            </h1>
+            <p style="font-size: 1.1rem; color: #444; font-weight: 500;">
+                Modernisation, e-reporting, plateformes agréées et sanctions : ce qu'il faut absolument anticiper pour
+                votre entreprise.
+            </p>
+            <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1.5rem;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">✍️ Tom LEMEILLE, syndic indépendant</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">📅 Publié le 10 fév. 2026</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">⏱️ Lecture : ~5 min</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Body -->
+    <main style="max-width: 800px; margin: 0 auto; padding: 4rem 1.5rem;">
+        <article class="prose">
+            <p>
+                La facturation électronique en France devient obligatoire à partir de <strong>septembre 2026</strong>
+                pour moderniser les échanges, lutter contre la fraude à la TVA et simplifier les déclarations fiscales.
+                Elle concerne toutes les entreprises assujetties à la TVA, via des formats structurés (UBL, CII ou mixte
+                comme Factur-X) transmis par des plateformes agréées.
+            </p>
+
+            <h2>Histoire</h2>
+            <p>
+                La réforme tire ses origines de l'ordonnance n° 2014-697 imposant la facturation électronique aux
+                entités publiques dès 2017-2020 via le portail public Chorus Pro. La loi Macron de 2015 prévoyait une
+                extension aux entreprises privées (B2B), qui a été reportée plusieurs fois. Finalement, l'article 153 de
+                la loi de finances 2020 a relancé le projet, avec un calendrier initial en 2024 repoussé désormais à
+                <strong>2026-2027</strong>.
+            </p>
+
+            <h2>Pourquoi cette réforme ?</h2>
+            <p>
+                Les objectifs gouvernementaux vont au-delà de la simple contrainte administrative :
+            </p>
+            <ul>
+                <li><strong>Réduction de la fraude à la TVA</strong> causant des milliards d'euros de pertes annuelles.
+                </li>
+                <li><strong>Modernisation de la chaîne de facturation</strong> : c'est la fin des PDF simples envoyés
+                    par email ou des envois papier.</li>
+                <li><strong>Amélioration de la trésorerie</strong> via un meilleur suivi des échéances et des statuts de
+                    paiement.</li>
+                <li><strong>Pré-remplissage automatique</strong> des déclarations TVA, réduisant la charge
+                    administrative.</li>
+            </ul>
+            <p>
+                En contrepartie de cette obligation, les entreprises gagnent en productivité avec une traçabilité accrue
+                de leurs créances et une réduction drastique des coûts d'impression et d'envoi.
+            </p>
+
+            <!-- AD INSERT 1 -->
+            <div class="ad-insert">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">🌩️</div>
+                <h4>Syndics : Êtes-vous prêts pour la facturation électronique ?</h4>
+                <p style="margin-bottom: 2rem;">Le format Factur-X devient la norme. Oignon génèrera automatiquement vos
+                    factures d'honoraires et prestations au format exigé par la loi en 2026, tout en traquant ce que
+                    vous oubliez de facturer.</p>
+                <a href="https://tally.so/r/Gxza4o" target="_blank" rel="noopener" class="btn-primary">
+                    Découvrir le projet Oignon →
+                </a>
+            </div>
+
+            <h2>Pour qui ? (Champ d'application)</h2>
+            <p>
+                Toutes les entreprises françaises assujetties à la TVA sont concernées (TPE, PME, ETI, grandes
+                entreprises, auto-entrepreneurs, professions libérales, associations avec activité TVA), <strong>même si
+                    elles bénéficient du régime de franchise en base de TVA</strong>.
+                Pour les syndics de copropriété, cette obligation s'ajoute aux exigences réglementaires existantes, notamment la tenue du <a href="/oignon/ressources/registre-des-mandats-loi-hoguet/" style="color: #000; font-weight: 700; text-decoration: underline;">registre des mandats imposé par la loi Hoguet</a>.
+            </p>
+            <p>
+                Attention à la distinction : les entreprises agissant en <strong>B2C</strong> (vers les particuliers) ou
+                à l'international ne sont pas concernées par l'émission de la facture électronique (e-invoicing), mais
+                doivent tout de même recevoir du B2B et transmettre des données de transaction via le mécanisme
+                d'<strong>e-reporting</strong>.
+            </p>
+
+            <h2>Quand ? (Le Calendrier de déploiement)</h2>
+            <p>La mise en place se fera progressivement selon la taille de l'entreprise :</p>
+            <ul>
+                <li><strong>1er septembre 2026</strong> : <strong>Réception obligatoire</strong> pour
+                    <strong>toutes</strong> les entreprises. Émission obligatoire pour les grandes entreprises et les
+                    ETI (Entreprises de Taille Intermédiaire).</li>
+                <li><strong>1er septembre 2027</strong> : <strong>Émission obligatoire</strong> pour les TPE, PME et les
+                    micro-entreprises.</li>
+            </ul>
+            <p>
+                Le calendrier de transmission des données de transaction (e-reporting) suit exactement le même
+                échelonnement.
+            </p>
+
+            <h2>Comment se mettre en conformité ?</h2>
+            <ol style="list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.8;">
+                <li style="margin-bottom: 1rem;"><strong>Choisir une plateforme agréée</strong> (PDP - Plateforme de
+                    Dématérialisation Partenaire) ou le portail public (PPF). La liste officielle sur <a href="https://www.impots.gouv.fr" target="_blank" rel="noopener" style="color: #000; text-decoration: underline; font-weight: 600;">impots.gouv.fr</a>
+                    compte plus de 112 acteurs comme Esker, EDICOM ou Cegid.</li>
+                <li style="margin-bottom: 1rem;"><strong>Cartographier les flux</strong> : analyser les clients et
+                    fournisseurs pour connaître les formats qui seront échangés.</li>
+                <li style="margin-bottom: 1rem;"><strong>Adapter son logiciel/ERP</strong> : vérifier que le logiciel de
+                    facturation génère des factures structurées avec toutes les nouvelles mentions obligatoires (SIREN
+                    du client, date de livraison détaillée, option pour paiement de la TVA sur les débits, etc.).</li>
+                <li style="margin-bottom: 1rem;"><strong>Transmettre via la plateforme partenaire</strong> : l'envoi
+                    d'une facture par simple email en pièce jointe ou courrier ne sera plus légalement valable pour
+                    valoir facture d'origine.</li>
+            </ol>
+
+            <!-- AD INSERT 2 -->
+            <div class="ad-insert" style="background: #000; color: #fff; border: 2px solid #222;">
+                <h4 style="color: #FFC300;">Oublis, erreurs, temps perdu...</h4>
+                <p style="color: #aaa; margin-bottom: 2rem;">Chaque mois, les syndics indépendants perdent des jours
+                    entiers sur la facturation. En automatisant vos factures avec Oignon, vous vous préparez à 2026 et
+                    récupérez 100% de vos honoraires.</p>
+                <a href="https://tally.so/r/Gxza4o" target="_blank" rel="noopener" class="btn-primary"
+                    style="background:#fff;">
+                    Aidez-nous à construire l'outil
+                </a>
+            </div>
+
+            <h2>Sanctions et amendes prévues</h2>
+            <p>Le législateur a prévu un arsenal répressif sévère pour s'assurer du bon déploiement de la réforme :</p>
+            <ul>
+                <li><strong>Non-désignation de plateforme</strong> : l'administration enverra une mise en demeure,
+                    suivie d'une amende de 500 € (qui passe à 1 000 € après 3 mois, et s'aggrave de +1 000 € par
+                    trimestre de retard).</li>
+                <li><strong>Défaut d'émission/réception (formats ou mentions manquants)</strong> : 50 € par facture non
+                    conforme, avec un plafond de 15 000 € par an.</li>
+                <li><strong>E-reporting défaillant</strong> : 500 € d'amende par transmission omise, plafonnée à 15 000
+                    € par an.</li>
+            </ul>
+            <p>
+                <em>Note :</em> Une clause de clémence est prévue pour la première infraction si celle-ci est
+                régularisée spontanément dans les 30 jours. À noter également que les plateformes elles-mêmes (PDP)
+                s'exposent à des sanctions très lourdes (jusqu'à 100 000 € / an) en cas de défaillance.
+            </p>
+
+        </article>
+    </main>
+
+    <!-- Articles connexes -->
+    <section style="background: var(--bg-cream); border-top: 2px solid #000; padding: 4rem 1.5rem; font-family: 'Poppins', sans-serif;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #666; margin-bottom: 1rem;">Pour aller plus loin</div>
+            <h2 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 2rem; letter-spacing: -0.02em;">Articles connexes</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <a href="/oignon/ressources/registre-des-mandats-loi-hoguet/" style="text-decoration: none; color: #000; display: block; background: #fff; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.1s ease, box-shadow 0.1s ease;" onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0px 0px #000'">
+                    <div style="font-size: 1.75rem; margin-bottom: 0.75rem;">📜</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 0.5rem;">Obligation légale</div>
+                    <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3;">Le Registre des Mandats et la loi Hoguet</div>
+                    <div style="font-size: 0.85rem; color: #555; line-height: 1.5;">Obligations, format, sanctions et conformité pour les syndics professionnels.</div>
+                    <div style="margin-top: 1rem; font-weight: 700; font-size: 0.9rem; color: #000;">Lire l'article →</div>
+                </a>
+                <a href="/oignon/ressources/mandat-syndic-histoire-jurisprudence/" style="text-decoration: none; color: #000; display: block; background: #fff; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.1s ease, box-shadow 0.1s ease;" onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0px 0px #000'">
+                    <div style="font-size: 1.75rem; margin-bottom: 0.75rem;">📖</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 0.5rem;">Dossier juridique</div>
+                    <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3;">Le mandat de syndic : histoire et jurisprudences</div>
+                    <div style="font-size: 0.85rem; color: #555; line-height: 1.5;">De la loi de 1938 à la loi Habitat dégradé 2024 — les fondations juridiques du métier.</div>
+                    <div style="margin-top: 1rem; font-weight: 700; font-size: 0.9rem; color: #000;">Lire l'article →</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer
+        style="background: #000; color: #555; border-top: 1px solid #1a1a1a; padding: 3rem 1.5rem; font-family: 'Poppins', sans-serif;">
+        <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+            <a href="/oignon/"
+                style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:#fff;margin-bottom:1rem;">
+                <span style="font-weight:900;font-size:1.25rem;">Beamô</span>
+                <span
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#EEB400;border:1px solid #555;border-radius:9999px;padding:0.1rem 0.4rem;text-transform:uppercase;">Oignon</span>
+            </a>
+            <p style="font-size:0.85rem;line-height:1.6;font-weight:500;margin:0 0 2rem;">
+                Un projet expérimental pour améliorer la vie des syndics.
+            </p>
+            <div style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+                <a href="/mentions-legales/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Mentions légales</a>
+                <a href="/politique-de-confidentialite/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Confidentialité</a>
+                <a href="/conditions-utilisation/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Conditions
+                    d'utilisation</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

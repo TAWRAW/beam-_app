@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <title>Le mandat de syndic en France : histoire et jurisprudence | Oignon</title>
+    <meta name="description"
+        content="Découvrez l'histoire, les évolutions législatives et les jurisprudences majeures du mandat de syndic de copropriété en France.">
+    <meta name="keywords"
+        content="mandat syndic, histoire syndic, loi 1965 syndic, loi ALUR syndic, loi ELAN syndic, jurisprudence syndic, responsabilité syndic, oignon">
+    <link rel="canonical" href="https://beamô.fr/oignon/ressources/mandat-syndic-histoire-jurisprudence/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Le mandat de syndic en France : histoire et jurisprudence | Oignon">
+    <meta property="og:description"
+        content="Découvrez l'histoire, les évolutions législatives et les jurisprudences majeures du mandat de syndic de copropriété en France.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://beamô.fr/oignon/ressources/mandat-syndic-histoire-jurisprudence/">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://beamô.fr/oignon/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Fonts preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Georgia:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#F2F1E6',
+                        'cream-muted': '#E8E7DB',
+                        primary: '#FFC300',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'system-ui', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        pill: '9999px',
+                        card: '2rem',
+                    },
+                    boxShadow: {
+                        brutalist: '4px 4px 0px 0px #000',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-cream: #F2F1E6;
+            --primary: #FFC300;
+            --foreground: #000000;
+            --shadow-brutalist: 4px 4px 0px 0px #000;
+            --radius-card: 2rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            /* Serif for long-form reading */
+            background-color: #fff;
+            color: #111;
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-sans {
+            font-family: 'Poppins', system-ui, sans-serif;
+        }
+
+        /* Brutalist components from Oignon UI */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-brutalist);
+            text-decoration: none;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 1rem;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 9999px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            box-shadow: var(--shadow-brutalist);
+            color: #000;
+            text-decoration: none;
+        }
+
+        /* Nav bar styling matching the landing page */
+        nav {
+            position: sticky;
+            top: 1rem;
+            z-index: 50;
+            padding: 0 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-cream);
+            border: 2px solid #000;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-brutalist);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Article formatting */
+        article.prose {
+            font-size: 1.125rem;
+        }
+
+        article.prose h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        article.prose h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-top: 3.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+            color: #000;
+        }
+
+        article.prose h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        article.prose p {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        article.prose ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            list-style-type: none;
+        }
+
+        article.prose ul li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        article.prose ul li::before {
+            content: '■';
+            color: var(--primary);
+            position: absolute;
+            left: -1.5rem;
+            font-size: 0.8em;
+            top: 0.2rem;
+        }
+
+        article.prose strong {
+            font-weight: 700;
+            color: #000;
+        }
+
+        article.prose hr {
+            border: 0;
+            height: 2px;
+            background: #eee;
+            margin: 3rem 0;
+        }
+
+        /* Tables for jurisprudence */
+        article.prose table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 2px solid #000;
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 2rem 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        article.prose th {
+            background: var(--bg-cream);
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #000;
+            font-weight: 800;
+        }
+
+        article.prose td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        article.prose td:first-child {
+            font-weight: 700;
+            width: 35%;
+            border-right: 2px solid #000;
+        }
+
+        article.prose tr:last-child td {
+            border-bottom: 0;
+        }
+
+        /* Ad Box insert in article */
+        .ad-insert {
+            background: var(--bg-cream);
+            border: 2px solid #000;
+            border-radius: var(--radius-card);
+            padding: 2.5rem;
+            margin: 4rem 0;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: var(--shadow-brutalist);
+        }
+
+        .ad-insert h4 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+    </style>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Le mandat de syndic de copropriété en France : histoire, évolutions et jurisprudences",
+      "description": "Découvrez l'histoire, les évolutions législatives et les jurisprudences majeures du mandat de syndic de copropriété en France.",
+      "url": "https://beamô.fr/oignon/ressources/mandat-syndic-histoire-jurisprudence/",
+      "datePublished": "2026-01-15",
+      "dateModified": "2026-02-27",
+      "author": {
+        "@type": "Person",
+        "name": "Tom LEMEILLE",
+        "jobTitle": "Syndic indépendant",
+        "url": "https://beamô.fr/oignon/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Beamô Oignon",
+        "url": "https://beamô.fr/oignon/"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://beamô.fr/oignon/ressources/mandat-syndic-histoire-jurisprudence/"
+      }
+    }
+    </script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="/oignon/" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:#000;">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="13" fill="#FFC300" stroke="#000" stroke-width="2" />
+                    <path d="M14 6C10 6 7 9.5 7 14C7 18.5 10 22 14 22C18 22 21 18.5 21 14C21 9.5 18 6 14 6Z" fill="#fff"
+                        stroke="#000" stroke-width="1.5" />
+                    <path d="M14 9C11.5 9 10 11 10 14C10 17 11.5 19 14 19C16.5 19 18 17 18 14C18 11 16.5 9 14 9Z"
+                        fill="#FFC300" stroke="#000" stroke-width="1.5" />
+                    <circle cx="14" cy="14" r="2.5" fill="#000" />
+                </svg>
+                <span style="font-weight:900;font-size:1.1rem;letter-spacing:-0.02em;">Beamô</span>
+                <span
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;background:#FFC300;border:1.5px solid #000;border-radius:9999px;padding:0.15rem 0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Oignon</span>
+            </a>
+            <a href="/oignon/ressources/" class="badge hover:bg-gray-50 transition" style="box-shadow:none;">
+                ← Ressources
+            </a>
+        </div>
+    </nav>
+
+    <!-- Article Header -->
+    <header
+        style="background: var(--bg-cream); padding: 5rem 1.5rem 6rem; text-align: center; border-bottom: 2px solid #000;">
+        <div style="max-width: 800px; margin: 0 auto; font-family: 'Poppins', sans-serif;">
+            <div style="margin-bottom: 1.5rem;">
+                <span class="badge" style="background: #fff;">📖 Dossier Juridique</span>
+            </div>
+            <h1
+                style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em;">
+                Le mandat de syndic de copropriété en France : histoire, évolutions et jurisprudences
+            </h1>
+            <p style="font-size: 1.1rem; color: #444; font-weight: 500;">
+                De ses racines antiques jusqu'aux récentes réformes de la loi Habitat dégradé de 2024, découvrez les
+                fondations juridiques régissant le métier de syndic.
+            </p>
+            <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1.5rem;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">✍️ Tom LEMEILLE, syndic indépendant</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">📅 Publié le 15 jan. 2026</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#666;">⏱️ Lecture : ~10 min</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Body -->
+    <main style="max-width: 800px; margin: 0 auto; padding: 4rem 1.5rem;">
+
+        <!-- Table des matières -->
+        <nav aria-label="Table des matières" style="background: #F2F1E6; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem 2rem; margin-bottom: 3rem; font-family: 'Poppins', sans-serif; box-shadow: 4px 4px 0px 0px #000;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 1rem;">Sommaire</div>
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                <li><a href="#h2-origines" style="color: #000; text-decoration: none; font-size: 0.95rem; font-weight: 600;">1. Origine historique de la copropriété</a></li>
+                <li><a href="#h2-loi-1965" style="color: #000; text-decoration: none; font-size: 0.95rem; font-weight: 600;">2. La loi du 10 juillet 1965</a></li>
+                <li><a href="#h2-evolutions" style="color: #000; text-decoration: none; font-size: 0.95rem; font-weight: 600;">3. Les grandes évolutions législatives</a></li>
+                <li><a href="#h2-jurisprudences" style="color: #000; text-decoration: none; font-size: 0.95rem; font-weight: 600;">4. Jurisprudences majeures</a></li>
+                <li><a href="#h2-synthese" style="color: #000; text-decoration: none; font-size: 0.95rem; font-weight: 600;">5. Synthèse</a></li>
+            </ol>
+        </nav>
+
+        <article class="prose">
+
+            <h2 id="h2-origines">Origine historique de la copropriété et de son administration</h2>
+
+            <h3>Des racines antiques au Code Napoléon</h3>
+            <p>
+                La copropriété trouve ses racines les plus lointaines dans le <strong>Code de Hammurabi</strong> (vers
+                1750 av. J.-C.), texte juridique babylonien contenant les premières traces de règles relatives à la «
+                propriété du dessous et du dessus » d'un étage. La rencontre entre les techniques d'appropriation du
+                droit romain et les modes d'indivision babyloniens aurait posé les bases de la copropriété moderne.
+            </p>
+            <p>
+                Après un long silence juridique, les formes d'indivision se diversifient au <strong>Moyen Âge</strong>,
+                avec des immeubles dont le rez-de-chaussée est commercial et les niveaux supérieurs réservés à
+                l'habitat, mais sans véritable notion de parties communes. Un basculement s'opère au <strong>XVIIIe
+                    siècle</strong>, consécutif aux grands incendies de Rennes et Grenoble, qui imposent des
+                reconstructions plus hautes et nécessitent de nouveaux modes de gestion et d'appropriation des parties
+                communes. C'est la naissance de la fameuse « copropriété à la grenobloise », référence qui perdurera
+                dans les règlements de copropriété jusqu'au début du XXe siècle.
+            </p>
+            <p>
+                Le <strong>Code civil de 1804</strong> (Code Napoléon) aborde pour la première fois la question dans son
+                <strong>article 664</strong>, inséré au chapitre des servitudes. Ce texte, extrêmement sommaire et
+                supplétif, se contentait d'organiser la répartition des charges d'entretien entre propriétaires d'étages
+                différents (gros murs, toit, planchers, escaliers), sans aucune organisation collective ni organe de
+                gestion. Il ne créait ni syndicat, ni syndic, ni règlement de copropriété.
+            </p>
+
+            <h3>La loi du 28 juin 1938 : naissance du syndic</h3>
+            <p>
+                Face aux insuffisances du Code Napoléon et à l'urbanisation croissante — aggravée par les ravages de la
+                Première Guerre mondiale et la nécessité de reconstruire —, le Parlement vote la <strong>loi du 28 juin
+                    1938</strong>, qui abroge l'article 664 du Code civil et crée, pour la première fois en France, un
+                véritable <strong>statut de la copropriété des immeubles divisés en appartements</strong>.
+            </p>
+            <p>
+                Ce texte fondateur, en seulement une vingtaine d'articles, introduit les concepts essentiels qui
+                perdurent aujourd'hui :
+            </p>
+            <ul>
+                <li>La notion de <strong>parties communes</strong> ;</li>
+                <li>Le <strong>syndicat des copropriétaires</strong>, représentant légal de la collectivité ;</li>
+                <li>Le <strong>syndic</strong>, qualifié d'« agent officiel du syndicat », chargé de le représenter ;
+                </li>
+                <li>Le <strong>règlement de copropriété</strong> ;</li>
+                <li>L'<strong>assemblée des copropriétaires</strong> statuant selon plusieurs niveaux de majorité ;</li>
+                <li>Des tantièmes de voix proportionnels aux droits détenus.</li>
+            </ul>
+            <p>
+                Cependant, cette loi souffrait de deux lacunes majeures : son <strong>caractère supplétif</strong> (les
+                anciennes conventions pouvaient perdurer) et l'<strong>absence de dispositions sur les travaux</strong>,
+                interdisant toute décision autre qu'unanime pour faire évoluer l'immeuble. C'était, selon l'expression
+                de l'avocat Pierre-Édouard Lagraulet, « un nid à contentieux ».
+            </p>
+
+            <!-- AD INSERT 1 -->
+            <div class="ad-insert">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">🧅</div>
+                <h4>Le métier de syndic évolue, votre facturation aussi.</h4>
+                <p style="margin-bottom: 2rem;">Arrêtez de perdre de l'argent sur des vacations non facturées. Oignon
+                    relie vos mandats à votre facturation avec automatisation complète du processus.</p>
+                <a href="https://tally.so/r/Gxza4o" target="_blank" rel="noopener" class="btn-primary">
+                    Découvrir le projet Oignon →
+                </a>
+            </div>
+
+            <h2 id="h2-loi-1965">La loi du 10 juillet 1965 : le cadre moderne du mandat de syndic</h2>
+
+            <h3>Contexte et fondements</h3>
+            <p>
+                La Seconde Guerre mondiale impose de reconstruire massivement (Le Havre, villes bombardées), puis le
+                retour des colons et l'immigration de la fin des années 1960 provoquent une vague de construction sans
+                précédent. La loi du 10 juillet 1965 (loi n° 65-557) et son <strong>décret d'application du 17 mars
+                    1967</strong> (décret n° 67-223) sont adoptés pour donner un cadre <strong>impératif</strong> (et
+                non plus supplétif) à la copropriété.
+            </p>
+            <p>
+                Le syndic de copropriété devient <strong>le mandataire obligatoire</strong> du syndicat des
+                copropriétaires. La loi de 1965 établit clairement :
+            </p>
+            <ul>
+                <li>Le rôle, les missions et les obligations du syndic (article 18) ;</li>
+                <li>La distinction entre syndic professionnel et syndic bénévole (non professionnel) ;</li>
+                <li>L'obligation d'un <strong>règlement de copropriété</strong> ;</li>
+                <li>Les règles de convocation et de tenue des assemblées générales ;</li>
+                <li>Les règles de majorité pour chaque type de décision.</li>
+            </ul>
+
+            <h3>Nature juridique du mandat</h3>
+            <p>
+                Le mandat de syndic est un <strong>contrat de mandat</strong> au sens des articles 1984 et suivants du
+                Code civil, avec des particularités propres au droit de la copropriété. Il présente les caractéristiques
+                suivantes :
+            </p>
+            <ul>
+                <li><strong>Contrat <em>intuitu personae</em></strong> : le mandat est conclu en considération de la
+                    personne du syndic et ne peut être transmis à une autre entité sans vote de l'assemblée générale ;
+                </li>
+                <li><strong>Responsabilité contractuelle</strong> à l'égard du syndicat des copropriétaires (article
+                    1992 du Code civil) ;</li>
+                <li><strong>Responsabilité délictuelle</strong> à l'égard des copropriétaires individuellement
+                    considérés et des tiers ;</li>
+                <li><strong>Obligation de moyens</strong> : le syndic est tenu de diligences normales, non d'un
+                    résultat.</li>
+            </ul>
+
+            <h3>Règles de désignation et de durée du mandat</h3>
+            <p>
+                La désignation du syndic est votée en assemblée générale à la <strong>majorité absolue de l'article
+                    25</strong> de la loi de 1965 (majorité des voix de tous les copropriétaires, présents, représentés
+                ou absents). Si cette majorité n'est pas atteinte mais que le projet recueille au moins un tiers des
+                voix, un <strong>second vote à la majorité simple</strong> (article 24) est possible immédiatement
+                (article 25-1).
+            </p>
+            <p>
+                Selon l'<strong>article 28 du décret du 17 mars 1967</strong>, la durée maximale du mandat est de
+                <strong>3 ans</strong>. Cette durée est renouvelable indéfiniment par vote en AG. Pour les
+                <strong>copropriétés neuves</strong>, le promoteur désigne un syndic provisoire pour <strong>1 an
+                    maximum</strong>.
+            </p>
+            <p>
+                L'<strong>article 29 du décret de 1967</strong> impose que le contrat de syndic fixe sa durée et précise
+                les <strong>dates calendaires de prise d'effet et d'échéance</strong>. L'absence de date calendaire
+                précise rend le contrat nul.
+            </p>
+
+            <h2 id="h2-evolutions">Les grandes évolutions législatives</h2>
+
+            <h3>La loi Hoguet du 2 janvier 1970</h3>
+            <p>
+                La <a href="/oignon/ressources/registre-des-mandats-loi-hoguet/" style="color: #000; text-decoration: underline; font-weight: 700;"><strong>loi n° 70-9 du 2 janvier 1970 dite loi Hoguet</strong></a> réglemente les conditions d'exercice des activités
+                relatives aux opérations immobilières. Elle impose aux syndics professionnels la détention d'une
+                <strong>carte professionnelle</strong> (« carte S » depuis la loi ALUR), sous conditions de diplôme ou
+                d'expérience, de garantie financière, d'assurance en responsabilité civile professionnelle et de casier
+                judiciaire vierge. L'exercice sans carte est passible de sanctions pénales.
+            </p>
+
+            <h3>La loi SRU du 13 décembre 2000</h3>
+            <p>
+                La <strong>loi Solidarité et Renouvellement Urbain</strong> renforce la transparence et les obligations
+                comptables du syndic. Elle rend obligatoire le <strong>carnet d'entretien de l'immeuble</strong>, que le
+                syndic doit établir et tenir à jour. Elle renforce également les obligations de transparence financière.
+            </p>
+
+            <h3>La loi ALUR du 24 mars 2014</h3>
+            <p>
+                La <strong>loi pour l'Accès au Logement et un Urbanisme Rénové</strong> (loi n° 2014-366) marque un
+                tournant majeur pour le mandat de syndic :
+            </p>
+            <ul>
+                <li><strong>Contrat-type obligatoire</strong> : un modèle de contrat de syndic est imposé par décret
+                    (décret n° 2015-342 du 26 mars 2015), applicable à tous les contrats conclus ou renouvelés après le
+                    <strong>1er juillet 2015</strong>. Il distingue une partie forfaitaire (gestion courante) et une
+                    liste limitative de prestations particulières à rémunération complémentaire ;</li>
+                <li><strong>Mise en concurrence obligatoire</strong> des syndics lors de chaque désignation ;</li>
+                <li><strong>Compte bancaire séparé</strong> au nom du syndicat obligatoire dans les 3 mois de la
+                    désignation, à peine de <strong>nullité de plein droit</strong> du mandat ;</li>
+                <li>Création du <strong>registre national des copropriétés</strong> (immatriculation obligatoire) ;</li>
+                <li>Création de la <strong>carte S</strong> distincte pour l'activité de syndic ;</li>
+                <li>Obligation de mettre en place un <strong>extranet</strong> pour l'accès aux documents de la
+                    copropriété ;</li>
+                <li>Préavis de 3 mois pour la démission du syndic.</li>
+            </ul>
+
+            <h3>Les réformes de 2015 à 2024 (Loi Macron, ELAN, Climat, Habitat dégradé)</h3>
+            <p>
+                Les textes les plus récents continuent de façonner la profession :
+            </p>
+            <ul>
+                <li><strong>Loi Macron (2015)</strong> : assouplit la mise en concurrence (tous les trois ans) et permet
+                    d'y déroger.</li>
+                <li><strong>Loi ELAN et ordonnance de 2019</strong> : réforment les modalités de résiliation de mandat,
+                    réinstaurent la mise en concurrence systématique, imposent une fiche d'information standardisée sur
+                    les prix (depuis 2022) et augmentent le plafond des mandats de vote à l'AG (jusqu'à 10% des voix).
+                </li>
+                <li><strong>Loi Climat et Résilience (2021)</strong> : rajoute la gestion de la transition énergétique
+                    (DPE collectif, élaboration du Plan pluriannuel de travaux...).</li>
+                <li><strong>Loi « Habitat dégradé » (9 avril 2024)</strong> : facilite l'emprunt collectif, renforce les
+                    pouvoirs en cas de difficultés et oblige au diagnostic structurel.</li>
+            </ul>
+
+            <!-- AD INSERT 2 -->
+            <div class="ad-insert" style="background: #000; color: #fff; border: 2px solid #222;">
+                <h4 style="color: #FFC300;">Ne laissez plus d'honoraires vous échapper</h4>
+                <p style="color: #aaa; margin-bottom: 2rem;">Les honoraires particuliers et autres prestations
+                    exceptionnelles définis dans vos contrats ALUR méritent d'être facturés avec rigueur et simplicité.
+                </p>
+                <a href="https://tally.so/r/Gxza4o" target="_blank" rel="noopener" class="btn-primary"
+                    style="background:#fff;">
+                    Aider à construire Oignon
+                </a>
+            </div>
+
+            <h2 id="h2-jurisprudences">Panorama des jurisprudences majeures sur le mandat de syndic</h2>
+            <p>
+                Les décisions de la Cour de cassation (essentiellement la 3e chambre civile) ont considérablement
+                précisé le régime du mandat de syndic. Voici les grandes tables de jurisprudence :
+            </p>
+
+            <h3>1. Validité, nullité et restitution d'honoraires</h3>
+            <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Décision de la Cour de Cassation</th>
+                        <th>Principe dégagé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cass. 3e civ., 31 mai 2018 (17-18.046)</td>
+                        <td>Le contrat de syndic <strong>doit mentionner des dates calendaires</strong> précises de
+                            prise d'effet et d'échéance.</td>
+                    </tr>
+                    <tr>
+                        <td>Cass. 3e civ., 5 juil. 2018 (17-21.034)</td>
+                        <td>La nullité de plein droit du mandat pour défaut d'ouverture de compte séparé doit être
+                            <strong>constatée par une procédure contradictoire</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>Cass. 3e civ., 27 fév. 2025 (23-14.697)</td>
+                        <td><strong>Arrêt majeur</strong> : lorsque l'AG ayant désigné le syndic est annulée,
+                            <strong>les honoraires perçus doivent être intégralement restitués</strong> au syndicat,
+                            mettant fin à la tolérance de la rémunération pour "gestion de fait".</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <h3>2. Mise en concurrence et vote en AG</h3>
+            <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Décision de la Cour de Cassation</th>
+                        <th>Principe dégagé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cass. 3e civ., 3 juin 2021 (20-13.269)</td>
+                        <td>L'absence de mise en concurrence par le conseil syndical <strong>n'entraîne pas la
+                                nullité</strong> de la résolution portant désignation du syndic.</td>
+                    </tr>
+                    <tr>
+                        <td>Cass. 3e civ., 7 déc. 2022 (21-23915)</td>
+                        <td>L'AG ne peut valablement procéder à un second vote (majorité simple, art. 24)
+                            <strong>qu'après avoir soumis au vote de l'article 25 toutes les candidatures
+                                concurrentes</strong>. Tout copropriétaire peut contester les mandats de vote sans avoir
+                            lui-même de procuration.</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <h3>3. Révocation et responsabilités (quitus)</h3>
+            <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Décision de la Cour de Cassation</th>
+                        <th>Principe dégagé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cass. 3e civ., 8 mars 2018 (17-12.506)</td>
+                        <td>La révocation anticipée du mandat du syndic sans <strong>motif légitime</strong> ouvre droit
+                            à des dommages et intérêts en faveur du syndic.</td>
+                    </tr>
+                    <tr>
+                        <td>Cass. 3e civ., 6 fév. 2020 (18-22.788)</td>
+                        <td>La responsabilité du syndic ne peut être engagée <strong>que sur preuve d'une faute</strong>
+                            dans l'exercice de son mandat (obligation de moyens).</td>
+                    </tr>
+                    <tr>
+                        <td>Cass. 3e civ., 29 fév. 2024 (22-24.558)</td>
+                        <td><strong>L'arrêt sur le quitus</strong> : Le quitus donné au syndic couvre la responsabilité
+                            contractuelle envers le syndicat, mais <strong>ne fait pas obstacle</strong> à l'action en
+                            responsabilité délictuelle d'un copropriétaire individuellement.</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <h2 id="h2-synthese">Synthèse : les grands principes dégagés</h2>
+            <p>
+                Le droit du mandat de syndic de copropriété en France repose aujourd'hui sur un socle législatif
+                stratifié — de la loi de 1965 aux lois ALUR, ELAN, Climat et Résilience, et Habitat dégradé — et sur une
+                jurisprudence abondante de la Cour de cassation. Ce corpus, en constante évolution, reflète la volonté
+                du législateur de renforcer la protection des copropriétaires tout en professionnalisant le métier dans
+                un contexte où la copropriété concerne près de 10 millions de logements en France.
+            </p>
+
+        </article>
+    </main>
+
+    <!-- Articles connexes -->
+    <section style="background: var(--bg-cream); border-top: 2px solid #000; padding: 4rem 1.5rem; font-family: 'Poppins', sans-serif;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #666; margin-bottom: 1rem;">Pour aller plus loin</div>
+            <h2 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 2rem; letter-spacing: -0.02em;">Articles connexes</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <a href="/oignon/ressources/registre-des-mandats-loi-hoguet/" style="text-decoration: none; color: #000; display: block; background: #fff; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.1s ease, box-shadow 0.1s ease;" onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0px 0px #000'">
+                    <div style="font-size: 1.75rem; margin-bottom: 0.75rem;">📜</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 0.5rem;">Obligation légale</div>
+                    <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3;">Le Registre des Mandats et la loi Hoguet</div>
+                    <div style="font-size: 0.85rem; color: #555; line-height: 1.5;">Obligations, format, sanctions et conformité pour les syndics professionnels.</div>
+                    <div style="margin-top: 1rem; font-weight: 700; font-size: 0.9rem; color: #000;">Lire l'article →</div>
+                </a>
+                <a href="/oignon/ressources/facturation-electronique-2026/" style="text-decoration: none; color: #000; display: block; background: #fff; border: 2px solid #000; border-radius: 1.5rem; padding: 1.75rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.1s ease, box-shadow 0.1s ease;" onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'" onmouseout="this.style.transform='';this.style.boxShadow='4px 4px 0px 0px #000'">
+                    <div style="font-size: 1.75rem; margin-bottom: 0.75rem;">🗓️</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #666; margin-bottom: 0.5rem;">Réforme 2026</div>
+                    <div style="font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem; line-height: 1.3;">Facturation électronique obligatoire dès 2026</div>
+                    <div style="font-size: 0.85rem; color: #555; line-height: 1.5;">Calendrier, plateformes agréées (PDP) et sanctions pour votre cabinet syndic.</div>
+                    <div style="margin-top: 1rem; font-weight: 700; font-size: 0.9rem; color: #000;">Lire l'article →</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer
+        style="background: #000; color: #555; border-top: 1px solid #1a1a1a; padding: 3rem 1.5rem; font-family: 'Poppins', sans-serif;">
+        <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+            <a href="/oignon/"
+                style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:#fff;margin-bottom:1rem;">
+                <span style="font-weight:900;font-size:1.25rem;">Beamô</span>
+                <span
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:600;color:#EEB400;border:1px solid #555;border-radius:9999px;padding:0.1rem 0.4rem;text-transform:uppercase;">Oignon</span>
+            </a>
+            <p style="font-size:0.85rem;line-height:1.6;font-weight:500;margin:0 0 2rem;">
+                Un projet expérimental pour améliorer la vie des syndics.
+            </p>
+            <div style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+                <a href="/mentions-legales/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Mentions légales</a>
+                <a href="/politique-de-confidentialite/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Confidentialité</a>
+                <a href="/conditions-utilisation/"
+                    style="font-size:0.8rem;color:#555;text-decoration:none;font-weight:500;">Conditions
+                    d'utilisation</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -20,6 +20,23 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      // Pages standalone Oignon (HTML statique dans public/)
+      { source: '/oignon', destination: '/oignon/index.html' },
+      { source: '/oignon/', destination: '/oignon/index.html' },
+      { source: '/oignon/rejoindre', destination: '/oignon/rejoindre/index.html' },
+      { source: '/oignon/rejoindre/', destination: '/oignon/rejoindre/index.html' },
+      { source: '/oignon/ressources', destination: '/oignon/ressources/index.html' },
+      { source: '/oignon/ressources/', destination: '/oignon/ressources/index.html' },
+      { source: '/oignon/ressources/mandat-syndic-histoire-jurisprudence', destination: '/oignon/ressources/mandat-syndic-histoire-jurisprudence/index.html' },
+      { source: '/oignon/ressources/mandat-syndic-histoire-jurisprudence/', destination: '/oignon/ressources/mandat-syndic-histoire-jurisprudence/index.html' },
+      { source: '/oignon/ressources/registre-des-mandats-loi-hoguet', destination: '/oignon/ressources/registre-des-mandats-loi-hoguet/index.html' },
+      { source: '/oignon/ressources/registre-des-mandats-loi-hoguet/', destination: '/oignon/ressources/registre-des-mandats-loi-hoguet/index.html' },
+      { source: '/oignon/ressources/facturation-electronique-2026', destination: '/oignon/ressources/facturation-electronique-2026/index.html' },
+      { source: '/oignon/ressources/facturation-electronique-2026/', destination: '/oignon/ressources/facturation-electronique-2026/index.html' },
+    ]
+  },
   async redirects() {
     return [
       // Legacy HTML URLs → new routes
