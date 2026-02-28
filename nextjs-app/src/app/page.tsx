@@ -23,6 +23,7 @@
  */
 
 import Carousel from '@/components/sections/Carousel'
+import PartnersLogos from '@/components/sections/PartnersLogos'
 import Features from '@/components/sections/Features'
 import WhyChangeSyndic from '@/components/sections/WhyChangeSyndic'
 import InterventionZones from '@/components/sections/InterventionZones'
@@ -232,6 +233,7 @@ export default function Page() {
     <main className="min-h-screen">
       {/* Hero section avec slider principal */}
       <Carousel showCta={true} />
+      <PartnersLogos />
 
       {/* Section avantages et services Beamô */}
       <Features />

@@ -30,6 +30,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
 import Carousel from '@/components/sections/Carousel'
+import PartnersLogos from '@/components/sections/PartnersLogos'
 import Features from '@/components/sections/Features'
 import Squares from '@/components/sections/Squares'
 import Services from '@/components/sections/Services'
@@ -162,9 +163,9 @@ export default async function CityPage({ params }: { params: Params }) {
       },
       ...(city.neighborhoods
         ? city.neighborhoods.map((neighborhood) => ({
-            '@type': 'Place',
-            name: neighborhood,
-          }))
+          '@type': 'Place',
+          name: neighborhood,
+        }))
         : []),
     ],
     hasOfferCatalog: {
@@ -224,6 +225,7 @@ export default async function CityPage({ params }: { params: Params }) {
   return (
     <main className="min-h-screen">
       <Carousel cityLabel={label} cityPrep={prep} showCta={true} />
+      <PartnersLogos />
 
       <div className="sr-only">
         <Breadcrumbs

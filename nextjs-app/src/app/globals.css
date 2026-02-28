@@ -12,13 +12,14 @@
 html {
   min-height: 100%;
   height: auto;
+  overflow-x: clip;
   overscroll-behavior-y: none; /* Avoid rubber-banding creating visual gaps */
 }
 
 body {
   min-height: 100%;
   height: auto;
-  overflow-x: hidden; /* Prevent horizontal scrolling on small screens - only on body, not html */
+  overflow-x: clip;
   overscroll-behavior-y: none;
 }
 
