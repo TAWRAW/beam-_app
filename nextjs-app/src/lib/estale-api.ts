@@ -233,7 +233,7 @@ export async function getCondos(): Promise<{ condos: EstaleCondo[]; collaborator
         id
         collaborator {
           id
-          condos {
+          condos(archived: false) {
             id
             name
             address {

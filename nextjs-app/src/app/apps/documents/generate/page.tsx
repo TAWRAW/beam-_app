@@ -514,9 +514,14 @@ export default function DocumentGeneratePage() {
       try {
         const response = await fetch('/api/estale/condos')
         const data = await response.json()
-        if (data.condos && data.condos.length > 0) {
+        console.log('[fetchCondos] response:', JSON.stringify(data))
+        if (data.error) {
+          console.error('[fetchCondos] API error:', data.error)
+        }
+        if (data.condos) {
           setCondos(data.condos)
-          setApiConnected(true)
+          if (data.condos.length > 0) setApiConnected(true)
+          else console.warn('[fetchCondos] API configurée mais 0 copropriétés retournées')
         }
         if (data.gestionnaire) {
           setDefaultGestionnaire(data.gestionnaire)
