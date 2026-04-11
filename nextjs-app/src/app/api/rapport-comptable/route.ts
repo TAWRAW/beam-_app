@@ -16,7 +16,7 @@ const ESTALE_LOGIN_URL = `${process.env.ESTALE_API_BASE_URL ?? 'https://api.esta
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-interface Condo { id: string; name: string }
+interface Condo { id: string; name: string; reference: string }
 
 interface MonitoringNode {
   id: string
@@ -37,6 +37,7 @@ interface BankAccountRaw {
 
 interface CondoAccountingRaw {
   name: string
+  reference: string
   banks: BankAccountRaw[]
   invoice: { nbAlerts: number }
 }
@@ -51,6 +52,7 @@ interface BankReport {
 
 interface CondoReport {
   name: string
+  reference: string
   banks: BankReport[]
   nbAlerts: number
   hasBank: boolean
@@ -59,13 +61,14 @@ interface CondoReport {
 // ── GraphQL ───────────────────────────────────────────────────────────────────
 
 const GET_ALL_CONDOS = `
-  query { me { establishment { condos(archived: false) { id name } } } }
+  query { me { establishment { condos(archived: false) { id name reference } } } }
 `
 
 const GET_CONDO_ACCOUNTING = `
   query CondoAccounting($condoID: ID!) {
     condo(id: $condoID) {
       name
+      reference
       banks(archived: false) {
         id label institution balance
         monitoring(first: 100) {
@@ -183,7 +186,7 @@ function buildHtml(reports: CondoReport[], dateStr: string): string {
     return `
       <div style="margin-bottom:20px;">
         <div style="background:#111;padding:10px 16px;border-radius:4px 4px 0 0;">
-          <p style="margin:0;font-size:14px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;">${r.name}</p>
+          <p style="margin:0;font-size:14px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;">${r.name} <span style="font-weight:400;color:#aaa;font-size:12px;">| ${r.reference}</span></p>
         </div>
         <div style="background:#fff;border:1px solid #ddd;border-top:none;padding:14px 16px;border-radius:0 0 4px 4px;">
           ${body}
@@ -255,6 +258,7 @@ export async function GET(req: NextRequest) {
 
         reports.push({
           name: data.condo.name,
+          reference: data.condo.reference,
           banks: bankReports,
           nbAlerts: invoice.nbAlerts,
           hasBank: banks.length > 0,
