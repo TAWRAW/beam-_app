@@ -79,9 +79,11 @@ export function formatVilleStats(
     : 0
 
   // Trouver période de construction principale
-  const periodePrincipale = data.construction_periods.reduce((max, current) =>
-    current.stock_total > max.stock_total ? current : max
-  )
+  const periodePrincipale = data.construction_periods.length > 0
+    ? data.construction_periods.reduce((max, current) =>
+        current.stock_total > max.stock_total ? current : max
+      )
+    : null
 
   return {
     ville: data.territoire.nom,
@@ -90,7 +92,7 @@ export function formatVilleStats(
     nbLotsHabitation: data.stats_principales.nombre_lots_habitation_moyen,
     pourcentageSyndicPro,
     pourcentageSyndicBenevole,
-    periodePrincipalConstruction: periodePrincipale.periode,
+    periodePrincipalConstruction: periodePrincipale?.periode ?? 'N/A',
     departement: data.territoire.departement,
     rangDepartemental: data.metadata.rang_departemental,
     rangNational: data.metadata.rang_national,
