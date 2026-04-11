@@ -5,6 +5,9 @@
   "env": {
     "NEXT_TELEMETRY_DISABLED": "1"
   },
+  "crons": [
+    { "path": "/api/rapport-comptable", "schedule": "30 7 * * 1-5" }
+  ],
   "redirects": [
     {
       "source": "/:path*",
