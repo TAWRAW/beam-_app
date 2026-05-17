@@ -183,9 +183,16 @@ async function executeQuery<T>(query: string, variables?: Record<string, unknown
   const json = await response.json()
 
   if (json.errors && json.errors.length > 0) {
-    console.warn('GraphQL erreurs partielles:', json.errors.map((e: any) => e.message))
+    const opName = query.match(/(?:mutation|query)\s+(\w+)?/)?.[1] || query.trim().slice(0, 60)
+    console.error('[estale GraphQL] ❌ errors for', opName)
+    console.error('[estale GraphQL] full errors:', JSON.stringify(json.errors, null, 2))
+    console.error('[estale GraphQL] variables sent:', JSON.stringify(variables, null, 2))
+    if (json.data) console.error('[estale GraphQL] partial data:', JSON.stringify(json.data, null, 2))
     if (!json.data) {
-      throw new Error(`Erreur GraphQL: ${json.errors[0].message}`)
+      const first = json.errors[0]
+      const path = first.path ? ` (path: ${first.path.join('.')})` : ''
+      const code = first.extensions?.code ? ` [${first.extensions.code}]` : ''
+      throw new Error(`Erreur GraphQL${code}: ${first.message}${path}`)
     }
   }
 
