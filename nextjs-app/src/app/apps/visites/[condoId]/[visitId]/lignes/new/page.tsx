@@ -13,6 +13,8 @@ import { PhotoSlot } from '@/components/visites/PhotoSlot'
 import { addCommentDraft, addPhotoDraft } from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
 
+const LABEL = 'block text-xs font-bold uppercase tracking-wide mb-1'
+
 export default function NewLignePage({
   params,
 }: {
@@ -43,9 +45,15 @@ export default function NewLignePage({
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4">
+    <form
+      onSubmit={submit}
+      className="space-y-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5"
+    >
+      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-black pb-2 mb-2">
+        Nouvelle ligne
+      </h2>
       <div>
-        <label className="block text-sm font-medium mb-1">Lieu *</label>
+        <label className={LABEL}>Lieu *</label>
         <EnumPicker
           label="Lieu"
           options={VISIT_PLACE_FR}
@@ -55,7 +63,7 @@ export default function NewLignePage({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Équipement *</label>
+        <label className={LABEL}>Équipement *</label>
         <EnumPicker
           label="Équipement"
           options={VISIT_COMPONENT_FR}
@@ -65,30 +73,36 @@ export default function NewLignePage({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Commentaire *</label>
+        <label className={LABEL}>Commentaire *</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full border rounded px-3 py-2 min-h-[120px]"
+          className="w-full bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] px-3 py-2 font-medium min-h-[120px] focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_#000] transition"
           required
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-2">Photos</label>
-        <div className="grid grid-cols-3 gap-2">
+        <label className={LABEL}>Photos</label>
+        <div className="grid grid-cols-3 gap-3">
           <PhotoSlot label="Cadrage" onCapture={(f) => setPhotos((p) => [...p, f])} />
           <PhotoSlot label="Détail" onCapture={(f) => setPhotos((p) => [...p, f])} />
           <PhotoSlot label="+ Autre" onCapture={(f) => setPhotos((p) => [...p, f])} />
         </div>
         {photos.length > 0 && (
-          <p className="text-xs text-gray-500 mt-1">{photos.length} photo(s) à uploader</p>
+          <p className="text-xs text-gray-700 mt-2 font-bold">
+            {photos.length} photo{photos.length > 1 ? 's' : ''} à uploader
+          </p>
         )}
       </div>
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && (
+        <p className="bg-[#FF6B6B] border-2 border-black px-3 py-2 text-sm font-bold">
+          {error}
+        </p>
+      )}
       <button
         type="submit"
         disabled={saving}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium disabled:opacity-50"
+        className="w-full bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {saving ? 'Enregistrement…' : 'Enregistrer'}
       </button>
