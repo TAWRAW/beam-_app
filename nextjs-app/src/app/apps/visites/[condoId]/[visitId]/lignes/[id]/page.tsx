@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   VISIT_PLACE_FR,
   VISIT_COMPONENT_FR,
@@ -19,6 +19,8 @@ import {
   type PhotoDraft,
 } from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
+
+const LABEL = 'block text-xs font-bold uppercase tracking-wide mb-1'
 
 export default function EditLignePage({
   params,
@@ -53,6 +55,18 @@ export default function EditLignePage({
     })()
   }, [params.visitId, params.id])
 
+  const existingPhotoUrls = useMemo(
+    () => photos.map((p) => ({ id: p.localId, url: URL.createObjectURL(p.blob) })),
+    [photos],
+  )
+  useEffect(() => () => existingPhotoUrls.forEach((p) => URL.revokeObjectURL(p.url)), [existingPhotoUrls])
+
+  const newPhotoUrls = useMemo(
+    () => newPhotos.map((f, i) => ({ id: `new-${i}-${f.name}`, url: URL.createObjectURL(f) })),
+    [newPhotos],
+  )
+  useEffect(() => () => newPhotoUrls.forEach((p) => URL.revokeObjectURL(p.url)), [newPhotoUrls])
+
   async function save(e: React.FormEvent) {
     e.preventDefault()
     if (!draft || !place || !component) return
@@ -68,12 +82,24 @@ export default function EditLignePage({
     router.push(`/apps/visites/${params.condoId}/${params.visitId}`)
   }
 
-  if (!draft) return <p>Chargement…</p>
+  if (!draft) {
+    return (
+      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 font-bold">
+        Chargement…
+      </div>
+    )
+  }
 
   return (
-    <form onSubmit={save} className="space-y-4">
+    <form
+      onSubmit={save}
+      className="space-y-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5"
+    >
+      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-black pb-2 mb-2">
+        Modifier la ligne
+      </h2>
       <div>
-        <label className="block text-sm font-medium mb-1">Lieu *</label>
+        <label className={LABEL}>Lieu *</label>
         <EnumPicker
           label="Lieu"
           options={VISIT_PLACE_FR}
@@ -83,7 +109,7 @@ export default function EditLignePage({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Équipement *</label>
+        <label className={LABEL}>Équipement *</label>
         <EnumPicker
           label="Équipement"
           options={VISIT_COMPONENT_FR}
@@ -93,34 +119,72 @@ export default function EditLignePage({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Commentaire *</label>
+        <label className={LABEL}>Commentaire *</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full border rounded px-3 py-2 min-h-[120px]"
+          className="w-full bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] px-3 py-2 font-medium min-h-[120px] focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_#000] transition"
           required
         />
       </div>
+
+      {existingPhotoUrls.length > 0 && (
+        <div>
+          <label className={LABEL}>
+            Photos déjà attachées ({existingPhotoUrls.length})
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            {existingPhotoUrls.map((p, idx) => {
+              const photo = photos[idx]
+              const synced = photo?.syncStatus === 'synced'
+              return (
+                <div
+                  key={p.id}
+                  className="relative aspect-square border-2 border-black shadow-[3px_3px_0px_0px_#000] overflow-hidden bg-white"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.url} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" />
+                  <span
+                    className={`absolute top-1 right-1 border-2 border-black px-1 py-0.5 text-[9px] font-bold uppercase ${
+                      synced ? 'bg-[#A8E6A1]' : 'bg-primary'
+                    }`}
+                  >
+                    {synced ? '✓' : '⏳'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       <div>
-        <label className="block text-sm font-medium mb-2">
-          Photos ({photos.length} déjà attachée{photos.length > 1 ? 's' : ''})
+        <label className={LABEL}>
+          Ajouter des photos {newPhotoUrls.length > 0 && `(${newPhotoUrls.length} en attente)`}
         </label>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-3">
+          {newPhotoUrls.map((p) => (
+            <div
+              key={p.id}
+              className="relative aspect-square border-2 border-dashed border-black shadow-[3px_3px_0px_0px_#000] overflow-hidden bg-white"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.url} alt="Nouvelle photo" className="w-full h-full object-cover" />
+              <span className="absolute top-1 right-1 bg-primary border-2 border-black px-1 py-0.5 text-[9px] font-bold uppercase">
+                NEW
+              </span>
+            </div>
+          ))}
           <PhotoSlot label="+ Photo" onCapture={(f) => setNewPhotos((p) => [...p, f])} />
           <PhotoSlot label="+ Photo" onCapture={(f) => setNewPhotos((p) => [...p, f])} />
           <PhotoSlot label="+ Photo" onCapture={(f) => setNewPhotos((p) => [...p, f])} />
         </div>
-        {newPhotos.length > 0 && (
-          <p className="text-xs text-gray-500 mt-1">
-            {newPhotos.length} nouvelle{newPhotos.length > 1 ? 's' : ''} photo
-            {newPhotos.length > 1 ? 's' : ''} à uploader
-          </p>
-        )}
       </div>
+
       <button
         type="submit"
         disabled={saving}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium disabled:opacity-50"
+        className="w-full bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {saving ? 'Enregistrement…' : 'Mettre à jour'}
       </button>
