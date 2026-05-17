@@ -172,6 +172,17 @@ async function executeQuery<T>(query: string, variables?: Record<string, unknown
   return json.data
 }
 
+/**
+ * Exécute une requête GraphQL arbitraire vers estale (public).
+ * Utilisé par les helpers spécifiques (visites, etc.).
+ */
+export async function estaleGraphQL<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<T> {
+  return executeQuery<T>(query, variables)
+}
+
 export interface EstaleCollaborator {
   name?: string
   phone?: string
