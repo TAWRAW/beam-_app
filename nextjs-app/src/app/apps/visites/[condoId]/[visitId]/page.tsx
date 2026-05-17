@@ -134,7 +134,7 @@ export default function VisitDetailPage({
             return (
               <Link
                 key={c.localId}
-                href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/${c.localId}`}
+                href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/${c.localId}` as any}
                 className="flex gap-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-3 transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
               >
                 <div className="flex-1 min-w-0">
@@ -204,7 +204,7 @@ export default function VisitDetailPage({
       </section>
 
       <Link
-        href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/new`}
+        href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/new` as any}
         className="block w-full text-center bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
       >
         + Ajouter une ligne

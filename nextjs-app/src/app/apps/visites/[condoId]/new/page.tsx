@@ -60,7 +60,7 @@ export default function NewVisitePage({ params }: { params: { condoId: string } 
       ownerIDs: [],
     })
     flushAll()
-    router.push(`/apps/visites/${params.condoId}/${draft.localId}`)
+    router.push(`/apps/visites/${params.condoId}/${draft.localId}` as any)
   }
 
   return (

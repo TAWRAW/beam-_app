@@ -79,7 +79,7 @@ export default function EditLignePage({
       await addPhotoDraft(draft.localId, f, f.name)
     }
     flushAll()
-    router.push(`/apps/visites/${params.condoId}/${params.visitId}`)
+    router.push(`/apps/visites/${params.condoId}/${params.visitId}` as any)
   }
 
   if (!draft) {

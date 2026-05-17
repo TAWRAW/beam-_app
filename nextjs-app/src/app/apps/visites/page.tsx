@@ -39,7 +39,7 @@ export default function VisitesIndex() {
       {condos.map((c) => (
         <Link
           key={c.id}
-          href={`/apps/visites/${c.id}`}
+          href={`/apps/visites/${c.id}` as any}
           className="block bg-white rounded-2xl border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
         >
           <div className="font-bold">{c.name}</div>

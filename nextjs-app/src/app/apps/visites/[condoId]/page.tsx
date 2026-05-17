@@ -44,7 +44,7 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
   return (
     <div className="space-y-4">
       <Link
-        href={`/apps/visites/${params.condoId}/new`}
+        href={`/apps/visites/${params.condoId}/new` as any}
         className="block w-full text-center bg-primary text-black py-3 rounded-full font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
       >
         + Nouvelle visite
@@ -68,7 +68,7 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
           return (
             <Link
               key={d.localId}
-              href={`/apps/visites/${params.condoId}/${d.estaleVisitId || d.localId}`}
+              href={`/apps/visites/${params.condoId}/${d.estaleVisitId || d.localId}` as any}
               className="block bg-white rounded-2xl border-2 border-black p-3 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
             >
               <div className="flex items-start justify-between gap-2">
@@ -105,7 +105,7 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
         {remoteOnly.map((v) => (
           <Link
             key={v.id}
-            href={`/apps/visites/${params.condoId}/${v.id}`}
+            href={`/apps/visites/${params.condoId}/${v.id}` as any}
             className="block bg-white rounded-2xl border-2 border-black p-3 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
           >
             <div className="flex items-start justify-between gap-2">
