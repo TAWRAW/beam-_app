@@ -26,12 +26,12 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
     <div className="space-y-4">
       <Link
         href={`/apps/visites/${params.condoId}/new`}
-        className="block w-full text-center bg-blue-600 text-white py-3 rounded-lg font-medium active:bg-blue-700"
+        className="block w-full text-center bg-primary text-black py-3 rounded-full font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
       >
         + Nouvelle visite
       </Link>
 
-      <h2 className="font-semibold">Visites en cours</h2>
+      <h2 className="font-bold uppercase tracking-wide text-sm">Visites en cours</h2>
       {loading && <p>Chargement…</p>}
       {error && <p className="text-red-600">{error}</p>}
       {!loading && !error && visits.length === 0 && (
@@ -42,10 +42,10 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
           <Link
             key={v.id}
             href={`/apps/visites/${params.condoId}/${v.id}`}
-            className="block bg-white rounded-lg border p-3 shadow-sm active:bg-gray-100"
+            className="block bg-white rounded-2xl border-2 border-black p-3 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
           >
-            <div className="font-medium">{v.object || '(sans objet)'}</div>
-            <div className="text-sm text-gray-500">
+            <div className="font-bold">{v.object || '(sans objet)'}</div>
+            <div className="text-sm text-black/60">
               {new Date(v.date).toLocaleString('fr-FR', {
                 dateStyle: 'short',
                 timeStyle: 'short',

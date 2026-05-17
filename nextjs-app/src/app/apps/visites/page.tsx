@@ -40,11 +40,11 @@ export default function VisitesIndex() {
         <Link
           key={c.id}
           href={`/apps/visites/${c.id}`}
-          className="block bg-white rounded-lg border p-4 shadow-sm active:bg-gray-100"
+          className="block bg-white rounded-2xl border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
         >
-          <div className="font-medium">{c.name}</div>
+          <div className="font-bold">{c.name}</div>
           {(c.address || c.city) && (
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-black/60">
               {[c.address, c.zipCode, c.city].filter(Boolean).join(' ')}
             </div>
           )}

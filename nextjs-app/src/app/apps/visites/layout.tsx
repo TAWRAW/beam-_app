@@ -26,9 +26,9 @@ export default function VisitesLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center justify-between">
-        <h1 className="font-semibold text-lg">Visites</h1>
+    <div className="min-h-screen bg-[#F2F1E6]">
+      <header className="sticky top-0 z-10 bg-white border-b-2 border-black px-4 py-3 flex items-center justify-between">
+        <h1 className="font-bold text-lg">Visites</h1>
         <SyncIndicator />
       </header>
       <main className="p-4 max-w-2xl mx-auto">{children}</main>
