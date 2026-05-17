@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
-import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer } from 'lucide-react'
+import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -17,6 +17,7 @@ import {
   SidebarMenuItem,
   SidebarMenuSkeleton,
   SidebarSeparator,
+  useSidebar,
 } from '@/components/ui/sidebar'
 
 type NavItem = {
@@ -59,6 +60,12 @@ const adminItems: NavItem[] = [
     adminOnly: true,
   },
   {
+    href: '/apps/visites',
+    label: 'Visites',
+    icon: ClipboardList,
+    adminOnly: true,
+  },
+  {
     href: '/apps/documents/generate',
     label: 'Documents',
     icon: Printer,
@@ -75,6 +82,11 @@ const adminItems: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname()
   const { isAdmin, loading } = useUserRole()
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  const closeOnMobile = () => {
+    if (isMobile) setOpenMobile(false)
+  }
 
   // Filter admin items based on user role
   const visibleAdminItems = adminItems.filter(item => {
@@ -109,7 +121,7 @@ export function AppSidebar() {
                   return (
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton asChild isActive={isActive}>
-                        <Link href={item.href as any}>
+                        <Link href={item.href as any} onClick={closeOnMobile}>
                           <item.icon className="h-4 w-4" />
                           <span>{item.label}</span>
                         </Link>
@@ -160,7 +172,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={"/logout" as any} className="text-red-600 hover:text-red-700">
+              <Link href={"/logout" as any} className="text-red-600 hover:text-red-700" onClick={closeOnMobile}>
                 <LogOut className="h-4 w-4" />
                 <span>Déconnexion</span>
               </Link>

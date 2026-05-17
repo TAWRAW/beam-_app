@@ -1,5 +1,6 @@
 {
   "crons": [
-    { "path": "/api/rapport-comptable", "schedule": "30 5 * * 1-5" }
+    { "path": "/api/rapport-comptable", "schedule": "30 5 * * 1-5" },
+    { "path": "/api/cron/visites-sync-alert", "schedule": "0 18 * * *" }
   ]
 }

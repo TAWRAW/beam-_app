@@ -9,6 +9,26 @@
  * L'authentification se fait via cookies de session.
  */
 
+import type {
+  EstaleVisit,
+  EstaleVisitComment,
+  VisitCreateInput,
+  VisitUpdateInput,
+  VisitCommentCreateInput,
+  VisitCommentUpdateInput,
+} from './estale/visit-types'
+import { uploadCommentFileMultipart } from './estale/visit-mutations'
+
+// Re-export pour permettre import depuis @/lib/estale-api
+export type {
+  EstaleVisit,
+  EstaleVisitComment,
+  VisitCreateInput,
+  VisitUpdateInput,
+  VisitCommentCreateInput,
+  VisitCommentUpdateInput,
+}
+
 const ESTALE_API_BASE_URL = process.env.ESTALE_API_BASE_URL || 'https://api.estale.app'
 const ESTALE_EMAIL = process.env.ESTALE_EMAIL
 const ESTALE_PASSWORD = process.env.ESTALE_PASSWORD
@@ -163,13 +183,31 @@ async function executeQuery<T>(query: string, variables?: Record<string, unknown
   const json = await response.json()
 
   if (json.errors && json.errors.length > 0) {
-    console.warn('GraphQL erreurs partielles:', json.errors.map((e: any) => e.message))
+    const opName = query.match(/(?:mutation|query)\s+(\w+)?/)?.[1] || query.trim().slice(0, 60)
+    console.error('[estale GraphQL] ❌ errors for', opName)
+    console.error('[estale GraphQL] full errors:', JSON.stringify(json.errors, null, 2))
+    console.error('[estale GraphQL] variables sent:', JSON.stringify(variables, null, 2))
+    if (json.data) console.error('[estale GraphQL] partial data:', JSON.stringify(json.data, null, 2))
     if (!json.data) {
-      throw new Error(`Erreur GraphQL: ${json.errors[0].message}`)
+      const first = json.errors[0]
+      const path = first.path ? ` (path: ${first.path.join('.')})` : ''
+      const code = first.extensions?.code ? ` [${first.extensions.code}]` : ''
+      throw new Error(`Erreur GraphQL${code}: ${first.message}${path}`)
     }
   }
 
   return json.data
+}
+
+/**
+ * Exécute une requête GraphQL arbitraire vers estale (public).
+ * Utilisé par les helpers spécifiques (visites, etc.).
+ */
+export async function estaleGraphQL<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<T> {
+  return executeQuery<T>(query, variables)
 }
 
 export interface EstaleCollaborator {
@@ -687,4 +725,247 @@ export async function getCondoContracts(condoId: string): Promise<EstaleContract
     console.error('Erreur récupération contrats:', error)
     return []
   }
+}
+
+// ============================================================
+// VISITES D'IMMEUBLES (Phase 0 / Task 0.5)
+// ============================================================
+
+/**
+ * Récupère les visites d'une copropriété.
+ */
+export async function getCondoVisits(
+  condoId: string,
+  archived: boolean = false,
+): Promise<EstaleVisit[]> {
+  const query = `
+    query($condoId: ID!, $archived: Boolean!) {
+      me {
+        collaborator {
+          condo(id: $condoId) {
+            visits(archived: $archived) {
+              id
+              category
+              date
+              period
+              object
+              message
+              archivedAt
+              condoID
+              organiserID
+              organiser { id fullname email }
+              collaborators { id fullname email }
+              owners { id fullname }
+              comments {
+                id rank content place component visitID deletedAt
+                documents { id filename }
+              }
+              reportPDF
+              isUpdatable
+              isDeletable
+              isFrozen
+            }
+          }
+        }
+      }
+    }
+  `
+
+  const data = await estaleGraphQL<{
+    me?: { collaborator?: { condo?: { visits?: EstaleVisit[] } } }
+  }>(query, { condoId, archived })
+
+  return data.me?.collaborator?.condo?.visits || []
+}
+
+/**
+ * Détail d'une visite (par id de visite + copro).
+ */
+export async function getVisitDetail(
+  condoId: string,
+  visitId: string,
+): Promise<EstaleVisit | null> {
+  const query = `
+    query($condoId: ID!, $visitId: ID!) {
+      me {
+        collaborator {
+          condo(id: $condoId) {
+            visit(id: $visitId) {
+              id category date period object message archivedAt condoID organiserID
+              organiser { id fullname email }
+              collaborators { id fullname email }
+              owners { id fullname }
+              comments {
+                id rank content place component visitID deletedAt
+                documents { id filename }
+              }
+              reportPDF isUpdatable isDeletable isFrozen
+            }
+          }
+        }
+      }
+    }
+  `
+  const data = await estaleGraphQL<{
+    me?: { collaborator?: { condo?: { visit?: EstaleVisit | null } } }
+  }>(query, { condoId, visitId })
+  return data.me?.collaborator?.condo?.visit || null
+}
+
+/**
+ * Création d'une visite (entête uniquement, sans lignes).
+ */
+export async function createVisit(input: VisitCreateInput): Promise<EstaleVisit> {
+  const mutation = `
+    mutation($input: VisitCreateInput!) {
+      createVisit(input: $input) {
+        id category date period object message condoID organiserID
+        organiser { id fullname email }
+        collaborators { id fullname email }
+        owners { id fullname }
+        comments { id rank content place component documents { id filename } }
+        isUpdatable isDeletable isFrozen
+      }
+    }
+  `
+  const data = await estaleGraphQL<{ createVisit: EstaleVisit }>(mutation, { input })
+  if (!data.createVisit) throw new Error('createVisit : pas de visite retournée')
+  return data.createVisit
+}
+
+/**
+ * Mise à jour de l'entête d'une visite.
+ */
+export async function updateVisit(
+  visitId: string,
+  input: VisitUpdateInput,
+): Promise<EstaleVisit> {
+  const mutation = `
+    mutation($visitId: ID!, $input: VisitUpdateInput!) {
+      updateVisit(id: $visitId) {
+        update(input: $input) {
+          id category date period object message condoID organiserID
+          organiser { id fullname email }
+          collaborators { id fullname email }
+          owners { id fullname }
+          comments { id rank content place component documents { id filename } }
+          isUpdatable isDeletable isFrozen
+        }
+      }
+    }
+  `
+  const data = await estaleGraphQL<{ updateVisit: { update: EstaleVisit } }>(
+    mutation,
+    { visitId, input },
+  )
+  return data.updateVisit.update
+}
+
+/**
+ * Ajout d'une ligne (comment) à une visite.
+ */
+export async function createVisitComment(
+  visitId: string,
+  input: VisitCommentCreateInput,
+): Promise<EstaleVisitComment> {
+  const mutation = `
+    mutation($visitId: ID!, $input: VisitCommentCreateInput!) {
+      updateVisit(id: $visitId) {
+        createComment(input: $input) {
+          id rank content place component visitID
+          documents { id filename }
+        }
+      }
+    }
+  `
+  // Le schéma exige files: [...!]! dans VisitCommentCreateInput.
+  // On envoie un tableau vide ; les vraies photos arrivent par uploadCommentFileMultipart.
+  const payload = { ...input, files: [] }
+  const data = await estaleGraphQL<{
+    updateVisit: { createComment: EstaleVisitComment }
+  }>(mutation, { visitId, input: payload })
+  return data.updateVisit.createComment
+}
+
+/**
+ * Mise à jour d'une ligne.
+ */
+export async function updateVisitComment(
+  visitId: string,
+  commentId: string,
+  input: VisitCommentUpdateInput,
+): Promise<EstaleVisitComment> {
+  const mutation = `
+    mutation($visitId: ID!, $commentId: ID!, $input: VisitCommentUpdateInput!) {
+      updateVisit(id: $visitId) {
+        updateComment(id: $commentId) {
+          update(input: $input) {
+            id rank content place component visitID
+            documents { id filename }
+          }
+        }
+      }
+    }
+  `
+  const data = await estaleGraphQL<{
+    updateVisit: { updateComment: { update: EstaleVisitComment } }
+  }>(mutation, { visitId, commentId, input })
+  return data.updateVisit.updateComment.update
+}
+
+/**
+ * Suppression d'une ligne (soft delete côté estale).
+ */
+export async function deleteVisitComment(
+  visitId: string,
+  commentId: string,
+): Promise<void> {
+  const mutation = `
+    mutation($visitId: ID!, $commentId: ID!) {
+      updateVisit(id: $visitId) {
+        updateComment(id: $commentId) {
+          delete { id }
+        }
+      }
+    }
+  `
+  await estaleGraphQL(mutation, { visitId, commentId })
+}
+
+/**
+ * Upload d'une photo attachée à une ligne.
+ * Délègue à uploadCommentFileMultipart qui gère le protocole multipart GraphQL.
+ */
+export async function uploadVisitCommentFile(
+  visitId: string,
+  commentId: string,
+  file: Blob,
+  filename: string,
+): Promise<{ id: string; filename: string }> {
+  const isAuth = await ensureAuthenticated()
+  if (!isAuth) throw new Error('Impossible de se connecter à Estale')
+  // sessionCookie est interne au module ; on passe sa valeur courante.
+  return uploadCommentFileMultipart(sessionCookie!, visitId, commentId, file, filename)
+}
+
+/**
+ * Suppression d'une photo attachée à une ligne.
+ */
+export async function deleteVisitCommentFile(
+  visitId: string,
+  commentId: string,
+  fileId: string,
+): Promise<void> {
+  const mutation = `
+    mutation($visitId: ID!, $commentId: ID!, $fileId: ID!) {
+      updateVisit(id: $visitId) {
+        updateComment(id: $commentId) {
+          deleteFile(fileID: $fileId) {
+            id
+          }
+        }
+      }
+    }
+  `
+  await estaleGraphQL(mutation, { visitId, commentId, fileId })
 }
