@@ -12,14 +12,19 @@ import {
   getSyncStats,
 } from './db'
 
+const MAX_SYNC_ATTEMPTS = 5
+
 async function pushVisit(localId: string): Promise<string | null> {
   const drafts = await getAllVisitDrafts()
   const draft = drafts.find((d) => d.localId === localId)
   if (!draft || draft.estaleVisitId) return draft?.estaleVisitId || null
+  if ((draft.syncAttempts || 0) >= MAX_SYNC_ATTEMPTS) return null
 
+  const attempts = (draft.syncAttempts || 0) + 1
   await updateVisitDraft(localId, {
     syncStatus: 'syncing',
     lastSyncAttempt: new Date().toISOString(),
+    syncAttempts: attempts,
   })
 
   const res = await fetch('/api/estale/visits', {
@@ -31,7 +36,7 @@ async function pushVisit(localId: string): Promise<string | null> {
     const err = await res.text().catch(() => '')
     await updateVisitDraft(localId, {
       syncStatus: 'error',
-      syncError: `HTTP ${res.status} ${err.slice(0, 100)}`,
+      syncError: `HTTP ${res.status} ${err.slice(0, 100)} (essai ${attempts}/${MAX_SYNC_ATTEMPTS})`,
     })
     return null
   }
@@ -60,10 +65,13 @@ async function pushComment(
 
   const visitDraft = (await getAllVisitDrafts()).find((v) => v.localId === visitLocalId)
   if (!visitDraft?.estaleVisitId) return null // attendre que la visite soit synced
+  if ((draft.syncAttempts || 0) >= MAX_SYNC_ATTEMPTS) return null
 
+  const attempts = (draft.syncAttempts || 0) + 1
   await updateCommentDraft(commentLocalId, {
     syncStatus: 'syncing',
     lastSyncAttempt: new Date().toISOString(),
+    syncAttempts: attempts,
   })
 
   const res = await fetch(
@@ -78,7 +86,7 @@ async function pushComment(
     const err = await res.text().catch(() => '')
     await updateCommentDraft(commentLocalId, {
       syncStatus: 'error',
-      syncError: `HTTP ${res.status} ${err.slice(0, 100)}`,
+      syncError: `HTTP ${res.status} ${err.slice(0, 100)} (essai ${attempts}/${MAX_SYNC_ATTEMPTS})`,
     })
     return null
   }
@@ -118,10 +126,13 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
     }
   }
   if (!estaleVisitId || !estaleCommentId) return
+  if ((photo.syncAttempts || 0) >= MAX_SYNC_ATTEMPTS) return
 
+  const attempts = (photo.syncAttempts || 0) + 1
   await updatePhotoDraft(photoLocalId, {
     syncStatus: 'syncing',
     lastSyncAttempt: new Date().toISOString(),
+    syncAttempts: attempts,
   })
 
   const form = new FormData()
@@ -134,7 +145,7 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
     const err = await res.text().catch(() => '')
     await updatePhotoDraft(photoLocalId, {
       syncStatus: 'error',
-      syncError: `HTTP ${res.status} ${err.slice(0, 100)}`,
+      syncError: `HTTP ${res.status} ${err.slice(0, 100)} (essai ${attempts}/${MAX_SYNC_ATTEMPTS})`,
     })
     return
   }

@@ -21,6 +21,7 @@ export interface VisitDraft {
   createdAt: string
   lastSyncAttempt?: string
   syncError?: string
+  syncAttempts?: number
 }
 
 export interface CommentDraft {
@@ -32,6 +33,7 @@ export interface CommentDraft {
   createdAt: string
   lastSyncAttempt?: string
   syncError?: string
+  syncAttempts?: number
 }
 
 export interface PhotoDraft {
@@ -45,6 +47,7 @@ export interface PhotoDraft {
   syncStatus: SyncStatus
   lastSyncAttempt?: string
   syncError?: string
+  syncAttempts?: number
 }
 
 interface BeamoVisitesDB extends DBSchema {
