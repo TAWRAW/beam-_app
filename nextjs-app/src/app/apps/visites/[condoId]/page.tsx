@@ -11,29 +11,33 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  async function reload() {
-    const localAll = await getAllVisitDrafts()
-    setDrafts(localAll.filter((d) => d.condoId === params.condoId))
-
-    const r = await fetch(
-      `/api/estale/visits?condoId=${encodeURIComponent(params.condoId)}&archived=false`,
-    )
-    const d = await r.json()
-    if (d.error) setError(d.error)
-    else setRemoteVisits(d.visits || [])
-    setLoading(false)
-  }
-
   useEffect(() => {
-    reload().catch((e) => {
-      setError(String(e))
-      setLoading(false)
-    })
+    // 1. Drafts IndexedDB en premier (instant, perçu < 50 ms) — on débloque
+    //    l'affichage dès que possible avant même que estale ait répondu.
+    getAllVisitDrafts()
+      .then((all) => {
+        setDrafts(all.filter((d) => d.condoId === params.condoId))
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+
+    // 2. Fetch estale en parallèle (peut prendre 1-2 s sur mobile 4G).
+    fetch(`/api/estale/visits?condoId=${encodeURIComponent(params.condoId)}&archived=false`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.error) setError(d.error)
+        else setRemoteVisits(d.visits || [])
+      })
+      .catch((e) => setError(String(e)))
+
+    // 3. Refresh drafts locaux toutes les 15 s, uniquement si l'onglet est
+    //    visible — on évite de polluer le main thread en arrière-plan.
     const id = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return
       getAllVisitDrafts()
         .then((all) => setDrafts(all.filter((d) => d.condoId === params.condoId)))
         .catch(() => {})
-    }, 5000)
+    }, 15000)
     return () => clearInterval(id)
   }, [params.condoId])
 

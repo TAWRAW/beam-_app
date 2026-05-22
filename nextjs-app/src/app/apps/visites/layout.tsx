@@ -18,10 +18,11 @@ export default function VisitesLayout({ children }: { children: React.ReactNode 
     startHeartbeat()
   }, [])
 
-  if (loading) {
-    return <div className="p-6 text-center text-gray-500">Chargement…</div>
-  }
-  if (role !== 'admin') {
+  // On ne bloque pas l'UI pendant le check de rôle : ça évite un flash
+  // "Chargement…" plein écran à chaque navigation entre pages /apps/visites/*.
+  // L'API serveur reste la source d'autorité ; si le rôle se résout en
+  // non-admin, le useEffect ci-dessus redirige.
+  if (!loading && role !== 'admin') {
     return null
   }
 
