@@ -5,6 +5,7 @@ import { openDB, DBSchema, IDBPDatabase } from 'idb'
 import { v4 as uuid } from 'uuid'
 
 import type {
+  EstaleVisit,
   VisitCreateInput,
   VisitCommentCreateInput,
   VisitCommentUpdateInput,
@@ -119,6 +120,59 @@ export async function updateVisitDraft(
 export async function getVisitDraft(localId: string): Promise<VisitDraft | undefined> {
   const db = await getDB()
   return db.get('visits_drafts', localId)
+}
+
+/**
+ * Hydrate IndexedDB depuis une visite estale (remote) pour rendre ses comments
+ * éditables en local. Si la visite est déjà hydratée (estaleVisitId trouvé),
+ * retourne l'existante sans dupliquer.
+ */
+export async function hydrateVisitFromRemote(
+  remote: EstaleVisit,
+  condoId: string,
+): Promise<VisitDraft> {
+  const db = await getDB()
+
+  const all = await db.getAll('visits_drafts')
+  const existing = all.find((v) => v.estaleVisitId === remote.id)
+  if (existing) return existing
+
+  const visitDraft: VisitDraft = {
+    localId: uuid(),
+    estaleVisitId: remote.id,
+    condoId,
+    entete: {
+      category: remote.category,
+      date: remote.date,
+      period: remote.period,
+      object: remote.object,
+      condoID: remote.condoID,
+      organiserID: remote.organiserID,
+      collaboratorIDs: remote.collaborators.map((c) => c.id),
+      ownerIDs: remote.owners.map((o) => o.id),
+    },
+    syncStatus: 'synced',
+    createdAt: remote.date || new Date().toISOString(),
+  }
+  await db.put('visits_drafts', visitDraft)
+
+  for (const c of remote.comments || []) {
+    const commentDraft: CommentDraft = {
+      localId: uuid(),
+      visitLocalId: visitDraft.localId,
+      estaleCommentId: c.id,
+      payload: {
+        place: c.place,
+        component: c.component,
+        content: c.content,
+      },
+      syncStatus: 'synced',
+      createdAt: new Date().toISOString(),
+    }
+    await db.put('comments_drafts', commentDraft)
+  }
+
+  return visitDraft
 }
 
 // --- Comments ---

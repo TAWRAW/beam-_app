@@ -11,6 +11,7 @@ import {
   getVisitDraft,
   getCommentsForVisit,
   getPhotosForComment,
+  hydrateVisitFromRemote,
   type VisitDraft,
   type CommentDraft,
 } from '@/lib/visites/db'
@@ -36,6 +37,7 @@ export default function VisitDetailPage({
 
   useEffect(() => {
     ;(async () => {
+      // 1. Si la visite est déjà en local (draft IndexedDB), on l'utilise directement.
       const local = await getVisitDraft(params.visitId).catch(() => null)
       if (local) {
         setDraft(local)
@@ -43,11 +45,23 @@ export default function VisitDetailPage({
         setLoading(false)
         return
       }
+
+      // 2. Sinon, on fetch la visite remote depuis estale et on l'hydrate dans
+      //    IndexedDB pour que ses lignes deviennent éditables localement.
       const res = await fetch(
         `/api/estale/visits/${params.visitId}?condoId=${params.condoId}`,
       )
       const json = await res.json()
-      setRemoteVisit(json.visit || null)
+      const remote = json.visit as EstaleVisit | null
+      if (!remote) {
+        setRemoteVisit(null)
+        setLoading(false)
+        return
+      }
+      setRemoteVisit(remote)
+      const hydrated = await hydrateVisitFromRemote(remote, params.condoId)
+      setDraft(hydrated)
+      setDraftComments(await getCommentsForVisit(hydrated.localId))
       setLoading(false)
     })()
   }, [params.condoId, params.visitId])
@@ -99,7 +113,6 @@ export default function VisitDetailPage({
   }
 
   const localComments = draftComments
-  const remoteComments = remoteVisit?.comments || []
 
   return (
     <div className="space-y-5">
@@ -171,31 +184,7 @@ export default function VisitDetailPage({
               </Link>
             )
           })}
-          {remoteComments.map((c, idx) => (
-            <div
-              key={c.id}
-              className="flex gap-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-3"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold">
-                  {idx + 1 + localComments.length}. {VISIT_PLACE_FR[c.place]} →{' '}
-                  {VISIT_COMPONENT_FR[c.component]}
-                </div>
-                <div className="text-sm text-gray-700 line-clamp-2 mt-1">{c.content}</div>
-              </div>
-              {c.documents.length > 0 ? (
-                <div className="shrink-0 w-20 h-20 border-2 border-black bg-gray-100 flex flex-col items-center justify-center font-bold">
-                  <span className="text-2xl">📷</span>
-                  <span className="text-xs">{c.documents.length}</span>
-                </div>
-              ) : (
-                <div className="shrink-0 w-20 h-20 border-2 border-dashed border-black/30 flex items-center justify-center text-black/30 text-2xl">
-                  —
-                </div>
-              )}
-            </div>
-          ))}
-          {localComments.length === 0 && remoteComments.length === 0 && (
+          {localComments.length === 0 && (
             <p className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] p-3 text-gray-700 text-sm font-medium">
               Aucune ligne pour le moment.
             </p>

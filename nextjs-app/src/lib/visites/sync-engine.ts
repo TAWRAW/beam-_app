@@ -61,7 +61,11 @@ async function pushComment(
   const drafts = await getCommentsForVisit(visitLocalId)
   const draft = drafts.find((d) => d.localId === commentLocalId)
   if (!draft) return null
-  if (draft.estaleCommentId) return draft.estaleCommentId
+
+  // Déjà synced et pas modifié localement → rien à faire
+  if (draft.estaleCommentId && draft.syncStatus === 'synced') {
+    return draft.estaleCommentId
+  }
 
   const visitDraft = (await getAllVisitDrafts()).find((v) => v.localId === visitLocalId)
   if (!visitDraft?.estaleVisitId) return null // attendre que la visite soit synced
@@ -74,14 +78,18 @@ async function pushComment(
     syncAttempts: attempts,
   })
 
-  const res = await fetch(
-    `/api/estale/visits/${visitDraft.estaleVisitId}/comments`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(draft.payload),
-    },
-  )
+  // Si la ligne existe déjà sur estale, on PATCH ; sinon on POST.
+  const isPatch = !!draft.estaleCommentId
+  const url = isPatch
+    ? `/api/estale/visits/${visitDraft.estaleVisitId}/comments/${draft.estaleCommentId}`
+    : `/api/estale/visits/${visitDraft.estaleVisitId}/comments`
+  const method = isPatch ? 'PATCH' : 'POST'
+
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(draft.payload),
+  })
   if (!res.ok) {
     const err = await res.text().catch(() => '')
     await updateCommentDraft(commentLocalId, {
@@ -90,6 +98,15 @@ async function pushComment(
     })
     return null
   }
+
+  if (isPatch) {
+    await updateCommentDraft(commentLocalId, {
+      syncStatus: 'synced',
+      syncError: undefined,
+    })
+    return draft.estaleCommentId!
+  }
+
   const json = await res.json()
   const commentId = json.comment?.id
   if (!commentId) {
