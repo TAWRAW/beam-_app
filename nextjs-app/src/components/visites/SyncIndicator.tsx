@@ -1,19 +1,57 @@
 // src/components/visites/SyncIndicator.tsx
 'use client'
 
+import { useState } from 'react'
 import { useVisitesSync } from '@/hooks/useVisitesSync'
+import { flushAll } from '@/lib/visites/sync-engine'
 
 export function SyncIndicator() {
   const { pendingCount, oldestPendingAt, online } = useVisitesSync()
+  const [busy, setBusy] = useState(false)
 
   const base =
-    'text-xs font-semibold px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000]'
+    'text-xs font-semibold px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition disabled:opacity-60'
+
+  // Le badge est cliquable : tap → force flushAll() pour pousser les drafts
+  // pending sans attendre le tick de 30 s.
+  async function handleForceSync() {
+    if (busy) return
+    setBusy(true)
+    try {
+      await flushAll()
+    } finally {
+      setBusy(false)
+    }
+  }
 
   if (!online) {
-    return <span className={`${base} bg-gray-200 text-black`}>📴 Hors-ligne</span>
+    return (
+      <button
+        type="button"
+        onClick={handleForceSync}
+        disabled
+        className={`${base} bg-gray-200 text-black`}
+        aria-label="Hors-ligne"
+        title="Hors-ligne — la sync redémarrera automatiquement au retour du réseau"
+      >
+        📴 Hors-ligne
+      </button>
+    )
   }
+
   if (pendingCount === 0) {
-    return <span className={`${base} bg-[#A8E6A1] text-black`}>✓ Sync</span>
+    return (
+      <button
+        type="button"
+        onClick={handleForceSync}
+        disabled={busy}
+        className={`${base} bg-[#A8E6A1] text-black`}
+        aria-label="Forcer une resync"
+        title="Tap pour forcer une resync"
+      >
+        {busy ? '⏳ Sync…' : '✓ Sync'}
+      </button>
+    )
   }
 
   const oldHours = oldestPendingAt
@@ -21,12 +59,15 @@ export function SyncIndicator() {
     : 0
   const isLate = oldHours > 24
   return (
-    <span
-      className={`${base} ${
-        isLate ? 'bg-[#FF6B6B] text-black' : 'bg-primary text-black'
-      }`}
+    <button
+      type="button"
+      onClick={handleForceSync}
+      disabled={busy}
+      className={`${base} ${isLate ? 'bg-[#FF6B6B]' : 'bg-primary'} text-black`}
+      aria-label={`${pendingCount} en attente — tap pour forcer la sync`}
+      title="Tap pour forcer la sync maintenant"
     >
-      {isLate ? '⚠️' : '⏳'} {pendingCount} en attente
-    </span>
+      {busy ? '⏳ Sync…' : `${isLate ? '⚠️' : '⏳'} ${pendingCount} en attente`}
+    </button>
   )
 }
