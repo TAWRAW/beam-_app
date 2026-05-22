@@ -40,7 +40,7 @@ export default function VisitesLayout({ children }: { children: React.ReactNode 
             <Link
               href={backHref as any}
               aria-label="Retour aux lignes de la visite"
-              className="bg-white border-2 border-black px-3 py-1 text-sm font-bold shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
+              className="bg-[#FFC300] border-2 border-black px-3 py-1 text-sm font-bold text-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
             >
               ← Retour
             </Link>
