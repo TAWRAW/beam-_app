@@ -11,10 +11,14 @@ export interface SyncSnapshot {
 }
 
 export function useVisitesSync(): SyncSnapshot {
+  // Valeur initiale strictement déterministe pour éviter un mismatch
+  // d'hydratation SSR/CSR (cf. React #418/#425) : useState(() => ...) est
+  // exécuté côté serveur ET côté client, donc `typeof navigator` produisait
+  // un HTML différent. On met à jour avec la vraie valeur dans useEffect.
   const [snap, setSnap] = useState<SyncSnapshot>({
     pendingCount: 0,
     oldestPendingAt: null,
-    online: typeof navigator !== 'undefined' ? navigator.onLine : true,
+    online: true,
   })
 
   useEffect(() => {
