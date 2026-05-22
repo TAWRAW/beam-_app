@@ -246,6 +246,137 @@ export async function updatePhotoDraft(
   await db.put('photos_drafts', { ...existing, ...patch })
 }
 
+// --- Diagnostic + cleanup d'une visite (debug et auto-réparation) ---
+
+export interface VisiteDiagnosticReport {
+  visits: VisitDraft[]
+  comments: CommentDraft[]
+  photos: PhotoDraft[]
+  orphanComments: CommentDraft[]
+  duplicateCommentsByEstaleId: Record<string, CommentDraft[]>
+  duplicatePhotosByEstaleFileId: Record<string, PhotoDraft[]>
+}
+
+/**
+ * Rapport complet de l'état IndexedDB pour une visite donnée
+ * (cherche par estaleVisitId OU par localId).
+ */
+export async function getVisiteDiagnostic(
+  visitIdOrEstaleId: string,
+): Promise<VisiteDiagnosticReport> {
+  const db = await getDB()
+  const allVisits = await db.getAll('visits_drafts')
+  const allComments = await db.getAll('comments_drafts')
+  const allPhotos = await db.getAll('photos_drafts')
+
+  const visits = allVisits.filter(
+    (v) => v.localId === visitIdOrEstaleId || v.estaleVisitId === visitIdOrEstaleId,
+  )
+  const visitLocalIds = visits.map((v) => v.localId)
+
+  const comments = allComments.filter((c) => visitLocalIds.includes(c.visitLocalId))
+  // Orphelins : drafts dont le visitLocalId correspond directement à l'estaleVisitId
+  // (= bug pré-fix e8e1684 où on stockait l'estaleVisitId par erreur)
+  const orphanComments = allComments.filter((c) => c.visitLocalId === visitIdOrEstaleId)
+
+  const commentLocalIds = new Set([
+    ...comments.map((c) => c.localId),
+    ...orphanComments.map((c) => c.localId),
+  ])
+  const photos = allPhotos.filter((p) => commentLocalIds.has(p.commentLocalId))
+
+  // Doublons : plusieurs CommentDraft pour le même estaleCommentId
+  const duplicateCommentsByEstaleId: Record<string, CommentDraft[]> = {}
+  for (const c of [...comments, ...orphanComments]) {
+    if (!c.estaleCommentId) continue
+    if (!duplicateCommentsByEstaleId[c.estaleCommentId]) {
+      duplicateCommentsByEstaleId[c.estaleCommentId] = []
+    }
+    duplicateCommentsByEstaleId[c.estaleCommentId]!.push(c)
+  }
+  for (const k of Object.keys(duplicateCommentsByEstaleId)) {
+    if (duplicateCommentsByEstaleId[k]!.length < 2) delete duplicateCommentsByEstaleId[k]
+  }
+
+  // Doublons : plusieurs PhotoDraft pour le même estaleFileId
+  const duplicatePhotosByEstaleFileId: Record<string, PhotoDraft[]> = {}
+  for (const p of photos) {
+    if (!p.estaleFileId) continue
+    if (!duplicatePhotosByEstaleFileId[p.estaleFileId]) {
+      duplicatePhotosByEstaleFileId[p.estaleFileId] = []
+    }
+    duplicatePhotosByEstaleFileId[p.estaleFileId]!.push(p)
+  }
+  for (const k of Object.keys(duplicatePhotosByEstaleFileId)) {
+    if (duplicatePhotosByEstaleFileId[k]!.length < 2) delete duplicatePhotosByEstaleFileId[k]
+  }
+
+  return {
+    visits,
+    comments,
+    photos,
+    orphanComments,
+    duplicateCommentsByEstaleId,
+    duplicatePhotosByEstaleFileId,
+  }
+}
+
+/**
+ * Nettoie les doublons stricts (même estaleId) et les orphelins
+ * pour une visite donnée. Garde le draft le plus ancien dans chaque cas
+ * (= celui qui a probablement le bon estaleCommentId/estaleFileId).
+ * Retourne le nombre d'éléments supprimés.
+ */
+export async function cleanupVisitDuplicates(
+  visitIdOrEstaleId: string,
+): Promise<{ removedComments: number; removedPhotos: number; removedOrphans: number }> {
+  const db = await getDB()
+  const diag = await getVisiteDiagnostic(visitIdOrEstaleId)
+  let removedComments = 0
+  let removedPhotos = 0
+  let removedOrphans = 0
+
+  // 1. Doublons de comments : garde le plus ancien, supprime les autres
+  for (const dupes of Object.values(diag.duplicateCommentsByEstaleId)) {
+    const sorted = [...dupes].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    const toRemove = sorted.slice(1)
+    for (const c of toRemove) {
+      await db.delete('comments_drafts', c.localId)
+      removedComments++
+      // Et ses photos
+      const orphanPhotos = diag.photos.filter((p) => p.commentLocalId === c.localId)
+      for (const p of orphanPhotos) {
+        await db.delete('photos_drafts', p.localId)
+        removedPhotos++
+      }
+    }
+  }
+
+  // 2. Doublons de photos : garde la plus ancienne
+  for (const dupes of Object.values(diag.duplicatePhotosByEstaleFileId)) {
+    const sorted = [...dupes].sort((a, b) =>
+      (a.capturedAt || '').localeCompare(b.capturedAt || ''),
+    )
+    for (const p of sorted.slice(1)) {
+      await db.delete('photos_drafts', p.localId)
+      removedPhotos++
+    }
+  }
+
+  // 3. Orphelins : drafts avec visitLocalId = estaleVisitId (ancien bug)
+  for (const c of diag.orphanComments) {
+    await db.delete('comments_drafts', c.localId)
+    removedOrphans++
+    const orphanPhotos = diag.photos.filter((p) => p.commentLocalId === c.localId)
+    for (const p of orphanPhotos) {
+      await db.delete('photos_drafts', p.localId)
+      removedPhotos++
+    }
+  }
+
+  return { removedComments, removedPhotos, removedOrphans }
+}
+
 // --- Cleanup ---
 
 export async function purgeSyncedOlderThan(hours: number): Promise<number> {

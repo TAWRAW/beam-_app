@@ -17,6 +17,7 @@ import {
   type CommentDraft,
 } from '@/lib/visites/db'
 import type { EstaleVisit, VisitCreateInput } from '@/lib/estale-api'
+import { VisiteDiagnostic } from './_components/VisiteDiagnostic'
 
 type Entete = VisitCreateInput | EstaleVisit
 
@@ -205,6 +206,8 @@ export default function VisitDetailPage({
       >
         + Ajouter une ligne
       </Link>
+
+      <VisiteDiagnostic visitId={params.visitId} />
     </div>
   )
 }
