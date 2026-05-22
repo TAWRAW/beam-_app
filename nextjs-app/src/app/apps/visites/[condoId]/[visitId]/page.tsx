@@ -9,6 +9,7 @@ import {
 } from '@/lib/estale/visit-enums'
 import {
   getVisitDraft,
+  getAllVisitDrafts,
   getCommentsForVisit,
   getPhotosForComment,
   hydrateVisitFromRemote,
@@ -37,8 +38,14 @@ export default function VisitDetailPage({
 
   useEffect(() => {
     ;(async () => {
-      // 1. Si la visite est déjà en local (draft IndexedDB), on l'utilise directement.
-      const local = await getVisitDraft(params.visitId).catch(() => null)
+      // 1. Lookup local. params.visitId peut être un localId (draft pur) ou
+      //    un estaleVisitId (visite déjà hydratée). On cherche dans les deux
+      //    cas pour éviter un fetch estale inutile à chaque ouverture.
+      let local = await getVisitDraft(params.visitId).catch(() => null)
+      if (!local) {
+        const all = await getAllVisitDrafts()
+        local = all.find((v) => v.estaleVisitId === params.visitId) ?? null
+      }
       if (local) {
         setDraft(local)
         setDraftComments(await getCommentsForVisit(local.localId))
@@ -46,8 +53,8 @@ export default function VisitDetailPage({
         return
       }
 
-      // 2. Sinon, on fetch la visite remote depuis estale et on l'hydrate dans
-      //    IndexedDB pour que ses lignes deviennent éditables localement.
+      // 2. Première ouverture : fetch estale + hydrate IndexedDB pour que
+      //    ses lignes deviennent éditables localement.
       const res = await fetch(
         `/api/estale/visits/${params.visitId}?condoId=${params.condoId}`,
       )

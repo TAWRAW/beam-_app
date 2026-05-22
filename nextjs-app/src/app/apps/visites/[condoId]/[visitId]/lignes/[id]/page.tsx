@@ -15,10 +15,14 @@ import {
   updateCommentDraft,
   addPhotoDraft,
   getPhotosForComment,
+  getVisitDraft,
+  getAllVisitDrafts,
+  hydrateVisitFromRemote,
   type CommentDraft,
   type PhotoDraft,
 } from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
+import type { EstaleVisit } from '@/lib/estale-api'
 
 const LABEL = 'block text-xs font-bold uppercase tracking-wide mb-1'
 
@@ -38,7 +42,32 @@ export default function EditLignePage({
 
   useEffect(() => {
     ;(async () => {
-      const comments = await getCommentsForVisit(params.visitId)
+      // `params.visitId` peut être un localId (draft pur) OU un estaleVisitId
+      // (visite remote hydratée). Les comments sont indexés par visitLocalId,
+      // il faut donc trouver le bon VisitDraft avant de chercher les comments.
+      let visit = await getVisitDraft(params.visitId).catch(() => null)
+      if (!visit) {
+        const all = await getAllVisitDrafts()
+        visit = all.find((v) => v.estaleVisitId === params.visitId) ?? null
+      }
+      // Deep link : visite jamais ouverte côté client → hydrater depuis estale.
+      if (!visit) {
+        try {
+          const res = await fetch(
+            `/api/estale/visits/${params.visitId}?condoId=${params.condoId}`,
+          )
+          const json = await res.json()
+          const remote = json.visit as EstaleVisit | null
+          if (remote) {
+            visit = await hydrateVisitFromRemote(remote, params.condoId)
+          }
+        } catch {
+          // ignoré : on retombe sur "Chargement…" → "Ligne introuvable"
+        }
+      }
+      if (!visit) return
+
+      const comments = await getCommentsForVisit(visit.localId)
       const d = comments.find((c) => c.localId === params.id)
       if (d) {
         setDraft(d)
@@ -53,7 +82,7 @@ export default function EditLignePage({
         setPhotos(await getPhotosForComment(d.localId))
       }
     })()
-  }, [params.visitId, params.id])
+  }, [params.condoId, params.visitId, params.id])
 
   const existingPhotoUrls = useMemo(
     () => photos.map((p) => ({ id: p.localId, url: URL.createObjectURL(p.blob) })),

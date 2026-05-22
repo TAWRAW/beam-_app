@@ -10,8 +10,15 @@ import {
 } from '@/lib/estale/visit-enums'
 import { EnumPicker } from '@/components/visites/EnumPicker'
 import { PhotoSlot } from '@/components/visites/PhotoSlot'
-import { addCommentDraft, addPhotoDraft } from '@/lib/visites/db'
+import {
+  addCommentDraft,
+  addPhotoDraft,
+  getVisitDraft,
+  getAllVisitDrafts,
+  hydrateVisitFromRemote,
+} from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
+import type { EstaleVisit } from '@/lib/estale-api'
 
 const LABEL = 'block text-xs font-bold uppercase tracking-wide mb-1'
 
@@ -36,7 +43,37 @@ export default function NewLignePage({
       return
     }
     setSaving(true)
-    const draft = await addCommentDraft(params.visitId, { place, component, content })
+
+    // params.visitId est soit un localId (draft pur) soit un estaleVisitId
+    // (visite hydratée). On résout le visitLocalId réel avant d'ajouter
+    // le comment : sinon le draft serait orphelin (indexé par by-visit avec
+    // l'estaleVisitId, invisible aux getCommentsForVisit(localId)).
+    let visit = await getVisitDraft(params.visitId).catch(() => null)
+    if (!visit) {
+      const all = await getAllVisitDrafts()
+      visit = all.find((v) => v.estaleVisitId === params.visitId) ?? null
+    }
+    if (!visit) {
+      try {
+        const res = await fetch(
+          `/api/estale/visits/${params.visitId}?condoId=${params.condoId}`,
+        )
+        const json = await res.json()
+        const remote = json.visit as EstaleVisit | null
+        if (remote) {
+          visit = await hydrateVisitFromRemote(remote, params.condoId)
+        }
+      } catch {
+        // ignoré
+      }
+    }
+    if (!visit) {
+      setError('Visite introuvable — impossible de créer la ligne.')
+      setSaving(false)
+      return
+    }
+
+    const draft = await addCommentDraft(visit.localId, { place, component, content })
     for (const f of photos) {
       await addPhotoDraft(draft.localId, f, f.name)
     }
