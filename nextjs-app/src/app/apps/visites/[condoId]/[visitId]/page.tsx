@@ -104,7 +104,7 @@ export default function VisitDetailPage({
 
   if (loading) {
     return (
-      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 font-bold">
+      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl font-bold">
         Chargement…
       </div>
     )
@@ -113,7 +113,7 @@ export default function VisitDetailPage({
   const entete: Entete | null = draft?.entete || remoteVisit
   if (!entete) {
     return (
-      <div className="bg-[#FF6B6B] border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 font-bold">
+      <div className="bg-[#FF6B6B] border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 font-bold rounded-2xl">
         Visite introuvable.
       </div>
     )
@@ -123,7 +123,7 @@ export default function VisitDetailPage({
 
   return (
     <div className="space-y-5">
-      <section className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5">
+      <section className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl">
         <div className="font-black uppercase tracking-tight text-lg">{entete.object}</div>
         <div className="text-sm font-medium text-gray-700 mt-1">
           {new Date(entete.date).toLocaleString('fr-FR', {
@@ -155,7 +155,7 @@ export default function VisitDetailPage({
               <Link
                 key={c.localId}
                 href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/${c.localId}` as any}
-                className="flex gap-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-3 transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
+                className="flex gap-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-3 rounded-2xl transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold">
@@ -169,7 +169,7 @@ export default function VisitDetailPage({
                   )}
                 </div>
                 {photo?.url && (
-                  <div className="relative shrink-0 w-20 h-20 border-2 border-black overflow-hidden">
+                  <div className="relative shrink-0 w-20 h-20 border-2 border-black overflow-hidden rounded-xl">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={photo.url}
@@ -184,7 +184,7 @@ export default function VisitDetailPage({
                   </div>
                 )}
                 {!photo?.url && photo?.count === 0 && (
-                  <div className="shrink-0 w-20 h-20 border-2 border-dashed border-black/30 flex items-center justify-center text-black/30 text-2xl">
+                  <div className="shrink-0 w-20 h-20 border-2 border-dashed border-black/30 flex items-center justify-center text-black/30 text-2xl rounded-xl">
                     —
                   </div>
                 )}
@@ -192,7 +192,7 @@ export default function VisitDetailPage({
             )
           })}
           {localComments.length === 0 && (
-            <p className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] p-3 text-gray-700 text-sm font-medium">
+            <p className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] p-3 text-gray-700 text-sm font-medium rounded-2xl">
               Aucune ligne pour le moment.
             </p>
           )}
@@ -201,7 +201,7 @@ export default function VisitDetailPage({
 
       <Link
         href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/new` as any}
-        className="block w-full text-center bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
+        className="block w-full text-center bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
       >
         + Ajouter une ligne
       </Link>
