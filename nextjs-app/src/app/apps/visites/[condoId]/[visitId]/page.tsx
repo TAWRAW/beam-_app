@@ -207,7 +207,7 @@ export default function VisitDetailPage({
         + Ajouter une ligne
       </Link>
 
-      <VisiteDiagnostic visitId={params.visitId} />
+      <VisiteDiagnostic visitId={params.visitId} condoId={params.condoId} />
     </div>
   )
 }
