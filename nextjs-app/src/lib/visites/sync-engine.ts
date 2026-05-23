@@ -18,6 +18,8 @@ async function pushVisit(localId: string): Promise<string | null> {
   const drafts = await getAllVisitDrafts()
   const draft = drafts.find((d) => d.localId === localId)
   if (!draft || draft.estaleVisitId) return draft?.estaleVisitId || null
+  // Défense contre les appels concurrents (race condition double POST)
+  if (draft.syncStatus === 'syncing') return null
   if ((draft.syncAttempts || 0) >= MAX_SYNC_ATTEMPTS) return null
 
   const attempts = (draft.syncAttempts || 0) + 1
@@ -66,6 +68,8 @@ async function pushComment(
   if (draft.estaleCommentId && draft.syncStatus === 'synced') {
     return draft.estaleCommentId
   }
+  // Défense contre les appels concurrents (race condition double POST/PATCH)
+  if (draft.syncStatus === 'syncing') return null
 
   const visitDraft = (await getAllVisitDrafts()).find((v) => v.localId === visitLocalId)
   if (!visitDraft?.estaleVisitId) return null // attendre que la visite soit synced
@@ -128,6 +132,11 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
   const photos = await getPhotosForComment(commentLocalId)
   const photo = photos.find((p) => p.localId === photoLocalId)
   if (!photo || photo.estaleFileId) return
+  // Défense en profondeur : si un autre push concurrent est déjà en cours
+  // sur cette photo (statut 'syncing'), on n'entre pas en double. Le mutex
+  // global de flushAll() est le vrai garde-fou ; ce check sert si pushPhoto
+  // est appelé en dehors du flush.
+  if (photo.syncStatus === 'syncing') return
 
   // remonter au comment + visit pour avoir les ids estale
   const visits = await getAllVisitDrafts()
@@ -174,13 +183,28 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
   })
 }
 
+// Mutex global : empêche deux flushAll() concurrents qui produiraient des
+// doublons côté Estale (ex: tick de 30 s qui se déclenche pendant un tap
+// sur SyncIndicator, ou save() qui appelle flushAll() pendant un autre
+// flush déjà en cours).
+let isFlushing = false
+
 /**
  * Pousse tous les drafts pending/error dans l'ordre topologique.
  * À appeler à chaque event "online", à chaque sauvegarde locale, et toutes les 30s.
  */
 export async function flushAll(): Promise<void> {
   if (typeof navigator !== 'undefined' && !navigator.onLine) return
+  if (isFlushing) return
+  isFlushing = true
+  try {
+    await flushAllInternal()
+  } finally {
+    isFlushing = false
+  }
+}
 
+async function flushAllInternal(): Promise<void> {
   // 1. visites
   const visits = await getAllVisitDrafts()
   for (const v of visits) {
