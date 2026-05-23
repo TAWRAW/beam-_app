@@ -96,6 +96,14 @@ export default function EditLignePage({
   )
   useEffect(() => () => newPhotoUrls.forEach((p) => URL.revokeObjectURL(p.url)), [newPhotoUrls])
 
+  // Enregistrement immédiat en IndexedDB à chaque capture photo : empêche la
+  // perte si l'utilisateur ferme l'app avant de cliquer "Mettre à jour".
+  async function handleAddPhoto(f: File) {
+    if (!draft) return
+    await addPhotoDraft(draft.localId, f, f.name)
+    setPhotos(await getPhotosForComment(draft.localId))
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault()
     if (!draft || !place || !component) return
@@ -104,6 +112,8 @@ export default function EditLignePage({
       payload: { place, component, content },
       syncStatus: draft.estaleCommentId ? 'pending' : draft.syncStatus,
     })
+    // Backwards-compat : si des photos sont encore dans newPhotos (queue
+    // restée en mémoire d'une session pré-fix), on les enregistre aussi.
     for (const f of newPhotos) {
       await addPhotoDraft(draft.localId, f, f.name)
     }
@@ -204,9 +214,9 @@ export default function EditLignePage({
               </span>
             </div>
           ))}
-          <PhotoSlot label="+ Photo" onCapture={(f) => setNewPhotos((p) => [...p, f])} />
-          <PhotoSlot label="+ Photo" onCapture={(f) => setNewPhotos((p) => [...p, f])} />
-          <PhotoSlot label="+ Photo" onCapture={(f) => setNewPhotos((p) => [...p, f])} />
+          <PhotoSlot label="+ Photo" onCapture={handleAddPhoto} />
+          <PhotoSlot label="+ Photo" onCapture={handleAddPhoto} />
+          <PhotoSlot label="+ Photo" onCapture={handleAddPhoto} />
         </div>
       </div>
 

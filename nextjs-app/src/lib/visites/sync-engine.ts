@@ -78,6 +78,11 @@ async function pushComment(
   }
   // Défense contre les appels concurrents (race condition double POST/PATCH)
   if (draft.syncStatus === 'syncing') return null
+  // Brouillon non finalisé (page new ligne fermée avant submit) : on garde
+  // le draft + ses photos en IndexedDB mais on ne pousse pas vers Estale tant
+  // que place/component ne sont pas renseignés.
+  const payload = draft.payload as { place?: string; component?: string }
+  if (!payload.place || !payload.component) return null
 
   const visitDraft = (await getAllVisitDrafts()).find((v) => v.localId === visitLocalId)
   if (!visitDraft?.estaleVisitId) return null // attendre que la visite soit synced
