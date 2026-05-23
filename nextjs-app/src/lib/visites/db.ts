@@ -377,6 +377,61 @@ export async function cleanupVisitDuplicates(
   return { removedComments, removedPhotos, removedOrphans }
 }
 
+/**
+ * Reset les drafts en erreur (ou ayant atteint MAX_SYNC_ATTEMPTS) pour qu'ils
+ * soient retentés au prochain flush. Utile quand une race condition ou un
+ * bug a empêché la sync et qu'on veut "réveiller" les drafts bloqués.
+ * Ne touche QUE les drafts non-synced (visit/comment/photo avec
+ * syncStatus !== 'synced').
+ */
+export async function resetFailedSyncForVisit(
+  visitIdOrEstaleId: string,
+): Promise<{ resetVisits: number; resetComments: number; resetPhotos: number }> {
+  const db = await getDB()
+  const diag = await getVisiteDiagnostic(visitIdOrEstaleId)
+  let resetVisits = 0
+  let resetComments = 0
+  let resetPhotos = 0
+
+  for (const v of diag.visits) {
+    if (v.syncStatus !== 'synced') {
+      await db.put('visits_drafts', {
+        ...v,
+        syncStatus: 'pending',
+        syncAttempts: 0,
+        syncError: undefined,
+      })
+      resetVisits++
+    }
+  }
+
+  for (const c of [...diag.comments, ...diag.orphanComments]) {
+    if (c.syncStatus !== 'synced') {
+      await db.put('comments_drafts', {
+        ...c,
+        syncStatus: 'pending',
+        syncAttempts: 0,
+        syncError: undefined,
+      })
+      resetComments++
+    }
+  }
+
+  for (const p of diag.photos) {
+    if (p.syncStatus !== 'synced') {
+      await db.put('photos_drafts', {
+        ...p,
+        syncStatus: 'pending',
+        syncAttempts: 0,
+        syncError: undefined,
+      })
+      resetPhotos++
+    }
+  }
+
+  return { resetVisits, resetComments, resetPhotos }
+}
+
 // --- Cleanup ---
 
 export async function purgeSyncedOlderThan(hours: number): Promise<number> {

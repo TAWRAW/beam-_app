@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import {
   getVisiteDiagnostic,
   cleanupVisitDuplicates,
+  resetFailedSyncForVisit,
   type VisiteDiagnosticReport,
 } from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
@@ -101,6 +102,29 @@ export function VisiteDiagnostic({ visitId, condoId }: Props) {
     }
   }
 
+  async function handleRescue() {
+    if (!confirm("Réveiller les drafts bloqués (reset des compteurs d'erreur) et relancer le push vers Estale. À utiliser si des photos prises en local n'ont jamais été synchronisées.")) return
+    setBusy(true)
+    setMsg(null)
+    try {
+      const reset = await resetFailedSyncForVisit(visitId)
+      const total = reset.resetVisits + reset.resetComments + reset.resetPhotos
+      if (total === 0) {
+        setMsg('Aucun draft à réveiller (tout est déjà synced).')
+      } else {
+        await flushAll()
+        await refresh()
+        setMsg(
+          `Réveil + push : ${reset.resetVisits} visite, ${reset.resetComments} lignes, ${reset.resetPhotos} photos relancées. Vérifie la colonne Estale pour confirmer.`,
+        )
+      }
+    } catch (e) {
+      setMsg('Erreur : ' + (e instanceof Error ? e.message : String(e)))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function handleDeleteEstaleFile(commentId: string, fileId: string, filename: string) {
     if (!confirm(`Supprimer DÉFINITIVEMENT côté Estale le fichier "${filename}" ? Cette action est irréversible.`)) return
     setBusy(true)
@@ -170,6 +194,18 @@ export function VisiteDiagnostic({ visitId, condoId }: Props) {
             <div><strong>Visites locales :</strong> {report.visits.length}</div>
             <div><strong>Lignes locales :</strong> {report.comments.length}</div>
             <div><strong>Photos locales :</strong> {report.photos.length}</div>
+            {(() => {
+              const notSynced = report.photos.filter((p) => p.syncStatus !== 'synced').length
+              const inError = report.photos.filter((p) => p.syncStatus === 'error').length
+              if (notSynced > 0) {
+                return (
+                  <div className="text-red-700 font-bold">
+                    ⚠ Photos non synced : {notSynced} {inError > 0 && `(dont ${inError} en erreur)`}
+                  </div>
+                )
+              }
+              return null
+            })()}
             {report.orphanComments.length > 0 && (
               <div className="text-red-700">
                 <strong>Lignes orphelines :</strong> {report.orphanComments.length}
@@ -239,23 +275,33 @@ export function VisiteDiagnostic({ visitId, condoId }: Props) {
             <p className="bg-[#A8E6A1] border-2 border-black rounded-xl px-3 py-2 text-xs font-bold">{msg}</p>
           )}
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2">
             <button
               type="button"
-              onClick={handleFlush}
+              onClick={handleRescue}
               disabled={busy}
-              className="bg-primary border-2 border-black shadow-[3px_3px_0px_0px_#000] py-2 px-3 font-bold text-xs uppercase rounded-full disabled:opacity-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
+              className="bg-[#A8E6A1] border-2 border-black shadow-[3px_3px_0px_0px_#000] py-2 px-3 font-bold text-xs uppercase rounded-full disabled:opacity-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
             >
-              🔄 Resync forcée
+              🆘 Récupérer les drafts bloqués
             </button>
-            <button
-              type="button"
-              onClick={handleCleanup}
-              disabled={busy}
-              className="bg-[#FF6B6B] border-2 border-black shadow-[3px_3px_0px_0px_#000] py-2 px-3 font-bold text-xs uppercase rounded-full disabled:opacity-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
-            >
-              🧹 Nettoyer local
-            </button>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={handleFlush}
+                disabled={busy}
+                className="bg-primary border-2 border-black shadow-[3px_3px_0px_0px_#000] py-2 px-3 font-bold text-xs uppercase rounded-full disabled:opacity-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
+              >
+                🔄 Resync forcée
+              </button>
+              <button
+                type="button"
+                onClick={handleCleanup}
+                disabled={busy}
+                className="bg-[#FF6B6B] border-2 border-black shadow-[3px_3px_0px_0px_#000] py-2 px-3 font-bold text-xs uppercase rounded-full disabled:opacity-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
+              >
+                🧹 Nettoyer local
+              </button>
+            </div>
           </div>
         </>
       )}
