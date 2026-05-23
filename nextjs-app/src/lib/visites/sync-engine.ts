@@ -12,7 +12,15 @@ import {
   getSyncStats,
 } from './db'
 
-const MAX_SYNC_ATTEMPTS = 5
+// Nombre max d'essais avant qu'un draft soit considéré "définitivement" en
+// erreur. Au-delà, l'auto-healing (cf. autoHealStuckDrafts) prend le relais
+// pour relancer périodiquement.
+const MAX_SYNC_ATTEMPTS = 10
+
+// Délai après lequel un draft en erreur est automatiquement re-tenté (reset
+// du compteur d'essais). Empêche les drafts de rester bloqués indéfiniment
+// après un pic d'erreurs (race condition, coupure réseau, 5xx temporaire).
+const ERROR_RETRY_AFTER_MS = 5 * 60 * 1000 // 5 minutes
 
 async function pushVisit(localId: string): Promise<string | null> {
   const drafts = await getAllVisitDrafts()
@@ -190,6 +198,63 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
 let isFlushing = false
 
 /**
+ * Réveille les drafts bloqués en 'error' depuis plus de ERROR_RETRY_AFTER_MS :
+ * reset le compteur d'essais à 0 et repasse en 'pending'. Ainsi, plus aucun
+ * draft ne reste prisonnier indéfiniment après un pic d'erreurs ; ils sont
+ * automatiquement re-tentés à la prochaine sync.
+ *
+ * Combiné au mutex flushAll, garantit que les photos prises en mauvais
+ * réseau finissent toujours par arriver sur Estale tant que l'utilisateur
+ * ouvre l'app de temps en temps.
+ */
+async function autoHealStuckDrafts(): Promise<void> {
+  const cutoffIso = new Date(Date.now() - ERROR_RETRY_AFTER_MS).toISOString()
+  const visits = await getAllVisitDrafts()
+
+  for (const v of visits) {
+    if (
+      v.syncStatus === 'error' &&
+      v.lastSyncAttempt &&
+      v.lastSyncAttempt < cutoffIso
+    ) {
+      await updateVisitDraft(v.localId, {
+        syncStatus: 'pending',
+        syncAttempts: 0,
+        syncError: undefined,
+      })
+    }
+    const comments = await getCommentsForVisit(v.localId)
+    for (const c of comments) {
+      if (
+        c.syncStatus === 'error' &&
+        c.lastSyncAttempt &&
+        c.lastSyncAttempt < cutoffIso
+      ) {
+        await updateCommentDraft(c.localId, {
+          syncStatus: 'pending',
+          syncAttempts: 0,
+          syncError: undefined,
+        })
+      }
+      const photos = await getPhotosForComment(c.localId)
+      for (const p of photos) {
+        if (
+          p.syncStatus === 'error' &&
+          p.lastSyncAttempt &&
+          p.lastSyncAttempt < cutoffIso
+        ) {
+          await updatePhotoDraft(p.localId, {
+            syncStatus: 'pending',
+            syncAttempts: 0,
+            syncError: undefined,
+          })
+        }
+      }
+    }
+  }
+}
+
+/**
  * Pousse tous les drafts pending/error dans l'ordre topologique.
  * À appeler à chaque event "online", à chaque sauvegarde locale, et toutes les 30s.
  */
@@ -198,6 +263,7 @@ export async function flushAll(): Promise<void> {
   if (isFlushing) return
   isFlushing = true
   try {
+    await autoHealStuckDrafts()
     await flushAllInternal()
   } finally {
     isFlushing = false
