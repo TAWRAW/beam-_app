@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
   // Admin-only routes
-  const adminRoutes = ['/apps/users', '/apps/mandats', '/apps/articles']
+  const adminRoutes = ['/apps/users', '/apps/mandats', '/apps/articles', '/apps/devis-mutation']
   const isAdminRoute = adminRoutes.some(route => req.nextUrl.pathname.startsWith(route))
 
   // Check legacy auth first (session cookie)

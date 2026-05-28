@@ -1,0 +1,4129 @@
+{
+  "allTypeNames": [
+    "OBJECT       AccountingAccountMutation",
+    "OBJECT       AccountingCondo",
+    "INPUT_OBJECT AccountingExportOwnersAssetsInput",
+    "INPUT_OBJECT AccountingExportOwnersBalanceInput",
+    "OBJECT       AccountingMutation",
+    "OBJECT       Address",
+    "INPUT_OBJECT AddressInput",
+    "OBJECT       AgencyMutation",
+    "OBJECT       BankAccountMutation",
+    "OBJECT       BankSEPAMandateMutation",
+    "OBJECT       BankStatementMutation",
+    "OBJECT       BankTransactionTemplateMutation",
+    "OBJECT       BillingMutation",
+    "OBJECT       BudgetALURMutation",
+    "OBJECT       BudgetAdvanceMutation",
+    "OBJECT       BudgetCondo",
+    "OBJECT       BudgetExceptionalFeeMutation",
+    "OBJECT       BudgetExceptionalMutation",
+    "OBJECT       BudgetKeyOrdinaryMutation",
+    "OBJECT       BudgetLoanItemMutation",
+    "OBJECT       BudgetLoanMutation",
+    "OBJECT       BudgetMutation",
+    "OBJECT       BudgetOrdinaryFeeMutation",
+    "OBJECT       BudgetOrdinaryMutation",
+    "OBJECT       Building",
+    "INPUT_OBJECT BuildingCreateInput",
+    "OBJECT       BuildingMutation",
+    "OBJECT       ClearanceOwnerPDF",
+    "OBJECT       CollaboratorCondoPortfolioPayload",
+    "OBJECT       CollaboratorMutation",
+    "OBJECT       CollaboratorSettingsKanbanMutation",
+    "OBJECT       CollaboratorSettingsMutation",
+    "OBJECT       Condo",
+    "INPUT_OBJECT CondoCouncilInput",
+    "INPUT_OBJECT CondoCouncilMemberCreateInput",
+    "INPUT_OBJECT CondoCouncilMemberUpdateInput",
+    "INPUT_OBJECT CondoCreateInput",
+    "OBJECT       CondoDocumentMutation",
+    "OBJECT       CondoDocuments",
+    "ENUM         CondoERP",
+    "ENUM         CondoHeating",
+    "OBJECT       CondoInvoice",
+    "INPUT_OBJECT CondoLegalInput",
+    "ENUM         CondoManagement",
+    "ENUM         CondoMandate",
+    "OBJECT       CondoMutation",
+    "OBJECT       CondoServiceBook",
+    "OBJECT       CondoServiceBookAdministrative",
+    "INPUT_OBJECT CondoServiceBookAdministrativeInput",
+    "OBJECT       CondoServiceBookAsbestos",
+    "INPUT_OBJECT CondoServiceBookAsbestosInput",
+    "OBJECT       CondoServiceBookAssets",
+    "INPUT_OBJECT CondoServiceBookAssetsInput",
+    "OBJECT       CondoServiceBookComplianceWork",
+    "INPUT_OBJECT CondoServiceBookComplianceWorkInput",
+    "OBJECT       CondoServiceBookDIUO",
+    "INPUT_OBJECT CondoServiceBookDIUOInput",
+    "OBJECT       CondoServiceBookDPE",
+    "INPUT_OBJECT CondoServiceBookDPEInput",
+    "OBJECT       CondoServiceBookDecennialWarranty",
+    "INPUT_OBJECT CondoServiceBookDecennialWarrantyInput",
+    "OBJECT       CondoServiceBookElevator",
+    "INPUT_OBJECT CondoServiceBookElevatorInput",
+    "OBJECT       CondoServiceBookFluid",
+    "INPUT_OBJECT CondoServiceBookFluidInput",
+    "OBJECT       CondoServiceBookHealthRisks",
+    "INPUT_OBJECT CondoServiceBookHealthRisksInput",
+    "OBJECT       CondoServiceBookICPE",
+    "INPUT_OBJECT CondoServiceBookICPEInput",
+    "OBJECT       CondoServiceBookLead",
+    "INPUT_OBJECT CondoServiceBookLeadInput",
+    "OBJECT       CondoServiceBookMandate",
+    "INPUT_OBJECT CondoServiceBookMandateInput",
+    "OBJECT       CondoServiceBookMutation",
+    "OBJECT       CondoServiceBookOpticalFiber",
+    "INPUT_OBJECT CondoServiceBookOpticalFiberInput",
+    "OBJECT       CondoServiceBookProcedure",
+    "INPUT_OBJECT CondoServiceBookProcedureInput",
+    "OBJECT       CondoServiceBookRegulations",
+    "INPUT_OBJECT CondoServiceBookRegulationsInput",
+    "OBJECT       CondoServiceBookSanitation",
+    "INPUT_OBJECT CondoServiceBookSanitationInput",
+    "OBJECT       CondoServiceBookSwimmingPool",
+    "INPUT_OBJECT CondoServiceBookSwimmingPoolInput",
+    "OBJECT       CondoServiceBookTechnicalDiagnosis",
+    "INPUT_OBJECT CondoServiceBookTechnicalDiagnosisInput",
+    "OBJECT       CondoServiceBookTermite",
+    "INPUT_OBJECT CondoServiceBookTermiteInput",
+    "OBJECT       CondoServiceBookUnionAssociation",
+    "INPUT_OBJECT CondoServiceBookUnionAssociationInput",
+    "OBJECT       CondoSettings",
+    "OBJECT       CondoSettingsAssembly",
+    "INPUT_OBJECT CondoSettingsAssemblyInput",
+    "OBJECT       CondoSettingsAssemblyInvitation",
+    "INPUT_OBJECT CondoSettingsAssemblyInvitationInput",
+    "OBJECT       CondoSettingsAssemblyMutation",
+    "OBJECT       CondoSettingsAssemblyTranscript",
+    "INPUT_OBJECT CondoSettingsAssemblyTranscriptInput",
+    "OBJECT       CondoSettingsBank",
+    "OBJECT       CondoSettingsBankAutoPilot",
+    "INPUT_OBJECT CondoSettingsBankAutoPilotInput",
+    "OBJECT       CondoSettingsBankMutation",
+    "OBJECT       CondoSettingsBankReconciliation",
+    "INPUT_OBJECT CondoSettingsBankReconciliationInput",
+    "OBJECT       CondoSettingsBankStatement",
+    "INPUT_OBJECT CondoSettingsBankStatementInput",
+    "OBJECT       CondoSettingsBudget",
+    "OBJECT       CondoSettingsBudgetExceptional",
+    "INPUT_OBJECT CondoSettingsBudgetExceptionalInput",
+    "OBJECT       CondoSettingsBudgetMutation",
+    "OBJECT       CondoSettingsBudgetOrdinary",
+    "INPUT_OBJECT CondoSettingsBudgetOrdinaryInput",
+    "OBJECT       CondoSettingsExtranet",
+    "OBJECT       CondoSettingsExtranetCouncil",
+    "INPUT_OBJECT CondoSettingsExtranetCouncilInput",
+    "INPUT_OBJECT CondoSettingsExtranetInput",
+    "OBJECT       CondoSettingsExtranetMutation",
+    "OBJECT       CondoSettingsFundraising",
+    "OBJECT       CondoSettingsFundraisingBilling",
+    "INPUT_OBJECT CondoSettingsFundraisingBillingInput",
+    "OBJECT       CondoSettingsFundraisingDocument",
+    "INPUT_OBJECT CondoSettingsFundraisingDocumentInput",
+    "INPUT_OBJECT CondoSettingsFundraisingInput",
+    "OBJECT       CondoSettingsFundraisingMutation",
+    "OBJECT       CondoSettingsMutation",
+    "OBJECT       CondoSettingsPayin",
+    "OBJECT       CondoSettingsPayinDirectDebitAuto",
+    "INPUT_OBJECT CondoSettingsPayinDirectDebitAutoInput",
+    "OBJECT       CondoSettingsPayinDirectDebitManual",
+    "INPUT_OBJECT CondoSettingsPayinDirectDebitManualInput",
+    "OBJECT       CondoSettingsPayinMutation",
+    "OBJECT       CondoSettingsSale",
+    "OBJECT       CondoSettingsSaleED",
+    "INPUT_OBJECT CondoSettingsSaleEDInput",
+    "OBJECT       CondoSettingsSaleMutation",
+    "OBJECT       CondoSettingsSalePED",
+    "INPUT_OBJECT CondoSettingsSalePEDInput",
+    "OBJECT       CondoSettingsUnpaid",
+    "OBJECT       CondoSettingsUnpaidFirstReminder",
+    "INPUT_OBJECT CondoSettingsUnpaidFirstReminderInput",
+    "OBJECT       CondoSettingsUnpaidFormalNotice",
+    "INPUT_OBJECT CondoSettingsUnpaidFormalNoticeInput",
+    "INPUT_OBJECT CondoSettingsUnpaidInput",
+    "OBJECT       CondoSettingsUnpaidMutation",
+    "OBJECT       CondoSettingsUnpaidSecondReminder",
+    "INPUT_OBJECT CondoSettingsUnpaidSecondReminderInput",
+    "OBJECT       CondoStatutes",
+    "OBJECT       CondoStatutesMutation",
+    "ENUM         CondoSyndicate",
+    "ENUM         CondoWaterType",
+    "OBJECT       DKLot",
+    "OBJECT       DKMutation",
+    "OBJECT       DriveActionMutation",
+    "OBJECT       DriveItemMutation",
+    "OBJECT       EmployeeMutation",
+    "OBJECT       EntryMutation",
+    "OBJECT       EstablishmentCOAMutation",
+    "OBJECT       EstablishmentDriveCondoItemMutation",
+    "OBJECT       EstablishmentDriveOwnerItemMutation",
+    "OBJECT       EstablishmentMutation",
+    "OBJECT       EstablishmentSettingsAssemblyMutation",
+    "OBJECT       EstablishmentSettingsBankAutoPilot",
+    "INPUT_OBJECT EstablishmentSettingsBankAutoPilotInput",
+    "OBJECT       EstablishmentSettingsBankMutation",
+    "OBJECT       EstablishmentSettingsBudgetMutation",
+    "OBJECT       EstablishmentSettingsExtranetMutation",
+    "OBJECT       EstablishmentSettingsFundraisingMutation",
+    "OBJECT       EstablishmentSettingsKanbanMutation",
+    "OBJECT       EstablishmentSettingsLitigationAgainstOwner",
+    "INPUT_OBJECT EstablishmentSettingsLitigationAgainstOwnerInput",
+    "OBJECT       EstablishmentSettingsLitigationMutation",
+    "OBJECT       EstablishmentSettingsMailboxInvoiceMutation",
+    "OBJECT       EstablishmentSettingsMutation",
+    "OBJECT       EstablishmentSettingsPayinMutation",
+    "OBJECT       EstablishmentSettingsSale",
+    "OBJECT       EstablishmentSettingsSaleED",
+    "INPUT_OBJECT EstablishmentSettingsSaleEDInput",
+    "OBJECT       EstablishmentSettingsSaleMutation",
+    "OBJECT       EstablishmentSettingsSaleNotif",
+    "INPUT_OBJECT EstablishmentSettingsSaleNotifInput",
+    "OBJECT       EstablishmentSettingsSalePED",
+    "INPUT_OBJECT EstablishmentSettingsSalePEDInput",
+    "OBJECT       EstablishmentSettingsUnpaidMutation",
+    "OBJECT       EstablishmentSettingsVisitMutation",
+    "OBJECT       ExternalRepresentativeMutation",
+    "OBJECT       FundraisingMutation",
+    "OBJECT       FundraisingsMutation",
+    "INPUT_OBJECT InvoiceCondoBreakdownInput",
+    "INPUT_OBJECT InvoiceCondoCreateInput",
+    "INPUT_OBJECT InvoiceOwnerBreakdownInput",
+    "INPUT_OBJECT InvoiceOwnerCreateInput",
+    "OBJECT       KanbanCondo",
+    "INPUT_OBJECT KanbanCondoExportInput",
+    "OBJECT       KanbanEventMailMutation",
+    "OBJECT       KanbanEventMutation",
+    "OBJECT       KanbanEventNoteMutation",
+    "OBJECT       KanbanEventOrderMutation",
+    "OBJECT       KanbanEventQuotationMutation",
+    "OBJECT       KanbanTaskCheckListMutation",
+    "OBJECT       KanbanTaskMutation",
+    "OBJECT       LitigationAgainstOwner",
+    "INPUT_OBJECT LitigationAgainstOwnerCreateInput",
+    "OBJECT       LitigationCondo",
+    "OBJECT       LitigationDocumentMutation",
+    "OBJECT       LitigationMutation",
+    "OBJECT       LitigationOwner",
+    "OBJECT       Lot",
+    "ENUM         LotCategory",
+    "OBJECT       LotDistribution",
+    "ENUM         LotDivision",
+    "INPUT_OBJECT LotInput",
+    "OBJECT       LotMutation",
+    "INPUT_OBJECT LotOwnerInput",
+    "OBJECT       MailRecipientOwner",
+    "OBJECT       MailingCondo",
+    "OBJECT       MailingMutation",
+    "OBJECT       MeetingInvitationMutation",
+    "OBJECT       MeetingMotionBankCondoItem",
+    "OBJECT       MeetingMotionMutation",
+    "OBJECT       MeetingMutation",
+    "OBJECT       MeetingOwner",
+    "OBJECT       MeetingOwnerInvitation",
+    "OBJECT       MeetingOwnerMutation",
+    "OBJECT       MeetingOwnerRepresentative",
+    "OBJECT       MeetingOwnerTranscript",
+    "OBJECT       MeetingPostalBallot",
+    "INPUT_OBJECT MeetingPostalBallotInput",
+    "OBJECT       MeetingPostalBallotVote",
+    "INPUT_OBJECT MeetingPostalBallotVoteInput",
+    "OBJECT       MeetingTranscriptMutation",
+    "OBJECT       MeterIndexMutation",
+    "OBJECT       MeterIndividualMutation",
+    "OBJECT       MeterMutation",
+    "OBJECT       MeterReadingMutation",
+    "OBJECT       Mutation",
+    "OBJECT       NotaryOfficeMutation",
+    "OBJECT       Owner",
+    "OBJECT       OwnerAlert",
+    "OBJECT       OwnerBudgetReport",
+    "OBJECT       OwnerContact",
+    "INPUT_OBJECT OwnerContactInput",
+    "INPUT_OBJECT OwnerInput",
+    "OBJECT       OwnerLotHistoric",
+    "OBJECT       OwnerMutation",
+    "OBJECT       OwnerSEPAMandate",
+    "OBJECT       OwnerSetting",
+    "INPUT_OBJECT OwnerSettingCommunicationInput",
+    "INPUT_OBJECT OwnerSettingPayinBankDebitInput",
+    "INPUT_OBJECT OwnerSettingRentalAgentInput",
+    "INPUT_OBJECT OwnerSettingUnpaidInput",
+    "OBJECT       OwnersMutation",
+    "OBJECT       PayinCondo",
+    "OBJECT       PayinItemCashMutation",
+    "OBJECT       PayinItemCashOwner",
+    "INPUT_OBJECT PayinItemCashOwnerInput",
+    "OBJECT       PayinItemCheckBlockedMutation",
+    "OBJECT       PayinItemCheckMutation",
+    "OBJECT       PayinItemCheckOwner",
+    "INPUT_OBJECT PayinItemCheckOwnerInput",
+    "OBJECT       PayinItemDebitMutation",
+    "OBJECT       PayinItemWireMutation",
+    "OBJECT       PayinItemWireOwner",
+    "INPUT_OBJECT PayinItemWireOwnerInput",
+    "OBJECT       PayinMutation",
+    "OBJECT       PayoutCondo",
+    "OBJECT       PayoutCondoSuggestion",
+    "OBJECT       PayoutMutation",
+    "OBJECT       PowensMutation",
+    "OBJECT       RentalAgentMutation",
+    "OBJECT       Sale",
+    "OBJECT       SaleAdvanceTransfer",
+    "OBJECT       SaleBuyer",
+    "INPUT_OBJECT SaleBuyerCreateInput",
+    "OBJECT       SaleCertificate",
+    "ENUM         SaleCertificateCategory",
+    "OBJECT       SaleCertificateMutation",
+    "INPUT_OBJECT SaleCertificateUpdateInput",
+    "INPUT_OBJECT SaleCreateInput",
+    "OBJECT       SaleDeletePayload",
+    "OBJECT       SaleDocument",
+    "INPUT_OBJECT SaleDocumentBillInput",
+    "ENUM         SaleDocumentCategory",
+    "INPUT_OBJECT SaleDocumentCreateInput",
+    "OBJECT       SaleDocumentMutation",
+    "INPUT_OBJECT SaleDocumentSendInput",
+    "INPUT_OBJECT SaleDocumentUpdateInput",
+    "OBJECT       SaleFundTransfer",
+    "OBJECT       SaleMutation",
+    "INPUT_OBJECT SaleUpdateInput",
+    "OBJECT       SupplierAssessmentMutation",
+    "OBJECT       SupplierCondo",
+    "OBJECT       SupplierContactMutation",
+    "OBJECT       SupplierContractMutation",
+    "OBJECT       SupplierMutation",
+    "OBJECT       UnpaidCondo",
+    "OBJECT       UnpaidMutation",
+    "OBJECT       UserMutation",
+    "OBJECT       VisitCommentMutation",
+    "OBJECT       VisitMutation"
+  ],
+  "types": {
+    "Condo": {
+      "name": "Condo",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "createdAt",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Timestamptz",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "archivedAt",
+          "type": {
+            "name": "Timestamptz",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "reference",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "management",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoManagement",
+              "kind": "ENUM",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "syndicate",
+          "type": {
+            "name": "CondoSyndicate",
+            "kind": "ENUM",
+            "ofType": null
+          }
+        },
+        {
+          "name": "erp",
+          "type": {
+            "name": "CondoERP",
+            "kind": "ENUM",
+            "ofType": null
+          }
+        },
+        {
+          "name": "registrationNum",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "registrationDate",
+          "type": {
+            "name": "Date",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "registrationNumSP",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "constructionDate",
+          "type": {
+            "name": "Int",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "isResidentialService",
+          "type": {
+            "name": "Boolean",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "siret",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "comment",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "observations",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "haveCaretaker",
+          "type": {
+            "name": "Boolean",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "meetingVideo",
+          "type": {
+            "name": "Boolean",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "accessCode",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "recovery",
+          "type": {
+            "name": "RecoverySource",
+            "kind": "ENUM",
+            "ofType": null
+          }
+        },
+        {
+          "name": "recoveryAccounting",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "RecoveryAccounting",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "recoveryAccountings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "thresholdAdviceCouncil",
+          "type": {
+            "name": "Int",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "thresholdCompareCouncil",
+          "type": {
+            "name": "Int",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "delegationAmountCouncil",
+          "type": {
+            "name": "Int",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "meetingDate",
+          "type": {
+            "name": "Date",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "meetingWeekForecast",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "addressID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "address",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Address",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "events",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "EventConnection",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "eventsMonitoring",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "documents",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoDocuments",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "drive",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Drive",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "maintenanceBookPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "syntheticRecordPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "meetings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "meeting",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Meeting",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "motionsBank",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "establishmentID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "establishmentPeriod",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Tstzrange",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "establishment",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Establishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "accountingV2",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "AccountingCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "accountings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "accounting",
+          "type": {
+            "name": "Accounting",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "entry",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Entry",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "entries",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "entriesV2",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "entriesPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "account",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "AccountingAccount",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "accountByNomenclature",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "AccountingAccount",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "accounts",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "bank",
+          "type": {
+            "name": "BankAccount",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "banks",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "budgets",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "budget",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Budget",
+              "kind": "INTERFACE",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fundraising",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Fundraising",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fundraisingByDate",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "IFundraising",
+              "kind": "INTERFACE",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fundraisings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "visit",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Visit",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "visits",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "unpaid",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "UnpaidCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "budgetV2",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "BudgetCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mailing",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "MailingCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "litigation",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "LitigationCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "pictureRectID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "pictureRect",
+          "type": {
+            "name": "File",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "pictureRoundID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "pictureRound",
+          "type": {
+            "name": "File",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "owner",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Owner",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "owners",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "ownersLotsPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersByDkPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersByDkXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersByBuildingPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersByBuildingXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ownersPostalLabelsPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "attendanceSheetPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "attendanceSheetDkPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "attendanceSheetBuildingPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "council",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "councilPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sale",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Sale",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sales",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "collaborators",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "collaborator",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Collaborator",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "building",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Building",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "buildings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "lot",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Lot",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "lots",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "lotsPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "lotsXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "synopticTablePDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "synopticTableXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mainDKID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "dk",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "DistributionKeys",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "dks",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "supplier",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "SupplierCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "suppliers",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "suppliersPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "contract",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "SupplierContract",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "contracts",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "assessment",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "SupplierAssessment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "assessments",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "employee",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Employee",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "employees",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "meters",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "meter",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Meter",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "kanban",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "KanbanCondo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbLot",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbOwner",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbCollaborator",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "calendarEvents",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "invoice",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoInvoice",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "serviceBook",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoServiceBook",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "statutes",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoStatutes",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "habilis",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "settings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoSettings",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        }
+      ]
+    },
+    "Lot": {
+      "name": "Lot",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "staircase",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "floor",
+          "type": {
+            "name": "Int",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "reference",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "door",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "type",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "use",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "LotCategory",
+              "kind": "ENUM",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "num",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "rank",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "size",
+          "type": {
+            "name": "Float",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "rooms",
+          "type": {
+            "name": "Int",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "comment",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "archivedAt",
+          "type": {
+            "name": "Timestamptz",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "condoID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "condo",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Condo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "owners",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "buildingID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "building",
+          "type": {
+            "name": "Building",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "building2ID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "building2",
+          "type": {
+            "name": "Building",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "representativeID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "representative",
+          "type": {
+            "name": "Owner",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "isDeletable",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        }
+      ]
+    },
+    "Owner": {
+      "name": "Owner",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "reference",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fullname",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "civility",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Civility",
+              "kind": "ENUM",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "lastname",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "firstname",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "birthDate",
+          "type": {
+            "name": "Date",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "birthPlace",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "birthCountry",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "companyName",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "companyForm",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "companySiret",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "companyCapital",
+          "type": {
+            "name": "Float",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "email",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "phone",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "mobile",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "alerts",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "comment",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "resident",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "currentRole",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isPro",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbShares",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "addressID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "address",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Address",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "user",
+          "type": {
+            "name": "User",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "nbLots",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "lots",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "lotsHistoric",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "buildings",
+          "type": {
+            "name": null,
+            "kind": "LIST",
+            "ofType": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Building",
+                "kind": "OBJECT"
+              }
+            }
+          }
+        },
+        {
+          "name": "dks",
+          "type": {
+            "name": null,
+            "kind": "LIST",
+            "ofType": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "DistributionKeys",
+                "kind": "OBJECT"
+              }
+            }
+          }
+        },
+        {
+          "name": "settings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "OwnerSetting",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "condoID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "condo",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Condo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "drive",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Drive",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "payinItems",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "payinLastCheck",
+          "type": {
+            "name": "PayinItemCheck",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sepaMandates",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "sepaMandate",
+          "type": {
+            "name": "OwnerSEPAMandate",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "sepaMandateEmptyPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "rentalAgentID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "rentalAgent",
+          "type": {
+            "name": "RentalAgent",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "events",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "EventConnection",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "contact",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "OwnerContact",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "contacts",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "accountings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "account",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "AccountingAccount",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "accounts",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "entries",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "accountStatementPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "budgetReports",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "balance",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Float",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "balanceALUR",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Float",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "balanceAdvance",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Float",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fundraising",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "FADocument",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fundraisings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "unpaidIgnore",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "observationUnpaid",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "unpaids",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "unpaid",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "UnpaidEvent",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "litigation",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "LitigationOwner",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isDeletable",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isForeigner",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isOnSite",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isOverseas",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "canReceiveSMS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "canReceiveLRE",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "canReceiveMail",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "canHaveDirectDebit",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        }
+      ]
+    },
+    "Sale": {
+      "name": "Sale",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "createdAt",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Timestamptz",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "closedAt",
+          "type": {
+            "name": "Timestamptz",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "reference",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "scheduledDate",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Date",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isFree",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "notaryReference",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "condoID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "condo",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Condo",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "createdByID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "createdBy",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Collaborator",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "sellerID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isPartial",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "lots",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "owners",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "divisions",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "nbLot",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbOwner",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "advanceTransfers",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "fundsTransfers",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "buyers",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "buyer",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "SaleBuyer",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "documents",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "document",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "SaleDocument",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "notaryOffice",
+          "type": {
+            "name": "NotaryOffice",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "notaryPersonnel",
+          "type": {
+            "name": "NotaryOfficePersonnel",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "isClosed",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isLotTransfered",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isBuyerNotified",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isFundsTransfered",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isAdvanceTransfered",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isDeletable",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        }
+      ]
+    },
+    "Address": {
+      "name": "Address",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "label",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "housenumber",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "street",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "addressL2",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "addressL3",
+          "type": {
+            "name": "String",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "postcode",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "city",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "country",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "position",
+          "type": {
+            "name": "Point",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "isFR",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        }
+      ]
+    },
+    "CondoSettingsSaleED": {
+      "name": "CondoSettingsSaleED",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "allowOverride",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fees",
+          "type": {
+            "name": "Float",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        }
+      ]
+    },
+    "CondoSettingsSalePED": {
+      "name": "CondoSettingsSalePED",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "allowOverride",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "fees",
+          "type": {
+            "name": "Float",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        }
+      ]
+    },
+    "CondoSettingsSale": {
+      "name": "CondoSettingsSale",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ed",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoSettingsSaleED",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "ped",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "CondoSettingsSalePED",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        }
+      ]
+    },
+    "Establishment": {
+      "name": "Establishment",
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "name",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "form",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "capital",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Float",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "rcs",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "siret",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "vat",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "phone",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "email",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "noReply",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "isManaged",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "agencyID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "agency",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Agency",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "addressID",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "ID",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "address",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Address",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "logoID",
+          "type": {
+            "name": "ID",
+            "kind": "SCALAR",
+            "ofType": null
+          }
+        },
+        {
+          "name": "logo",
+          "type": {
+            "name": "File",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "events",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "EventConnection",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "collaborators",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "condos",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "settings",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "EstablishmentSettings",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "rentalAgents",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "rentalAgent",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "RentalAgent",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "chartOfAccounts",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "driveItemsCondo",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "driveItemsOwner",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "businessCard",
+          "type": {
+            "name": "BusinessCard",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "guaranteeFund",
+          "type": {
+            "name": "GuaranteeFund",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "insurance",
+          "type": {
+            "name": "Insurance",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "supplier",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "SupplierEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "suppliers",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "fundraising",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "FundraisingEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "payin",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "PayinEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "payout",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "PayoutEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "unpaid",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "UnpaidEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "mailing",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "MailingEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "litigation",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "LitigationEstablishment",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "financialGuarantee",
+          "type": {
+            "name": "FinancialGuarantee",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        },
+        {
+          "name": "entries",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "EntryConnection",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbCollaborator",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbSupplier",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbCondo",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "nbLot",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Int",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "powens",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Powens",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "billing",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "Billing",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "office",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "NotaryOffice",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "offices",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "officesPersonnels",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "calendarEvents",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "motionsBank",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL"
+              }
+            }
+          }
+        },
+        {
+          "name": "kanban",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "EstablishmentKanban",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "condosListPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "condosListXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "suppliersListPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "suppliersListXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "agentsListPDF",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "agentsListXLS",
+          "type": {
+            "name": null,
+            "kind": "NON_NULL",
+            "ofType": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        },
+        {
+          "name": "smtp",
+          "type": {
+            "name": "EstablishmentSMTP",
+            "kind": "OBJECT",
+            "ofType": null
+          }
+        }
+      ]
+    },
+    "LotCategory": {
+      "name": "LotCategory",
+      "enumValues": [
+        {
+          "name": "RESIDENTIAL"
+        },
+        {
+          "name": "OFFICE"
+        },
+        {
+          "name": "COMMERCIAL"
+        },
+        {
+          "name": "MIXED"
+        },
+        {
+          "name": "PARKING"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "EXTERNAL"
+        },
+        {
+          "name": "PRIMARY"
+        },
+        {
+          "name": "SECONDARY"
+        }
+      ]
+    },
+    "LotDivision": {
+      "name": "LotDivision",
+      "enumValues": [
+        {
+          "name": "FREEHOLD"
+        },
+        {
+          "name": "USUFRUCT"
+        },
+        {
+          "name": "BAREOWNER"
+        }
+      ]
+    },
+    "CondoSyndicate": {
+      "name": "CondoSyndicate",
+      "enumValues": [
+        {
+          "name": "PRIMARY"
+        },
+        {
+          "name": "SECONDARY"
+        }
+      ]
+    }
+  }
+}
