@@ -612,9 +612,11 @@ export default function DocumentGeneratePage() {
           tags: s.tags || [],
         }))
         setSuppliers(transformedSuppliers)
-        // Auto-fill contracts when switching to contacts template
+        // Auto-fill contracts when switching to contacts template.
+        // Source de verite : contrats Estale de la copro. Si Estale n'en a pas,
+        // on N'INVENTE PAS depuis les tags fournisseurs (faux contrats trompeurs).
+        // L'utilisateur peut declencher le tag-matching via le bouton dedie.
         if (autoFillContracts) {
-          // Try Estale contracts first, fallback to tag-matching
           try {
             const contractsRes = await fetch(`/api/estale/condos/contracts?condoId=${condoId}`)
             const contractsData = await contractsRes.json()
@@ -627,10 +629,10 @@ export default function DocumentGeneratePage() {
               }))
               form.setValue('contracts', estaleContracts)
             } else {
-              form.setValue('contracts', autoMatchContracts(transformedSuppliers))
+              form.setValue('contracts', [])
             }
           } catch {
-            form.setValue('contracts', autoMatchContracts(transformedSuppliers))
+            form.setValue('contracts', [])
           }
         }
       } else {
@@ -776,7 +778,9 @@ export default function DocumentGeneratePage() {
           form.setValue('conseillers', commune.conseillers || [])
         }
       }
-      // Auto-fill contracts: try Estale first, fallback to tag-matching
+      // Auto-fill contracts depuis Estale uniquement (pas de tag-matching automatique :
+      // les contrats sont la source de verite, pas le portefeuille global de fournisseurs).
+      // L'utilisateur peut declencher manuellement via le bouton dedie.
       if (form.getValues('contracts').length === 0) {
         const condoId = form.getValues('condoId')
         if (condoId) {
@@ -791,17 +795,9 @@ export default function DocumentGeneratePage() {
                   supplierPhone: c.supplierPhone || '',
                 }))
                 form.setValue('contracts', estaleContracts)
-              } else if (suppliers.length > 0) {
-                form.setValue('contracts', autoMatchContracts(suppliers))
               }
             })
-            .catch(() => {
-              if (suppliers.length > 0) {
-                form.setValue('contracts', autoMatchContracts(suppliers))
-              }
-            })
-        } else if (suppliers.length > 0) {
-          form.setValue('contracts', autoMatchContracts(suppliers))
+            .catch(() => {})
         }
       }
     }
