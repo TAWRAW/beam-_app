@@ -52,6 +52,8 @@ export interface EstaleAgency {
   id: string
   name: string
   address?: string
+  addressL2?: string
+  addressL3?: string
   zipCode?: string
   city?: string
   phone?: string
@@ -453,6 +455,8 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
           address {
             housenumber
             street
+            addressL2
+            addressL3
             postcode
             city
           }
@@ -477,6 +481,8 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
           address?: {
             housenumber?: string
             street?: string
+            addressL2?: string
+            addressL3?: string
             postcode?: string
             city?: string
           }
@@ -497,6 +503,8 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
       id: establishment.id,
       name: establishment.name || 'Beamô',
       address: addr ? [addr.housenumber, addr.street].filter(Boolean).join(' ') : '',
+      addressL2: addr?.addressL2 || '',
+      addressL3: addr?.addressL3 || '',
       zipCode: addr?.postcode || '',
       city: addr?.city || '',
       phone: establishment.phone || '',

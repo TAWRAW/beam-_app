@@ -19,10 +19,14 @@ function generateDynamicLegalMentions(agency: AgencyInfo): string {
     const agencyName = agency.nom || 'Beamô'
     const address = agency.adresse ? `${agency.adresse} ${agency.codePostal} ${agency.ville}` : ''
 
+    // Adresse de correspondance (BP) depuis Estale addressL2/L3
+    const correspondance = [agency.adresseL2, agency.adresseL3].filter(Boolean).join(' ').trim()
+    const correspondanceText = correspondance ? ` | Toute correspondance : ${correspondance}` : ''
+
     // Extraire le SIREN du SIRET (9 premiers chiffres)
     const siren = legal.siret ? legal.siret.substring(0, 9).replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3') : ''
 
-    return `Enseigne ${agencyName} | SASU BEAMO IMMOBILIER au capital de ${legal.capital || '2 500'} € dont le siège social est situé au 8 rue du général Leclerc 27950 Saint-Marcel | Cabinet au ${address || '2 Place Jean Paul II 27200 Vernon'} | SIREN ${siren} ${legal.rcs || 'Évreux'} | Numéro TVA intracommunautaire ${legal.tvaNumber || 'FR33989101829'}. Carte professionnelle portant la mention "Syndic de Copropriété" CPI27012025000000013, délivrée par CCI PORTE DE NORMANDIE (27), conformément à la (Loi n° 70-9 du 02/01/1970). Titulaire d'une assurance en responsabilité civile professionnelle auprès de ALLIANZ M. RAYEUR Guillaume 4 rue Carnot 27200 Vernon, et d'une garantie financière auprès de la SO.CA.F sise 26 avenue de Suffren 75015 Paris d'un montant de 30 000 €.
+    return `Enseigne ${agencyName} | SASU BEAMO IMMOBILIER au capital de ${legal.capital || '2 500'} € dont le siège social est situé au 8 rue du général Leclerc 27950 Saint-Marcel | Cabinet au ${address || '2 Place Jean Paul II 27200 Vernon'}${correspondanceText} | SIREN ${siren} ${legal.rcs || 'Évreux'} | Numéro TVA intracommunautaire ${legal.tvaNumber || 'FR33989101829'}. Carte professionnelle portant la mention "Syndic de Copropriété" CPI27012025000000013, délivrée par CCI PORTE DE NORMANDIE (27), conformément à la (Loi n° 70-9 du 02/01/1970). Titulaire d'une assurance en responsabilité civile professionnelle auprès de ALLIANZ M. RAYEUR Guillaume 4 rue Carnot 27200 Vernon, et d'une garantie financière auprès de la SO.CA.F sise 26 avenue de Suffren 75015 Paris d'un montant de 30 000 €.
 Document propriété de la société BEAMO IMMOBILIER, ne pas reproduire.`
   }
 

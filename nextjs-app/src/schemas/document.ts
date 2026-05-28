@@ -81,6 +81,8 @@ export type AgencyLegalInfo = z.infer<typeof AgencyLegalInfoSchema>
 export const AgencyInfoSchema = z.object({
   nom: z.string().min(1, "Le nom de l'agence est requis"),
   adresse: z.string().optional(),
+  adresseL2: z.string().optional(),
+  adresseL3: z.string().optional(),
   codePostal: z.string().optional(),
   ville: z.string().optional(),
   telephone: z.string().optional(),

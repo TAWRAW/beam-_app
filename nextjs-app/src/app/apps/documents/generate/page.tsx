@@ -243,6 +243,8 @@ interface ApiAgency {
   id: string
   name: string
   address?: string
+  addressL2?: string
+  addressL3?: string
   zipCode?: string
   city?: string
   phone?: string
@@ -487,6 +489,27 @@ export default function DocumentGeneratePage() {
         }
       })
   }, [])
+
+  // Mapping agence API → AgencyInfo (utilisé pour la preview live et le PDF)
+  const mappedAgency = useMemo(() => {
+    if (!agency) return null
+    return {
+      nom: agency.name,
+      adresse: agency.address || '',
+      adresseL2: agency.addressL2 || '',
+      adresseL3: agency.addressL3 || '',
+      codePostal: agency.zipCode || '',
+      ville: agency.city || '',
+      telephone: agency.phone || '',
+      email: agency.email || '',
+      legal: agency.legal ? {
+        siret: agency.legal.siret,
+        tvaNumber: agency.legal.tvaNumber,
+        capital: agency.legal.capital,
+        rcs: agency.legal.rcs,
+      } : undefined,
+    }
+  }, [agency])
 
   // Build effective color map: default colors + overrides + custom categories
   const effectiveColorMap = useMemo(() => {
@@ -841,26 +864,11 @@ export default function DocumentGeneratePage() {
 
   const handleGeneratePDF = async () => {
     setError(null)
-    const previewAgency = agency ? {
-      nom: agency.name,
-      adresse: agency.address || '',
-      codePostal: agency.zipCode || '',
-      ville: agency.city || '',
-      telephone: agency.phone || '',
-      email: agency.email || '',
-      legal: agency.legal ? {
-        siret: agency.legal.siret,
-        tvaNumber: agency.legal.tvaNumber,
-        capital: agency.legal.capital,
-        rcs: agency.legal.rcs,
-      } : undefined,
-    } : undefined
-
     const dataToStore: Record<string, unknown> = {
       ...watchedValues,
       articleContents: articleDefaults,
       afficheColorMap: effectiveColorMap,
-      previewAgency,
+      previewAgency: mappedAgency || undefined,
     }
     // Add contacts-specific data
     if (watchedValues.templateType === 'contacts') {
@@ -868,7 +876,7 @@ export default function DocumentGeneratePage() {
       dataToStore.syndicAdresse = agency ? [agency.address, agency.zipCode, agency.city].filter(Boolean).join(' ') : ''
       dataToStore.syndicTelephone = agency?.phone || ''
       dataToStore.syndicEmail = agency?.email || ''
-      dataToStore.contactsAgency = previewAgency
+      dataToStore.contactsAgency = mappedAgency || undefined
     }
     sessionStorage.setItem('documentPreviewData', JSON.stringify(dataToStore))
     window.open('/documents/preview', '_blank')
@@ -2096,20 +2104,7 @@ export default function DocumentGeneratePage() {
                   codePostal: watchedValues.buildingCodePostal || '',
                   ville: watchedValues.buildingVille || '',
                 }}
-                agency={agency ? {
-                  nom: agency.name,
-                  adresse: agency.address || '',
-                  codePostal: agency.zipCode || '',
-                  ville: agency.city || '',
-                  telephone: agency.phone || '',
-                  email: agency.email || '',
-                  legal: agency.legal ? {
-                    siret: agency.legal.siret,
-                    tvaNumber: agency.legal.tvaNumber,
-                    capital: agency.legal.capital,
-                    rcs: agency.legal.rcs,
-                  } : undefined,
-                } : mockAgency}
+                agency={mappedAgency || mockAgency}
                 colorOverrides={effectiveColorMap}
               />
             </div>
@@ -2157,20 +2152,7 @@ export default function DocumentGeneratePage() {
                     lines: b.lines.split('\n').filter(l => l.trim() !== ''),
                     show: b.show,
                   })),
-                  agency: agency ? {
-                    nom: agency.name,
-                    adresse: agency.address || '',
-                    codePostal: agency.zipCode || '',
-                    ville: agency.city || '',
-                    telephone: agency.phone || '',
-                    email: agency.email || '',
-                    legal: agency.legal ? {
-                      siret: agency.legal.siret,
-                      tvaNumber: agency.legal.tvaNumber,
-                      capital: agency.legal.capital,
-                      rcs: agency.legal.rcs,
-                    } : undefined,
-                  } : mockAgency,
+                  agency: mappedAgency || mockAgency,
                 }}
               />
             </div>
@@ -2193,20 +2175,7 @@ export default function DocumentGeneratePage() {
                   showSecurite: watchedValues.showSecurite,
                   securiteContent: watchedValues.securiteContent,
                   articleContents: articleDefaults,
-                  agency: agency ? {
-                    nom: agency.name,
-                    adresse: agency.address || '',
-                    codePostal: agency.zipCode || '',
-                    ville: agency.city || '',
-                    telephone: agency.phone || '',
-                    email: agency.email || '',
-                    legal: agency.legal ? {
-                      siret: agency.legal.siret,
-                      tvaNumber: agency.legal.tvaNumber,
-                      capital: agency.legal.capital,
-                      rcs: agency.legal.rcs,
-                    } : undefined,
-                  } : mockAgency,
+                  agency: mappedAgency || mockAgency,
                 }}
               />
             </div>
