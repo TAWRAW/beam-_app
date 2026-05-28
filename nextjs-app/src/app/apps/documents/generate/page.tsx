@@ -841,10 +841,26 @@ export default function DocumentGeneratePage() {
 
   const handleGeneratePDF = async () => {
     setError(null)
+    const previewAgency = agency ? {
+      nom: agency.name,
+      adresse: agency.address || '',
+      codePostal: agency.zipCode || '',
+      ville: agency.city || '',
+      telephone: agency.phone || '',
+      email: agency.email || '',
+      legal: agency.legal ? {
+        siret: agency.legal.siret,
+        tvaNumber: agency.legal.tvaNumber,
+        capital: agency.legal.capital,
+        rcs: agency.legal.rcs,
+      } : undefined,
+    } : undefined
+
     const dataToStore: Record<string, unknown> = {
       ...watchedValues,
       articleContents: articleDefaults,
       afficheColorMap: effectiveColorMap,
+      previewAgency,
     }
     // Add contacts-specific data
     if (watchedValues.templateType === 'contacts') {
@@ -852,20 +868,7 @@ export default function DocumentGeneratePage() {
       dataToStore.syndicAdresse = agency ? [agency.address, agency.zipCode, agency.city].filter(Boolean).join(' ') : ''
       dataToStore.syndicTelephone = agency?.phone || ''
       dataToStore.syndicEmail = agency?.email || ''
-      dataToStore.contactsAgency = agency ? {
-        nom: agency.name,
-        adresse: agency.address || '',
-        codePostal: agency.zipCode || '',
-        ville: agency.city || '',
-        telephone: agency.phone || '',
-        email: agency.email || '',
-        legal: agency.legal ? {
-          siret: agency.legal.siret,
-          tvaNumber: agency.legal.tvaNumber,
-          capital: agency.legal.capital,
-          rcs: agency.legal.rcs,
-        } : undefined,
-      } : undefined
+      dataToStore.contactsAgency = previewAgency
     }
     sessionStorage.setItem('documentPreviewData', JSON.stringify(dataToStore))
     window.open('/documents/preview', '_blank')

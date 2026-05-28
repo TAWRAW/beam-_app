@@ -59,6 +59,7 @@ export default function DocumentPreviewPage() {
 
   const isReglement = data.templateType === 'reglement'
   const isContacts = data.templateType === 'contacts'
+  const previewAgency = (data.previewAgency as any) || mockAgency
 
   return (
     <>
@@ -104,7 +105,7 @@ export default function DocumentPreviewPage() {
                     : (b.lines || []),
                   show: b.show,
                 })),
-                agency: (data.contactsAgency as any) || mockAgency,
+                agency: previewAgency,
               }}
             />
           ) : isReglement ? (
@@ -120,14 +121,14 @@ export default function DocumentPreviewPage() {
                 showSecurite: data.showSecurite as boolean | undefined,
                 securiteContent: data.securiteContent as string | undefined,
                 articleContents: data.articleContents as Record<string, string> | undefined,
-                agency: mockAgency,
+                agency: previewAgency,
               }}
             />
           ) : (
             <DocumentPreview
               data={data}
               building={building}
-              agency={mockAgency}
+              agency={previewAgency}
               colorOverrides={data.afficheColorMap as Record<string, { bg: string; label: string }> | undefined}
             />
           )}
