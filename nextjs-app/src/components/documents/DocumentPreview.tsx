@@ -82,12 +82,13 @@ export function DocumentPreview({
   // Vérifier si les champs intervenant et date sont remplis
   const hasSupplier = data.supplierNom && data.supplierNom.trim() !== ''
   const hasDate = data.dateTravaux && data.dateTravaux.trim() !== ''
-  const hasScheduleInfo = hasSupplier || hasDate
+  const showSupplier = hasSupplier && data.showSupplierContactOnPreview
+  const hasScheduleInfo = showSupplier || hasDate
 
   const supplier = hasSupplier ? data.supplierNom : ''
   const supplierPhone = formatPhone(data.supplierTelephone)
   const supplierEmail = data.supplierEmail || ''
-  const showSupplierContact = data.showSupplierContactOnPreview && (supplierPhone || supplierEmail)
+  const showSupplierContact = supplierPhone || supplierEmail
   const dateIntervention = hasDate ? `le ${formatDate(data.dateTravaux)}` : ''
   const startTime = formatTime(data.heureDebut)
   const endTime = formatTime(data.heureFin)
@@ -141,9 +142,9 @@ export function DocumentPreview({
 
       {/* BLOC 3 : GRILLE INFOS (Intervenant + Date) - Affiché uniquement si rempli */}
       {hasScheduleInfo && (
-        <div className={`grid gap-5 shrink-0 h-24 ${hasSupplier && hasDate ? 'grid-cols-2' : 'grid-cols-1'}`}>
+        <div className={`grid gap-5 shrink-0 h-24 ${showSupplier && hasDate ? 'grid-cols-2' : 'grid-cols-1'}`}>
           {/* Intervenant (Blanc) */}
-          {hasSupplier && (
+          {showSupplier && (
             <div className="bg-white border-[3px] border-black rounded-[20px] p-4 flex flex-col items-center justify-center text-center">
               <span className="text-xl font-bold">{supplier}</span>
               {showSupplierContact && (

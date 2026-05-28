@@ -132,7 +132,7 @@ export const AfficheTravauxFormSchema = z.object({
   heureDebut: z.string().regex(/^\d{2}:\d{2}$/, 'Format HH:MM requis'),
   heureFin: z.string().regex(/^\d{2}:\d{2}$/, 'Format HH:MM requis'),
   // Options d'affichage
-  showSupplierContactOnPreview: z.boolean().default(false),
+  showSupplierContactOnPreview: z.boolean().default(true),
   // Sélection copropriété
   condoId: z.string().optional(),
   buildingNom: z.string().optional(),

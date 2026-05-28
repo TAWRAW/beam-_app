@@ -73,7 +73,7 @@ const UnifiedFormSchema = z.object({
   dateTravaux: z.string().optional(),
   heureDebut: z.string().optional(),
   heureFin: z.string().optional(),
-  showSupplierContactOnPreview: z.boolean().default(false),
+  showSupplierContactOnPreview: z.boolean().default(true),
   supplierMode: z.enum(['select', 'manual']).default('select'),
   supplierId: z.string().optional(),
   supplierNom: z.string().optional(),
@@ -294,7 +294,7 @@ export default function DocumentGeneratePage() {
       dateTravaux: '',
       heureDebut: '08:00',
       heureFin: '17:00',
-      showSupplierContactOnPreview: false,
+      showSupplierContactOnPreview: true,
       condoId: '',
       buildingNom: '',
       buildingAdresse: '',
@@ -1201,7 +1201,7 @@ export default function DocumentGeneratePage() {
                               />
                             </FormControl>
                             <FormLabel className="text-xs text-slate-600 font-normal cursor-pointer">
-                              Afficher les coordonnées sur le document
+                              Afficher le prestataire sur le document
                             </FormLabel>
                           </FormItem>
                         )}
