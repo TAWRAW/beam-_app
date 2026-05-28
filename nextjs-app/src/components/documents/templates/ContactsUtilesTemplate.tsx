@@ -185,7 +185,15 @@ export function ContactsUtilesTemplate({ data }: { data: ContactsUtilesData }) {
           {/* Row 1: Syndic + Gestionnaire */}
           <div className="grid grid-cols-2 gap-2.5">
             <ContactCard icon={Building2} title="Votre syndic"
-              lines={[data.syndicNom, formatPhone(data.syndicTelephone), data.syndicEmail, data.syndicAdresse]}
+              lines={[
+                data.syndicNom,
+                formatPhone(data.syndicTelephone),
+                data.syndicEmail,
+                data.agency?.adresse,
+                data.agency?.adresseL2,
+                data.agency?.adresseL3,
+                [data.agency?.codePostal, data.agency?.ville].filter(Boolean).join(' ') || undefined,
+              ]}
             />
             <ContactCard icon={UserRound} title="Votre gestionnaire"
               lines={[data.gestionnaireNom, formatPhone(data.gestionnaireTelephone), data.gestionnaireEmail]}
@@ -204,9 +212,13 @@ export function ContactsUtilesTemplate({ data }: { data: ContactsUtilesData }) {
                   <h3 className="text-xs font-extrabold uppercase tracking-wide">Énergie</h3>
                 </div>
                 <div className="flex-1 flex flex-col justify-center gap-1">
-                  <p className="text-[11px] leading-snug text-gray-800">
-                    <span className="font-semibold">ENEDIS</span> – {data.enedisPhone}
-                  </p>
+                  {data.enedisPhone ? (
+                    <p className="text-[11px] leading-snug text-gray-800">
+                      <span className="font-semibold">ENEDIS</span> – {formatPhone(data.enedisPhone)}
+                    </p>
+                  ) : (
+                    <p className="text-[10px] text-gray-400 italic">ENEDIS non configuré (vérifier le code postal)</p>
+                  )}
                   {showEau && data.eauFournisseur && (
                     <p className="text-[11px] leading-snug text-gray-800">
                       <span className="font-semibold">{data.eauFournisseur}</span>
