@@ -24,7 +24,7 @@ import {
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { BuildingFeatures, AgencyInfo } from '@/schemas/document'
-import { BEAMO_LEGAL_INFO, generateLegalMentions } from '@/lib/mock-data'
+import { generateLegalMentions } from '@/lib/legal-mentions'
 
 interface ReglementInterieurData {
   buildingNom: string
@@ -205,25 +205,11 @@ function SubHeaderBlock({ buildingNom, fullAddress }: { buildingNom: string; ful
   )
 }
 
-function getLegalMentions(agency?: AgencyInfo): string {
-  if (agency?.legal?.siret) {
-    const legal = agency.legal
-    const agencyName = agency.nom || 'Beamô'
-    const address = agency.adresse ? `${agency.adresse} ${agency.codePostal} ${agency.ville}` : ''
-    const correspondance = [agency.adresseL2, agency.adresseL3].filter(Boolean).join(' ').trim()
-    const correspondanceText = correspondance ? ` | Toute correspondance : ${correspondance}` : ''
-    const siren = legal.siret ? legal.siret.substring(0, 9).replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3') : ''
-
-    return `Enseigne ${agencyName} | SASU BEAMO IMMOBILIER au capital de ${legal.capital || '2 500'} € dont le siège social est situé au 8 rue du général Leclerc 27950 Saint-Marcel | Cabinet au ${address || '2 Place Jean Paul II 27200 Vernon'}${correspondanceText} | SIREN ${siren} ${legal.rcs || 'Évreux'} | Numéro TVA intracommunautaire ${legal.tvaNumber || 'FR33989101829'}. Carte professionnelle portant la mention "Syndic de Copropriété" CPI27012025000000013, délivrée par CCI PORTE DE NORMANDIE (27), conformément à la (Loi n° 70-9 du 02/01/1970). Titulaire d'une assurance en responsabilité civile professionnelle auprès de ALLIANZ M. RAYEUR Guillaume 4 rue Carnot 27200 Vernon, et d'une garantie financière auprès de la SO.CA.F sise 26 avenue de Suffren 75015 Paris d'un montant de 30 000 €. Document propriété de la société BEAMO IMMOBILIER, ne pas reproduire.`
-  }
-  return generateLegalMentions(BEAMO_LEGAL_INFO)
-}
-
 export function FooterBlock({ agency }: { agency?: AgencyInfo }) {
   return (
     <div className="mx-8 mb-4 pt-2 border-t border-gray-200 shrink-0">
       <p className="text-[7px] leading-tight text-gray-600 text-justify">
-        {getLegalMentions(agency)}
+        {generateLegalMentions(agency)}
       </p>
     </div>
   )

@@ -48,6 +48,22 @@ export interface EstaleSupplier {
   address?: string  // "N° rue, CP ville"
 }
 
+export interface EstaleBusinessCardInfo {
+  cardID?: string
+  issuedBy?: string
+}
+
+export interface EstaleInsuranceInfo {
+  company?: string
+  reference?: string
+}
+
+export interface EstaleGuaranteeFundInfo {
+  company?: string
+  reference?: string
+  amount?: number
+}
+
 export interface EstaleAgency {
   id: string
   name: string
@@ -58,6 +74,9 @@ export interface EstaleAgency {
   city?: string
   phone?: string
   email?: string
+  businessCard?: EstaleBusinessCardInfo
+  insurance?: EstaleInsuranceInfo
+  guaranteeFund?: EstaleGuaranteeFundInfo
 }
 
 export interface EstaleCondo {
@@ -460,6 +479,11 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
             postcode
             city
           }
+          agency {
+            businessCard { cardID issuedBy }
+            insurance { company reference }
+            guaranteeFund { company reference amount }
+          }
         }
       }
     }
@@ -486,6 +510,11 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
             postcode?: string
             city?: string
           }
+          agency?: {
+            businessCard?: { cardID?: string; issuedBy?: string }
+            insurance?: { company?: string; reference?: string }
+            guaranteeFund?: { company?: string; reference?: string; amount?: number }
+          }
         }
       }
     }>(query)
@@ -499,6 +528,7 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
     const establishment = data.me.establishment
     const addr = establishment.address
 
+    const ag = establishment.agency
     return {
       id: establishment.id,
       name: establishment.name || 'Beamô',
@@ -509,6 +539,19 @@ export async function getAgencyInfo(): Promise<(EstaleAgency & { legal?: EstateL
       city: addr?.city || '',
       phone: establishment.phone || '',
       email: establishment.email || '',
+      businessCard: ag?.businessCard ? {
+        cardID: ag.businessCard.cardID,
+        issuedBy: ag.businessCard.issuedBy,
+      } : undefined,
+      insurance: ag?.insurance ? {
+        company: ag.insurance.company,
+        reference: ag.insurance.reference,
+      } : undefined,
+      guaranteeFund: ag?.guaranteeFund ? {
+        company: ag.guaranteeFund.company,
+        reference: ag.guaranteeFund.reference,
+        amount: ag.guaranteeFund.amount,
+      } : undefined,
       legal: {
         siret: establishment.siret,
         tvaNumber: establishment.vat,

@@ -3,35 +3,13 @@
 import type { AfficheTravauxFormInput, DocumentType } from '@/schemas/document'
 import type { BuildingInfo, AgencyInfo } from '@/schemas/document'
 import { DOCUMENT_TYPE_COLORS } from '@/schemas/document'
-import { BEAMO_LEGAL_INFO, generateLegalMentions } from '@/lib/mock-data'
+import { generateLegalMentions } from '@/lib/legal-mentions'
 
 interface DocumentPreviewProps {
   data: Omit<Partial<AfficheTravauxFormInput>, 'documentType'> & { documentType?: string }
   building: BuildingInfo
   agency: AgencyInfo
   colorOverrides?: Record<string, { bg: string; label: string }>
-}
-
-function generateDynamicLegalMentions(agency: AgencyInfo): string {
-  // Si on a des données légales dynamiques, les utiliser
-  if (agency.legal?.siret) {
-    const legal = agency.legal
-    const agencyName = agency.nom || 'Beamô'
-    const address = agency.adresse ? `${agency.adresse} ${agency.codePostal} ${agency.ville}` : ''
-
-    // Adresse de correspondance (BP) depuis Estale addressL2/L3
-    const correspondance = [agency.adresseL2, agency.adresseL3].filter(Boolean).join(' ').trim()
-    const correspondanceText = correspondance ? ` | Toute correspondance : ${correspondance}` : ''
-
-    // Extraire le SIREN du SIRET (9 premiers chiffres)
-    const siren = legal.siret ? legal.siret.substring(0, 9).replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3') : ''
-
-    return `Enseigne ${agencyName} | SASU BEAMO IMMOBILIER au capital de ${legal.capital || '2 500'} € dont le siège social est situé au 8 rue du général Leclerc 27950 Saint-Marcel | Cabinet au ${address || '2 Place Jean Paul II 27200 Vernon'}${correspondanceText} | SIREN ${siren} ${legal.rcs || 'Évreux'} | Numéro TVA intracommunautaire ${legal.tvaNumber || 'FR33989101829'}. Carte professionnelle portant la mention "Syndic de Copropriété" CPI27012025000000013, délivrée par CCI PORTE DE NORMANDIE (27), conformément à la (Loi n° 70-9 du 02/01/1970). Titulaire d'une assurance en responsabilité civile professionnelle auprès de ALLIANZ M. RAYEUR Guillaume 4 rue Carnot 27200 Vernon, et d'une garantie financière auprès de la SO.CA.F sise 26 avenue de Suffren 75015 Paris d'un montant de 30 000 €.
-Document propriété de la société BEAMO IMMOBILIER, ne pas reproduire.`
-  }
-
-  // Sinon, utiliser les mentions statiques
-  return generateLegalMentions(BEAMO_LEGAL_INFO)
 }
 
 function formatDate(dateStr: string | undefined): string {
@@ -189,7 +167,7 @@ export function DocumentPreview({
       {/* BLOC 5 : FOOTER - Mentions légales */}
       <div className="shrink-0 pt-2 border-t border-gray-200">
         <p className="text-[7px] leading-tight text-gray-600 text-justify">
-          {generateDynamicLegalMentions(agency)}
+          {generateLegalMentions(agency)}
         </p>
       </div>
     </div>

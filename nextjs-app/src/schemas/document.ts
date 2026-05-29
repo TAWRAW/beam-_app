@@ -78,6 +78,28 @@ export const AgencyLegalInfoSchema = z.object({
 export type AgencyLegalInfo = z.infer<typeof AgencyLegalInfoSchema>
 
 // Informations de l'agence
+// Carte professionnelle G (Loi Hoguet)
+export const AgencyBusinessCardSchema = z.object({
+  cardID: z.string().optional(),
+  issuedBy: z.string().optional(),
+})
+export type AgencyBusinessCard = z.infer<typeof AgencyBusinessCardSchema>
+
+// Assurance responsabilité civile professionnelle
+export const AgencyInsuranceSchema = z.object({
+  company: z.string().optional(),
+  reference: z.string().optional(),
+})
+export type AgencyInsurance = z.infer<typeof AgencyInsuranceSchema>
+
+// Garantie financière (SOCAF, Galian, etc.)
+export const AgencyGuaranteeFundSchema = z.object({
+  company: z.string().optional(),
+  reference: z.string().optional(),
+  amount: z.number().optional(),
+})
+export type AgencyGuaranteeFund = z.infer<typeof AgencyGuaranteeFundSchema>
+
 export const AgencyInfoSchema = z.object({
   nom: z.string().min(1, "Le nom de l'agence est requis"),
   adresse: z.string().optional(),
@@ -89,6 +111,9 @@ export const AgencyInfoSchema = z.object({
   email: z.string().email('Email invalide').optional().or(z.literal('')),
   logo: z.string().optional(), // URL absolue ou Base64
   legal: AgencyLegalInfoSchema.optional(),
+  businessCard: AgencyBusinessCardSchema.optional(),
+  insurance: AgencyInsuranceSchema.optional(),
+  guaranteeFund: AgencyGuaranteeFundSchema.optional(),
 })
 
 export type AgencyInfo = z.infer<typeof AgencyInfoSchema>

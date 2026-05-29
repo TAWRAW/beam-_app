@@ -250,6 +250,9 @@ interface ApiAgency {
   phone?: string
   email?: string
   legal?: ApiAgencyLegal
+  businessCard?: { cardID?: string; issuedBy?: string }
+  insurance?: { company?: string; reference?: string }
+  guaranteeFund?: { company?: string; reference?: string; amount?: number }
 }
 
 type SavedTemplate = {
@@ -507,6 +510,19 @@ export default function DocumentGeneratePage() {
         tvaNumber: agency.legal.tvaNumber,
         capital: agency.legal.capital,
         rcs: agency.legal.rcs,
+      } : undefined,
+      businessCard: agency.businessCard ? {
+        cardID: agency.businessCard.cardID,
+        issuedBy: agency.businessCard.issuedBy,
+      } : undefined,
+      insurance: agency.insurance ? {
+        company: agency.insurance.company,
+        reference: agency.insurance.reference,
+      } : undefined,
+      guaranteeFund: agency.guaranteeFund ? {
+        company: agency.guaranteeFund.company,
+        reference: agency.guaranteeFund.reference,
+        amount: agency.guaranteeFund.amount,
       } : undefined,
     }
   }, [agency])
