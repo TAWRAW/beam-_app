@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { Settings2 } from 'lucide-react'
-import { getOpenSales } from '@/lib/estale-api'
+import { getOpenSales } from '@/lib/estale/sale-queries'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
