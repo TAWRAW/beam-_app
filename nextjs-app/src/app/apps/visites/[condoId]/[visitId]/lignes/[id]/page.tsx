@@ -104,6 +104,31 @@ export default function EditLignePage({
     setPhotos(await getPhotosForComment(draft.localId))
   }
 
+  /**
+   * Exporte la photo en PLEINE RÉSOLUTION (l'original stocké en local, jamais
+   * compressé) via le partage natif iOS/Android → enregistrement dans
+   * Photos/Fichiers. Permet de récupérer les photos même si la sync vers Estale
+   * échoue. Fallback : ouverture plein écran si le partage n'est pas dispo.
+   */
+  async function exportPhoto(photo: PhotoDraft) {
+    const file = new File([photo.blob], photo.filename || 'photo.jpg', {
+      type: photo.mimeType || 'image/jpeg',
+    })
+    try {
+      const nav = navigator as Navigator & {
+        canShare?: (data: ShareData) => boolean
+      }
+      if (nav.share && (!nav.canShare || nav.canShare({ files: [file] }))) {
+        await nav.share({ files: [file], title: photo.filename })
+        return
+      }
+    } catch {
+      /* partage annulé ou indisponible → fallback ci-dessous */
+    }
+    const url = URL.createObjectURL(photo.blob)
+    window.open(url, '_blank')
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault()
     if (!draft || !place || !component) return
@@ -190,6 +215,18 @@ export default function EditLignePage({
                   >
                     {synced ? '✓' : '⏳'}
                   </span>
+                  {photo && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        exportPhoto(photo)
+                      }}
+                      className="absolute bottom-1 left-1 bg-white border-2 border-black px-1.5 py-0.5 text-[9px] font-bold uppercase rounded shadow-[1px_1px_0px_0px_#000]"
+                    >
+                      ⬇ HD
+                    </button>
+                  )}
                 </div>
               )
             })}

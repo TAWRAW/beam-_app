@@ -475,7 +475,14 @@ export async function getSyncStats(): Promise<{
       capturedAt?: string
     }>
     for (const item of all) {
-      if (item.syncStatus === 'pending' || item.syncStatus === 'error') {
+      // 'syncing' est compté : un envoi interrompu en plein vol peut rester
+      // figé dans ce statut. L'ignorer rendait le badge vert alors que des
+      // photos n'étaient jamais arrivées (cf. auto-réveil dans le sync-engine).
+      if (
+        item.syncStatus === 'pending' ||
+        item.syncStatus === 'error' ||
+        item.syncStatus === 'syncing'
+      ) {
         pending++
         const ts = item.createdAt || item.capturedAt
         if (ts && (!oldest || ts < oldest)) oldest = ts
