@@ -10,8 +10,10 @@ import {
   updateCommentDraft,
   updatePhotoDraft,
   getSyncStats,
+  type PhotoDraft,
 } from './db'
 import { compressImage } from './image-compress'
+import { OVERFLOW_SIZE_BYTES, overflowPhoto, drainOverflow } from './overflow'
 
 // Nombre max d'essais avant qu'un draft soit considéré "définitivement" en
 // erreur. Au-delà, l'auto-healing (cf. autoHealStuckDrafts) prend le relais
@@ -165,6 +167,28 @@ async function pushComment(
   return commentId
 }
 
+/**
+ * Bascule une photo vers le seau de débordement Supabase (durable), puis la
+ * laissera drainer vers Estale. Si le débordement lui-même échoue, marque
+ * 'error' (visible, ré-éveillé par l'auto-heal) plutôt que de perdre la photo.
+ */
+async function overflowOrError(
+  photo: PhotoDraft,
+  estaleVisitId: string,
+  estaleCommentId: string,
+  attempts: number,
+  reason: string,
+): Promise<void> {
+  try {
+    await overflowPhoto(photo, estaleVisitId, estaleCommentId)
+  } catch (e) {
+    await updatePhotoDraft(photo.localId, {
+      syncStatus: 'error',
+      syncError: `${reason} / débordement KO: ${e instanceof Error ? e.message : 'échec'} (essai ${attempts}/${MAX_SYNC_ATTEMPTS})`,
+    })
+  }
+}
+
 async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<void> {
   const photos = await getPhotosForComment(commentLocalId)
   const photo = photos.find((p) => p.localId === photoLocalId)
@@ -172,8 +196,9 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
   // Défense en profondeur : si un autre push concurrent est déjà en cours
   // sur cette photo (statut 'syncing'), on n'entre pas en double. Le mutex
   // global de flushAll() est le vrai garde-fou ; ce check sert si pushPhoto
-  // est appelé en dehors du flush.
-  if (photo.syncStatus === 'syncing') return
+  // est appelé en dehors du flush. 'overflowed' = déjà dans le seau Supabase,
+  // c'est drainOverflow() qui s'en occupe, pas pushPhoto.
+  if (photo.syncStatus === 'syncing' || photo.syncStatus === 'overflowed') return
 
   // remonter au comment + visit pour avoir les ids estale
   const visits = await getAllVisitDrafts()
@@ -199,8 +224,16 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
   })
 
   // On envoie une version compressée (sous la limite serveur), mais l'original
-  // HD reste stocké en IndexedDB pour l'export pleine résolution.
+  // HD reste stocké en IndexedDB tant que la photo n'est pas confirmée.
   const toUpload = await compressImage(photo.blob)
+
+  // Trop lourd même compressé → débordement direct : la route Vercel plafonne
+  // ~4,5 Mo, alors que le serveur pousse le HD vers Estale sans cette limite.
+  if (toUpload.size > OVERFLOW_SIZE_BYTES) {
+    await overflowOrError(photo, estaleVisitId, estaleCommentId, attempts, 'photo trop lourde')
+    return
+  }
+
   const form = new FormData()
   form.append('file', toUpload, photo.filename)
   let res: Response
@@ -210,21 +243,27 @@ async function pushPhoto(commentLocalId: string, photoLocalId: string): Promise<
       { method: 'POST', body: form },
     )
   } catch (e) {
-    // Upload interrompu en plein vol (coupure réseau, app backgroundée…).
-    // On marque 'error' au lieu de laisser la photo figée en 'syncing' :
-    // ainsi elle est comptée, visible, et l'auto-réveil la retentera.
-    await updatePhotoDraft(photoLocalId, {
-      syncStatus: 'error',
-      syncError: `réseau: ${e instanceof Error ? e.message : 'échec upload'} (essai ${attempts}/${MAX_SYNC_ATTEMPTS})`,
-    })
+    // Upload direct interrompu (coupure réseau, app backgroundée…) → bascule en
+    // débordement Supabase (durable) plutôt que de laisser la photo figée :
+    // elle sera drainée vers Estale dès que possible.
+    await overflowOrError(
+      photo,
+      estaleVisitId,
+      estaleCommentId,
+      attempts,
+      `réseau: ${e instanceof Error ? e.message : 'échec upload'}`,
+    )
     return
   }
   if (!res.ok) {
     const err = await res.text().catch(() => '')
-    await updatePhotoDraft(photoLocalId, {
-      syncStatus: 'error',
-      syncError: `HTTP ${res.status} ${err.slice(0, 100)} (essai ${attempts}/${MAX_SYNC_ATTEMPTS})`,
-    })
+    await overflowOrError(
+      photo,
+      estaleVisitId,
+      estaleCommentId,
+      attempts,
+      `HTTP ${res.status} ${err.slice(0, 100)}`,
+    )
     return
   }
   const json = await res.json()
@@ -324,7 +363,8 @@ async function flushAllInternal(): Promise<void> {
       if (!c.estaleCommentId) continue
       const photos = await getPhotosForComment(c.localId)
       for (const p of photos) {
-        if (p.syncStatus !== 'synced') {
+        // 'overflowed' est géré par drainOverflow() (étape 4), pas par pushPhoto.
+        if (p.syncStatus !== 'synced' && p.syncStatus !== 'overflowed') {
           await pushPhoto(c.localId, p.localId).catch((e) =>
             console.error('pushPhoto:', e),
           )
@@ -332,6 +372,10 @@ async function flushAllInternal(): Promise<void> {
       }
     }
   }
+
+  // 4. drain du seau de débordement : pousse vers Estale les photos déposées
+  // dans Supabase (par pushPhoto en cas d'échec/trop lourd), no-op si vide.
+  await drainOverflow().catch((e) => console.error('drainOverflow:', e))
 }
 
 let intervalHandle: ReturnType<typeof setInterval> | null = null
