@@ -11,7 +11,9 @@ import type {
   VisitCommentUpdateInput,
 } from '@/lib/estale-api'
 
-export type SyncStatus = 'pending' | 'syncing' | 'synced' | 'error'
+// 'overflowed' = blob HD déposé dans le seau de débordement Supabase, en attente
+// de drain vers Estale (gardien). Compté comme « en transit » (pas synced).
+export type SyncStatus = 'pending' | 'syncing' | 'synced' | 'error' | 'overflowed'
 
 export interface VisitDraft {
   localId: string
@@ -49,6 +51,9 @@ export interface PhotoDraft {
   lastSyncAttempt?: string
   syncError?: string
   syncAttempts?: number
+  // Chemin du blob dans le bucket Supabase 'visite-photos-overflow' quand la
+  // photo a débordé (syncStatus === 'overflowed'). null/undefined sinon.
+  overflowPath?: string
 }
 
 interface BeamoVisitesDB extends DBSchema {
@@ -244,6 +249,19 @@ export async function updatePhotoDraft(
   const existing = await db.get('photos_drafts', localId)
   if (!existing) throw new Error(`PhotoDraft ${localId} introuvable`)
   await db.put('photos_drafts', { ...existing, ...patch })
+}
+
+/** Supprime un PhotoDraft (et donc son blob HD). Idempotent. */
+export async function deletePhotoDraft(localId: string): Promise<void> {
+  const db = await getDB()
+  await db.delete('photos_drafts', localId)
+}
+
+/** Toutes les photos en débordement (déposées dans Supabase, en attente de drain). */
+export async function getOverflowedPhotos(): Promise<PhotoDraft[]> {
+  const db = await getDB()
+  const all = await db.getAll('photos_drafts')
+  return all.filter((p) => p.syncStatus === 'overflowed')
 }
 
 // --- Diagnostic + cleanup d'une visite (debug et auto-réparation) ---
@@ -475,7 +493,15 @@ export async function getSyncStats(): Promise<{
       capturedAt?: string
     }>
     for (const item of all) {
-      if (item.syncStatus === 'pending' || item.syncStatus === 'error') {
+      // 'syncing' est compté : un envoi interrompu en plein vol peut rester
+      // figé dans ce statut. L'ignorer rendait le badge vert alors que des
+      // photos n'étaient jamais arrivées (cf. auto-réveil dans le sync-engine).
+      if (
+        item.syncStatus === 'pending' ||
+        item.syncStatus === 'error' ||
+        item.syncStatus === 'syncing' ||
+        item.syncStatus === 'overflowed'
+      ) {
         pending++
         const ts = item.createdAt || item.capturedAt
         if (ts && (!oldest || ts < oldest)) oldest = ts
