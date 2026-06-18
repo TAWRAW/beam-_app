@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
-import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText } from 'lucide-react'
+import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Wrench } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -69,6 +69,12 @@ const adminItems: NavItem[] = [
     href: '/apps/devis-mutation',
     label: 'Devis mutation',
     icon: ScrollText,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/os',
+    label: 'Ordres de service',
+    icon: Wrench,
     adminOnly: true,
   },
   {
