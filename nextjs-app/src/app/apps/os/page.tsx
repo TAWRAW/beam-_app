@@ -30,7 +30,7 @@ const DEFER_MINUTES = 5
 
 const DEFAULT_TAGS: OrderTag[] = [
   { label: 'Travaux', color: '#FFC300' },
-  { label: 'Fournisseur', color: '#0EA5E9' },
+  { label: 'Fournisseur', color: '#A8E6A1' },
 ]
 
 /** Exécution GraphQL via le proxy admin-gated de beam-app. */
