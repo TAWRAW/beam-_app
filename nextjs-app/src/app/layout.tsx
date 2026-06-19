@@ -8,6 +8,7 @@ import { avenirBlack } from './fonts'
 import ConditionalAnalytics from '@/components/analytics/ConditionalAnalytics'
 import ConditionalLayout from '@/components/layout/ConditionalLayout'
 import { Analytics } from '@vercel/analytics/next'
+import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister'
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400','500','600','700'] })
 
@@ -58,7 +59,12 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
   icons: {
     icon: '/favicon.ico',
-    apple: '/favicon.png',
+    apple: '/icons/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'Beamô Visites',
+    statusBarStyle: 'default',
   },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
@@ -79,6 +85,7 @@ export default function RootLayout({
         <ConditionalLayout>
           {children}
         </ConditionalLayout>
+        <ServiceWorkerRegister />
         <Analytics />
       </body>
     </html>
