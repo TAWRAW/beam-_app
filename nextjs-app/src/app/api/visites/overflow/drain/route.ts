@@ -62,6 +62,11 @@ export async function POST(_request: NextRequest) {
     try {
       const dl = await supabase.storage.from(BUCKET).download(row.storage_path)
       if (dl.error || !dl.data) throw new Error(dl.error?.message || 'blob introuvable')
+      // Ne jamais pousser un blob vide vers Estale (sinon « Oupss » + faux 'done').
+      // La photo reste récupérable depuis l'appareil (blob HD encore en local).
+      if ((dl.data as Blob).size === 0) {
+        throw new Error('blob vide (0 octet) dans le seau — à renvoyer depuis l’appareil')
+      }
 
       const uploaded = await uploadVisitCommentFile(
         row.estale_visit_id,

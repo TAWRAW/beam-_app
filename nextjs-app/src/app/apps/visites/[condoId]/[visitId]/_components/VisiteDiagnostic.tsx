@@ -8,6 +8,7 @@ import {
   type VisiteDiagnosticReport,
 } from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
+import { requeueOverflowedPhotos } from '@/lib/visites/overflow'
 
 interface Props {
   visitId: string
@@ -32,7 +33,7 @@ interface EstaleSnapshot {
 }
 
 const statusEmoji = (s: string) =>
-  ({ synced: '✅', pending: '⏳', syncing: '⏳', error: '❌' }[s] || '?')
+  ({ synced: '✅', pending: '⏳', syncing: '⏳', overflowed: '📦', error: '❌' }[s] || '?')
 
 export function VisiteDiagnostic({ visitId, condoId }: Props) {
   const [open, setOpen] = useState(false)
@@ -108,14 +109,17 @@ export function VisiteDiagnostic({ visitId, condoId }: Props) {
     setMsg(null)
     try {
       const reset = await resetFailedSyncForVisit(visitId)
-      const total = reset.resetVisits + reset.resetComments + reset.resetPhotos
+      // Renvoie aussi depuis l'appareil les photos coincées en débordement
+      // (blob déposé vide dans Supabase) : on les repasse en envoi direct.
+      const requeued = await requeueOverflowedPhotos()
+      const total = reset.resetVisits + reset.resetComments + reset.resetPhotos + requeued
       if (total === 0) {
         setMsg('Aucun draft à réveiller (tout est déjà synced).')
       } else {
         await flushAll()
         await refresh()
         setMsg(
-          `Réveil + push : ${reset.resetVisits} visite, ${reset.resetComments} lignes, ${reset.resetPhotos} photos relancées. Vérifie la colonne Estale pour confirmer.`,
+          `Réveil + push : ${reset.resetVisits} visite, ${reset.resetComments} lignes, ${reset.resetPhotos} photos relancées${requeued > 0 ? `, ${requeued} photo(s) débordée(s) renvoyée(s) depuis l'appareil` : ''}. Vérifie la colonne Estale pour confirmer.`,
         )
       }
     } catch (e) {
@@ -194,6 +198,18 @@ export function VisiteDiagnostic({ visitId, condoId }: Props) {
             <div><strong>Visites locales :</strong> {report.visits.length}</div>
             <div><strong>Lignes locales :</strong> {report.comments.length}</div>
             <div><strong>Photos locales :</strong> {report.photos.length}</div>
+            {(() => {
+              const totalBytes = report.photos.reduce((s, p) => s + (p.blob?.size || 0), 0)
+              const empty = report.photos.filter((p) => !p.blob || p.blob.size === 0).length
+              return (
+                <div>
+                  <strong>Poids local :</strong> {(totalBytes / 1024 / 1024).toFixed(1)} Mo
+                  {empty > 0 && (
+                    <span className="text-red-700 font-bold"> — ⚠ {empty} photo(s) vide(s) (0 octet)</span>
+                  )}
+                </div>
+              )
+            })()}
             {(() => {
               const notSynced = report.photos.filter((p) => p.syncStatus !== 'synced').length
               const inError = report.photos.filter((p) => p.syncStatus === 'error').length
