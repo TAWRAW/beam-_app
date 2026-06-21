@@ -35,11 +35,24 @@ export async function overflowPhoto(
   const { path, token } = (await signRes.json()) as { path?: string; token?: string }
   if (!path || !token) throw new Error('sign: réponse invalide')
 
-  // 2. Upload direct du HD vers Supabase Storage (contourne la limite Vercel)
+  // 2. Upload direct du HD vers Supabase Storage (contourne la limite Vercel).
+  //
+  // IMPORTANT (bug iOS) : un Blob relu depuis IndexedDB est « paresseux » ; passé
+  // tel quel à fetch sur iOS, il s'envoie souvent à 0 octet → fichier vide dans
+  // le seau → Estale rejette ensuite avec « Oupss ». On MATÉRIALISE donc les
+  // octets en mémoire (arrayBuffer) avant l'upload, et on refuse tout blob vide.
+  const buffer = await photo.blob.arrayBuffer()
+  if (!buffer || buffer.byteLength === 0) {
+    throw new Error('blob local vide (0 octet) — upload débordement annulé')
+  }
+  const body = new Blob([buffer], {
+    type: photo.mimeType || 'application/octet-stream',
+  })
+
   const supabase = createSupabaseBrowserClient()
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
-    .uploadToSignedUrl(path, token, photo.blob, {
+    .uploadToSignedUrl(path, token, body, {
       contentType: photo.mimeType || 'application/octet-stream',
     })
   if (upErr) throw new Error(`storage: ${upErr.message}`)
@@ -87,4 +100,26 @@ export async function drainOverflow(): Promise<void> {
     // Photo confirmée sur Estale (gardien) → on efface le HD local.
     await deletePhotoDraft(d.photoUuid)
   }
+}
+
+/**
+ * Récupération depuis l'appareil : remet en file d'attente d'envoi DIRECT les
+ * photos coincées en débordement (par ex. dont le blob avait été déposé vide
+ * dans Supabase). Le blob HD est toujours présent en local (IndexedDB) ; on
+ * repasse simplement la photo en 'pending' pour que pushPhoto la renvoie depuis
+ * l'appareil. NON DESTRUCTIF : on ne touche qu'au statut, on ne supprime rien
+ * (ni le blob local, ni le blob Supabase, ni la ligne outbox).
+ * Renvoie le nombre de photos remises en file.
+ */
+export async function requeueOverflowedPhotos(): Promise<number> {
+  const overflowed = await getOverflowedPhotos()
+  for (const p of overflowed) {
+    await updatePhotoDraft(p.localId, {
+      syncStatus: 'pending',
+      syncAttempts: 0,
+      syncError: undefined,
+      overflowPath: undefined,
+    })
+  }
+  return overflowed.length
 }

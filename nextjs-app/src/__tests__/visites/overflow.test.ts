@@ -146,4 +146,50 @@ describe('débordement photo', () => {
     const stats = await db.getSyncStats()
     expect(stats.pendingCount).toBeGreaterThanOrEqual(1)
   })
+
+  it('requeueOverflowedPhotos remet les photos débordées en pending sans rien supprimer', async () => {
+    const comment = await seedSyncedComment()
+    const photo = await db.addPhotoDraft(
+      comment.localId,
+      new Blob(['abc'], { type: 'image/jpeg' }),
+      'p.jpg',
+    )
+    await db.updatePhotoDraft(photo.localId, {
+      syncStatus: 'overflowed',
+      overflowPath: 'pid/p.jpg',
+      syncAttempts: 10,
+    })
+
+    const n = await overflow.requeueOverflowedPhotos()
+    expect(n).toBe(1)
+
+    const after = (await db.getPhotosForComment(comment.localId)).find((p) => p.localId === photo.localId)
+    expect(after).toBeDefined() // non supprimée
+    expect(after?.syncStatus).toBe('pending')
+    expect(after?.syncAttempts).toBe(0)
+    expect(after?.overflowPath).toBeUndefined()
+    expect(after?.blob.size).toBeGreaterThan(0) // blob HD intact
+  })
+
+  it('overflowPhoto refuse un blob vide (0 octet) et ne marque pas overflowed', async () => {
+    const comment = await seedSyncedComment()
+    const photo = await db.addPhotoDraft(
+      comment.localId,
+      new Blob([], { type: 'image/jpeg' }),
+      'empty.jpg',
+    )
+
+    global.fetch = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input)
+      if (url.includes('/overflow/sign')) return jsonRes(200, { path: 'pid/empty.jpg', token: 'tok' })
+      if (url.endsWith('/api/visites/overflow')) return jsonRes(201, { ok: true })
+      return jsonRes(404, {})
+    }) as typeof fetch
+
+    const full = (await db.getPhotosForComment(comment.localId)).find((p) => p.localId === photo.localId)!
+    await expect(overflow.overflowPhoto(full, 'EV1', 'EC1')).rejects.toThrow(/vide/)
+
+    const after = (await db.getPhotosForComment(comment.localId)).find((p) => p.localId === photo.localId)
+    expect(after?.syncStatus).not.toBe('overflowed')
+  })
 })
