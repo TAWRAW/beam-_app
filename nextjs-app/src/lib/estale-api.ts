@@ -996,7 +996,23 @@ export async function uploadVisitCommentFile(
   const isAuth = await ensureAuthenticated()
   if (!isAuth) throw new Error('Impossible de se connecter à Estale')
   // sessionCookie est interne au module ; on passe sa valeur courante.
-  return uploadCommentFileMultipart(sessionCookie!, visitId, commentId, file, filename)
+  try {
+    return await uploadCommentFileMultipart(sessionCookie!, visitId, commentId, file, filename)
+  } catch (e) {
+    // Contrairement à executeQuery (GraphQL), l'upload multipart ne s'auto-répare
+    // pas. Si la session Estale a expiré, l'upload prend un 401/403 : on force un
+    // re-login et on retente une fois — sinon les photos HD restent bloquées.
+    const msg = e instanceof Error ? e.message : ''
+    if (/\b40[13]\b/.test(msg)) {
+      sessionCookie = null
+      lastLoginAttempt = 0 // contourne le cooldown pour se reconnecter immédiatement
+      const reAuth = await ensureAuthenticated()
+      if (reAuth) {
+        return await uploadCommentFileMultipart(sessionCookie!, visitId, commentId, file, filename)
+      }
+    }
+    throw e
+  }
 }
 
 /**
