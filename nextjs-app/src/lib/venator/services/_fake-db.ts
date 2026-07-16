@@ -4,6 +4,13 @@ import { randomUUID } from 'crypto'
 
 type Row = Record<string, any>
 
+// Défauts de colonnes DB (cf. supabase/migrations/20260716_venator_initial.sql) que Postgres
+// appliquerait via `default '...'` et que ce fake doit reproduire pour rester fidèle.
+const TABLE_DEFAULTS: Record<string, Row> = {
+  venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {} },
+  venator_dossier_etapes: { statut: 'a_faire' },
+}
+
 class Query {
   private filters: [string, any][] = []
   private orderBy: { col: string; asc: boolean } | null = null
@@ -29,7 +36,8 @@ export function createFakeDb() {
       return {
         select(_cols?: string) { return new Query(rows) },
         insert(payload: Row | Row[]) {
-          const arr = (Array.isArray(payload) ? payload : [payload]).map(p => ({ id: randomUUID(), created_at: new Date().toISOString(), ...p }))
+          const defaults = TABLE_DEFAULTS[table] ?? {}
+          const arr = (Array.isArray(payload) ? payload : [payload]).map(p => ({ id: randomUUID(), created_at: new Date().toISOString(), ...defaults, ...p }))
           // contrainte unique gmail_message_id (dédup fil)
           for (const p of arr) {
             if (table === 'venator_fil_messages' && p.gmail_message_id && rows.some(r => r.gmail_message_id === p.gmail_message_id)) {
