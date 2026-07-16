@@ -10,6 +10,7 @@ const TABLE_DEFAULTS: Record<string, Row> = {
   venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {} },
   venator_dossier_etapes: { statut: 'a_faire' },
   venator_tickets: { statut: 'nouveau', type: 'intervention' },
+  venator_checklist_items: { fait: false },
 }
 
 class Query {
