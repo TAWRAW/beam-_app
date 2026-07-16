@@ -9,6 +9,7 @@ type Row = Record<string, any>
 const TABLE_DEFAULTS: Record<string, Row> = {
   venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {} },
   venator_dossier_etapes: { statut: 'a_faire' },
+  venator_tickets: { statut: 'nouveau', type: 'intervention' },
 }
 
 class Query {
