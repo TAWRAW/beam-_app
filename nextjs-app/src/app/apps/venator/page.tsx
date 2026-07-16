@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import DossierCard, { type ListItem } from './_components/DossierCard'
 import CreateDossierDialog from './_components/CreateDossierDialog'
+import TicketExpressDialog from './_components/TicketExpressDialog'
 import { DOSSIER_STATUTS, DOSSIER_TYPES, type Copro, type Dossier, type DossierType, type Ticket } from '@/lib/venator/types'
 
 const TYPE_LABELS: Record<DossierType, string> = {
@@ -36,6 +37,8 @@ export default function VenatorDashboardPage() {
   const [syncing, setSyncing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
+  const [ticketExpressOpen, setTicketExpressOpen] = useState(false)
+  const [confirmMsg, setConfirmMsg] = useState<string | null>(null)
 
   const loadCopros = useCallback(async () => {
     try {
@@ -96,6 +99,12 @@ export default function VenatorDashboardPage() {
     } finally {
       setSyncing(false)
     }
+  }
+
+  async function handleTicketExpressCreated() {
+    setConfirmMsg('Ticket express créé.')
+    await loadDossiers()
+    setTimeout(() => setConfirmMsg(null), 3000)
   }
 
   const coproById = useMemo(() => new Map(copros.map((c) => [c.id, c])), [copros])
@@ -197,6 +206,14 @@ export default function VenatorDashboardPage() {
           </Button>
           <Button
             type="button"
+            variant="outline"
+            onClick={() => setTicketExpressOpen(true)}
+            className="rounded-full border-2 border-black bg-white font-semibold"
+          >
+            + Ticket express
+          </Button>
+          <Button
+            type="button"
             onClick={() => setCreateOpen(true)}
             className="bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300]"
           >
@@ -204,6 +221,12 @@ export default function VenatorDashboardPage() {
           </Button>
         </div>
       </div>
+
+      {confirmMsg && (
+        <div className="border-2 border-black rounded-2xl bg-green-100 p-3 text-sm font-semibold">
+          {confirmMsg}
+        </div>
+      )}
 
       {error && (
         <div className="border-2 border-red-600 rounded-2xl bg-white p-3 text-sm font-semibold text-red-600">
@@ -244,6 +267,14 @@ export default function VenatorDashboardPage() {
         onOpenChange={setCreateOpen}
         copros={copros}
         defaultCoproId={filters.copro_id !== 'all' ? filters.copro_id : undefined}
+      />
+
+      <TicketExpressDialog
+        open={ticketExpressOpen}
+        onOpenChange={setTicketExpressOpen}
+        copros={copros}
+        defaultCoproId={filters.copro_id !== 'all' ? filters.copro_id : undefined}
+        onCreated={handleTicketExpressCreated}
       />
     </div>
   )
