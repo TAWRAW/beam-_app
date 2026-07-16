@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button'
 import DossierCard, { type ListItem } from './_components/DossierCard'
 import CreateDossierDialog from './_components/CreateDossierDialog'
 import TicketExpressDialog from './_components/TicketExpressDialog'
-import { DOSSIER_STATUTS, DOSSIER_TYPES, type Copro, type Dossier, type DossierType, type Ticket } from '@/lib/venator/types'
+import DndBoard from './_components/DndBoard'
+import { DOSSIER_TYPES, type Copro, type Dossier, type DossierStatut, type DossierType, type Ticket } from '@/lib/venator/types'
 
 const TYPE_LABELS: Record<DossierType, string> = {
   sinistre: 'Sinistre',
@@ -17,13 +18,6 @@ const TYPE_LABELS: Record<DossierType, string> = {
   ag: 'AG',
   conseil_syndical: 'Conseil syndical',
   vie_copro: 'Vie copro',
-}
-
-const STATUT_LABELS: Record<(typeof DOSSIER_STATUTS)[number], string> = {
-  ouvert: 'Ouvert',
-  en_cours: 'En cours',
-  en_attente: 'En attente',
-  clos: 'Clos',
 }
 
 type Filters = { copro_id: string; type: string; vue: 'liste' | 'board' }
@@ -155,6 +149,56 @@ export default function VenatorDashboardPage() {
     [dossiers, coproById]
   )
 
+  const unassignedTicketItems: ListItem[] = useMemo(
+    () =>
+      tickets
+        .filter((t) => !t.dossier_id)
+        .map((t) => ({
+          id: t.id,
+          kind: 'ticket',
+          type: t.type,
+          titre: t.titre,
+          statut: t.statut,
+          priorite: null,
+          coproNom: coproById.get(t.copro_id)?.nom ?? '—',
+          created_at: t.created_at,
+          href: `/apps/venator/tickets/${t.id}`,
+        })),
+    [tickets, coproById]
+  )
+
+  async function handleDossierStatutChange(dossierId: string, statut: DossierStatut) {
+    try {
+      const body = statut === 'clos' ? { action: 'clore' } : { statut }
+      const res = await fetch(`/api/venator/dossiers/${dossierId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error(`Erreur ${res.status}`)
+      await loadDossiers()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur de mise à jour du statut')
+    }
+  }
+
+  async function handleTicketRattacher(ticketId: string, dossierId: string) {
+    try {
+      const res = await fetch(`/api/venator/tickets/${ticketId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dossier_id: dossierId }),
+      })
+      if (!res.ok) throw new Error(`Erreur ${res.status}`)
+      const dossier = dossiers.find((d) => d.id === dossierId)
+      setConfirmMsg(`Ticket rattaché à ${dossier?.titre ?? 'dossier'}.`)
+      await loadDossiers()
+      setTimeout(() => setConfirmMsg(null), 3000)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur de rattachement')
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {/* Barre de filtres */}
@@ -246,20 +290,12 @@ export default function VenatorDashboardPage() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-4 gap-3">
-          {DOSSIER_STATUTS.map((statut) => (
-            <div key={statut} className="flex flex-col gap-2">
-              <h2 className="text-xs font-bold uppercase px-2">{STATUT_LABELS[statut]}</h2>
-              <div className="flex flex-col gap-2">
-                {boardItems
-                  .filter((item) => item.statut === statut)
-                  .map((item) => (
-                    <DossierCard key={item.id} item={item} />
-                  ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <DndBoard
+          boardItems={boardItems}
+          unassignedTickets={unassignedTicketItems}
+          onDossierStatutChange={handleDossierStatutChange}
+          onTicketRattacher={handleTicketRattacher}
+        />
       )}
 
       <CreateDossierDialog

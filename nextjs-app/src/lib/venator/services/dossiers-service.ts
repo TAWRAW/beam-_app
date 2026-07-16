@@ -52,6 +52,12 @@ export async function ajouterEtape(db: SupabaseClient, dossierId: string, titre:
   return data
 }
 
+export async function majStatutDossier(db: SupabaseClient, id: string, statut: 'ouvert' | 'en_cours' | 'en_attente'): Promise<Dossier> {
+  const { data, error } = await db.from('venator_dossiers').update({ statut }).eq('id', id).select().single()
+  if (error || !data) throw new VenatorError('not_found', 'Dossier introuvable')
+  return data
+}
+
 export async function cloreDossier(db: SupabaseClient, id: string): Promise<Dossier> {
   const { data, error } = await db.from('venator_dossiers')
     .update({ statut: 'clos', closed_at: new Date().toISOString() }).eq('id', id).select().single()

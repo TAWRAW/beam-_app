@@ -1,7 +1,7 @@
 // src/lib/venator/__tests__/dossiers.test.ts
 import { describe, it, expect } from 'vitest'
 import { createFakeDb } from '../services/_fake-db'
-import { creerDossier, listerDossiers, detailDossier, majEtape, ajouterEtape, cloreDossier } from '../services/dossiers-service'
+import { creerDossier, listerDossiers, detailDossier, majEtape, ajouterEtape, cloreDossier, majStatutDossier } from '../services/dossiers-service'
 
 async function seedCopro(client: any) {
   const { data } = await client.from('venator_copros').insert({ estale_id: 'e1', reference: '00013', nom: 'BUC' }).select().single()
@@ -42,5 +42,13 @@ describe('dossiers-service', () => {
   it('detail inexistant ⇒ VenatorError not_found', async () => {
     const { client } = createFakeDb()
     await expect(detailDossier(client, '00000000-0000-0000-0000-000000000000')).rejects.toMatchObject({ code: 'not_found' })
+  })
+  it('majStatutDossier change le statut sans clore', async () => {
+    const { client } = createFakeDb()
+    const copro = await seedCopro(client)
+    const { dossier } = await creerDossier(client, { copro_id: copro.id, type: 'travaux', titre: 'Ravalement', priorite: 2 })
+    const maj = await majStatutDossier(client, dossier.id, 'en_cours')
+    expect(maj.statut).toBe('en_cours')
+    expect(maj.closed_at).toBeNull()
   })
 })
