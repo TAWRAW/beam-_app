@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { mutate } from 'swr'
+import { MoreVertical, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -10,7 +12,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
-import type { Etape, EtapeStatut } from '@/lib/venator/types'
+import { keys } from '@/lib/venator/useVenator'
+import type { Dossier, Etape, EtapeStatut } from '@/lib/venator/types'
 
 const PASTILLE: Record<EtapeStatut, string> = {
   a_faire: '○',
@@ -32,19 +35,25 @@ function formatEcheance(echeance: string) {
 
 export default function EtapesTimeline({
   dossierId,
+  dossier,
   etapes,
-  onChange,
 }: {
   dossierId: string
+  dossier: Dossier
   etapes: Etape[]
-  onChange: () => void
 }) {
   const [nouvelleTitre, setNouvelleTitre] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function patchEtape(etapeId: string, patch: { statut?: EtapeStatut; notes?: string | null }) {
+  const key = keys.dossier(dossierId)
+
+  // Bascule de statut optimiste (pastille) : l'UI change immédiatement, rollback si l'appel échoue.
+  async function patchEtapeOptimistic(etapeId: string, patch: { statut?: EtapeStatut; notes?: string | null }) {
     setError(null)
+    const previous = { dossier, etapes }
+    const optimisticEtapes = etapes.map((e) => (e.id === etapeId ? { ...e, ...patch } : e))
+    mutate(key, { dossier, etapes: optimisticEtapes }, { revalidate: false })
     try {
       const res = await fetch(`/api/venator/dossiers/${dossierId}/etapes`, {
         method: 'PATCH',
@@ -55,8 +64,9 @@ export default function EtapesTimeline({
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      onChange()
+      await mutate(key)
     } catch (e) {
+      mutate(key, previous, { revalidate: true })
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     }
   }
@@ -64,13 +74,13 @@ export default function EtapesTimeline({
   function handlePastilleClick(etape: Etape) {
     const next = NEXT_STATUT[etape.statut]
     if (!next) return
-    patchEtape(etape.id, { statut: next })
+    patchEtapeOptimistic(etape.id, { statut: next })
   }
 
   function handleNotes(etape: Etape) {
     const val = window.prompt('Notes de l’étape', etape.notes ?? '')
     if (val === null) return
-    patchEtape(etape.id, { notes: val })
+    patchEtapeOptimistic(etape.id, { notes: val })
   }
 
   async function handleSupprimer(etape: Etape) {
@@ -86,7 +96,7 @@ export default function EtapesTimeline({
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      onChange()
+      await mutate(key)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     }
@@ -107,7 +117,7 @@ export default function EtapesTimeline({
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
       setNouvelleTitre('')
-      onChange()
+      await mutate(key)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
@@ -156,12 +166,12 @@ export default function EtapesTimeline({
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button type="button" className="shrink-0 px-2 text-lg font-bold" aria-label="Menu étape">
-                    ⋮
+                  <button type="button" className="shrink-0 p-1.5" aria-label="Menu étape">
+                    <MoreVertical className="h-4 w-4" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => patchEtape(etape.id, { statut: 'sautee' })}>
+                  <DropdownMenuItem onClick={() => patchEtapeOptimistic(etape.id, { statut: 'sautee' })}>
                     Sauter
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNotes(etape)}>Notes</DropdownMenuItem>
@@ -169,7 +179,8 @@ export default function EtapesTimeline({
                     onClick={() => handleSupprimer(etape)}
                     className="text-red-600 focus:text-red-600 focus:bg-red-50"
                   >
-                    🗑 Supprimer l&apos;étape
+                    <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                    Supprimer l&apos;étape
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

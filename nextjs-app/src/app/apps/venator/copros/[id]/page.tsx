@@ -1,12 +1,13 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
+import { mutate } from 'swr'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { TypeBadge } from '../../_components/DossierCard'
 import ChecklistPanel from '../../_components/ChecklistPanel'
-import type { Copro, Dossier, JournalEntry } from '@/lib/venator/types'
+import { keys, useCopros, useDossiers, useJournal } from '@/lib/venator/useVenator'
 
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
   ouvert: 'Ouvert',
@@ -31,53 +32,39 @@ function formatDate(iso: string) {
   return d.toLocaleString('fr-FR')
 }
 
+function CoproSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 flex flex-col gap-2">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+          ))}
+        </div>
+        <div className="h-40 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+      </div>
+    </div>
+  )
+}
+
 export default function CoproPage({ params }: { params: { id: string } }) {
   const coproId = params.id
 
-  const [copro, setCopro] = useState<Copro | null>(null)
-  const [entries, setEntries] = useState<JournalEntry[]>([])
-  const [dossiers, setDossiers] = useState<Dossier[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: coprosData, isLoading: coprosLoading } = useCopros()
+  const copro = coprosData?.copros.find((c) => c.id === coproId) ?? null
+
+  const { data: journalData, isLoading: journalLoading } = useJournal(coproId)
+  const entries = journalData?.entries ?? []
+
+  const { data: dossiersData, isLoading: dossiersLoading } = useDossiers(`copro_id=${coproId}`)
+  const dossiers = (dossiersData?.dossiers ?? []).filter((d) => d.statut !== 'clos')
+
   const [error, setError] = useState<string | null>(null)
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  const loadCopro = useCallback(async () => {
-    const res = await fetch('/api/venator/copros')
-    if (!res.ok) throw new Error(`Erreur ${res.status}`)
-    const { copros }: { copros: Copro[] } = await res.json()
-    setCopro(copros?.find((c) => c.id === coproId) ?? null)
-  }, [coproId])
-
-  const loadJournal = useCallback(async () => {
-    const res = await fetch(`/api/venator/journal?copro_id=${coproId}`)
-    if (!res.ok) throw new Error(`Erreur ${res.status}`)
-    const { entries }: { entries: JournalEntry[] } = await res.json()
-    setEntries(entries ?? [])
-  }, [coproId])
-
-  const loadDossiers = useCallback(async () => {
-    const res = await fetch(`/api/venator/dossiers?copro_id=${coproId}`)
-    if (!res.ok) throw new Error(`Erreur ${res.status}`)
-    const { dossiers }: { dossiers: Dossier[] } = await res.json()
-    setDossiers((dossiers ?? []).filter((d) => d.statut !== 'clos'))
-  }, [coproId])
-
-  const loadAll = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      await Promise.all([loadCopro(), loadJournal(), loadDossiers()])
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
-    } finally {
-      setLoading(false)
-    }
-  }, [loadCopro, loadJournal, loadDossiers])
-
-  useEffect(() => {
-    loadAll()
-  }, [loadAll])
+  const loading = coprosLoading || journalLoading || dossiersLoading
 
   async function handleAjouterNote() {
     if (!note.trim() || submitting) return
@@ -94,7 +81,7 @@ export default function CoproPage({ params }: { params: { id: string } }) {
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
       setNote('')
-      await loadJournal()
+      await mutate(keys.journal(coproId))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
@@ -103,7 +90,7 @@ export default function CoproPage({ params }: { params: { id: string } }) {
   }
 
   if (loading) {
-    return <p className="text-sm text-neutral-600">Chargement…</p>
+    return <CoproSkeleton />
   }
 
   if (!copro) {

@@ -1,10 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
+import { mutate } from 'swr'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
+import { keys, useChecklist } from '@/lib/venator/useVenator'
 import type { Checklist, ChecklistItem } from '@/lib/venator/types'
 
 type ChecklistEtat = { checklist: Checklist; items: ChecklistItem[]; progression: number }
@@ -15,32 +17,25 @@ function formatDate(iso: string) {
   return d.toLocaleDateString('fr-FR')
 }
 
+function ChecklistSkeleton() {
+  return (
+    <div className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white p-3 flex flex-col gap-2">
+      <div className="h-4 w-24 rounded bg-neutral-200 animate-pulse" />
+      <div className="h-2 rounded-full border-2 border-black bg-neutral-200 animate-pulse" />
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="h-4 w-full rounded bg-neutral-200 animate-pulse" />
+      ))}
+    </div>
+  )
+}
+
 export default function ChecklistPanel({ coproId }: { coproId: string }) {
-  const [etat, setEtat] = useState<ChecklistEtat | null>(null)
-  const [loading, setLoading] = useState(true)
+  const key = keys.checklist(coproId)
+  const { data, isLoading } = useChecklist(coproId)
+  const etat = (data?.etat ?? null) as ChecklistEtat | null
   const [error, setError] = useState<string | null>(null)
   const [starting, setStarting] = useState(false)
   const [pendingItemId, setPendingItemId] = useState<string | null>(null)
-
-  const load = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch(`/api/venator/checklists?copro_id=${coproId}`)
-      if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      const { etat }: { etat: ChecklistEtat | null } = await res.json()
-      setEtat(etat)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
-      setEtat(null)
-    } finally {
-      setLoading(false)
-    }
-  }, [coproId])
-
-  useEffect(() => {
-    load()
-  }, [load])
 
   async function handleStart() {
     if (starting) return
@@ -56,7 +51,7 @@ export default function ChecklistPanel({ coproId }: { coproId: string }) {
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      await load()
+      await mutate(key)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
@@ -64,10 +59,17 @@ export default function ChecklistPanel({ coproId }: { coproId: string }) {
     }
   }
 
+  // Cochage optimiste : barré + % recalculé immédiatement, rollback si l'appel échoue.
   async function handleToggle(itemId: string, fait: boolean) {
-    if (pendingItemId) return
+    if (!etat || pendingItemId) return
     setPendingItemId(itemId)
     setError(null)
+
+    const previous = data
+    const items = etat.items.map((i) => (i.id === itemId ? { ...i, fait, fait_at: fait ? new Date().toISOString() : null } : i))
+    const progression = items.length ? Math.round((items.filter((i) => i.fait).length / items.length) * 100) : 0
+    mutate(key, { etat: { ...etat, items, progression } }, { revalidate: false })
+
     try {
       const res = await fetch(`/api/venator/checklists/items/${itemId}`, {
         method: 'PATCH',
@@ -78,20 +80,17 @@ export default function ChecklistPanel({ coproId }: { coproId: string }) {
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      await load()
+      await mutate(key)
     } catch (e) {
+      mutate(key, previous, { revalidate: true })
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
       setPendingItemId(null)
     }
   }
 
-  if (loading) {
-    return (
-      <div className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white p-3">
-        <p className="text-xs text-neutral-600">Chargement…</p>
-      </div>
-    )
+  if (isLoading) {
+    return <ChecklistSkeleton />
   }
 
   if (!etat) {

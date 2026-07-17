@@ -1,7 +1,9 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import useSWR, { mutate } from 'swr'
+import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,7 +14,8 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { TypeBadge } from '../../_components/DossierCard'
 import EtapesTimeline from '../../_components/EtapesTimeline'
 import FilPanel from '../../_components/FilPanel'
-import { TICKET_TYPES, type Dossier, type Etape, type Ticket, type TicketType } from '@/lib/venator/types'
+import { fetcher, keys, useDossier } from '@/lib/venator/useVenator'
+import { TICKET_TYPES, type Ticket, type TicketType } from '@/lib/venator/types'
 
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
   ouvert: 'Ouvert',
@@ -41,59 +44,40 @@ const TICKET_STATUT_LABELS: Record<string, string> = {
   clos: 'Clos',
 }
 
+function DossierSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="h-24 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 flex flex-col gap-2">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-14 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+          ))}
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="h-32 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function DossierPage({ params }: { params: { id: string } }) {
   const dossierId = params.id
   const router = useRouter()
 
-  const [dossier, setDossier] = useState<Dossier | null>(null)
-  const [etapes, setEtapes] = useState<Etape[]>([])
-  const [tickets, setTickets] = useState<Ticket[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data, error: loadError, isLoading } = useDossier(dossierId)
+  const dossier = data?.dossier ?? null
+  const etapes = data?.etapes ?? []
+
+  const ticketsKey = dossier ? keys.tickets(`copro_id=${dossier.copro_id}&dossier_id=${dossierId}`) : null
+  const { data: ticketsData, mutate: mutateTickets } = useSWR<{ tickets: Ticket[] }>(ticketsKey, fetcher)
+  const tickets = ticketsData?.tickets ?? []
+
   const [error, setError] = useState<string | null>(null)
   const [closing, setClosing] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [createTicketOpen, setCreateTicketOpen] = useState(false)
-
-  const loadDossier = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch(`/api/venator/dossiers/${dossierId}`)
-      if (!res.ok) {
-        const body = await res.json().catch(() => null)
-        throw new Error(body?.error ?? `Erreur ${res.status}`)
-      }
-      const { dossier, etapes }: { dossier: Dossier; etapes: Etape[] } = await res.json()
-      setDossier(dossier)
-      setEtapes(etapes ?? [])
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
-      setDossier(null)
-      setEtapes([])
-    } finally {
-      setLoading(false)
-    }
-  }, [dossierId])
-
-  const loadTickets = useCallback(async () => {
-    if (!dossier) return
-    try {
-      const res = await fetch(`/api/venator/tickets?copro_id=${dossier.copro_id}&dossier_id=${dossierId}`)
-      if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      const { tickets }: { tickets: Ticket[] } = await res.json()
-      setTickets(tickets ?? [])
-    } catch {
-      setTickets([])
-    }
-  }, [dossier, dossierId])
-
-  useEffect(() => {
-    loadDossier()
-  }, [loadDossier])
-
-  useEffect(() => {
-    loadTickets()
-  }, [loadTickets])
 
   async function handleClore() {
     if (!dossier || dossier.statut === 'clos') return
@@ -110,7 +94,7 @@ export default function DossierPage({ params }: { params: { id: string } }) {
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      await loadDossier()
+      await mutate(keys.dossier(dossierId))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
@@ -129,6 +113,7 @@ export default function DossierPage({ params }: { params: { id: string } }) {
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
+      await mutate((k) => typeof k === 'string' && k.startsWith('/api/venator/dossiers'))
       router.push('/apps/venator')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
@@ -136,14 +121,14 @@ export default function DossierPage({ params }: { params: { id: string } }) {
     }
   }
 
-  if (loading) {
-    return <p className="text-sm text-neutral-600">Chargement…</p>
+  if (isLoading) {
+    return <DossierSkeleton />
   }
 
-  if (error && !dossier) {
+  if (loadError && !dossier) {
     return (
       <div className="border-2 border-red-600 rounded-2xl bg-white p-3 text-sm font-semibold text-red-600">
-        {error}
+        {loadError instanceof Error ? loadError.message : 'Erreur de chargement'}
       </div>
     )
   }
@@ -189,11 +174,15 @@ export default function DossierPage({ params }: { params: { id: string } }) {
                 )}
                 <Button
                   type="button"
+                  size="icon"
+                  variant="outline"
                   onClick={handleSupprimer}
                   disabled={deleting}
-                  className="bg-red-600 text-white border-2 border-black rounded-full font-semibold shrink-0 hover:bg-red-700"
+                  aria-label="Supprimer le dossier"
+                  title={deleting ? 'Suppression…' : 'Supprimer le dossier'}
+                  className="p-2 text-red-600 bg-white border-2 border-black rounded-full shrink-0 hover:bg-red-600 hover:text-white"
                 >
-                  {deleting ? 'Suppression…' : '🗑 Supprimer le dossier'}
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -205,7 +194,7 @@ export default function DossierPage({ params }: { params: { id: string } }) {
               <TabsTrigger value="fil">Fil</TabsTrigger>
             </TabsList>
             <TabsContent value="etapes">
-              <EtapesTimeline dossierId={dossierId} etapes={etapes} onChange={loadDossier} />
+              <EtapesTimeline dossierId={dossierId} dossier={dossier} etapes={etapes} />
             </TabsContent>
             <TabsContent value="fil">
               <FilPanel parentType="dossier" parentId={dossierId} />
@@ -258,7 +247,7 @@ export default function DossierPage({ params }: { params: { id: string } }) {
         onOpenChange={setCreateTicketOpen}
         coproId={dossier.copro_id}
         dossierId={dossierId}
-        onCreated={loadTickets}
+        onCreated={() => mutateTickets()}
       />
     </div>
   )

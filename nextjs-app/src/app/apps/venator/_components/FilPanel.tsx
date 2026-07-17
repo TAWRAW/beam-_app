@@ -1,9 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
+import { mutate } from 'swr'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
+import { keys, useFil } from '@/lib/venator/useVenator'
 import type { FilMessage, FilSource } from '@/lib/venator/types'
 
 const SOURCE_LABELS: Record<FilSource, string> = {
@@ -25,6 +27,16 @@ function formatDate(iso: string) {
   return d.toLocaleString('fr-FR')
 }
 
+function FilSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      {[0, 1].map((i) => (
+        <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+      ))}
+    </div>
+  )
+}
+
 export default function FilPanel({
   parentType,
   parentId,
@@ -32,36 +44,36 @@ export default function FilPanel({
   parentType: 'dossier' | 'ticket'
   parentId: string
 }) {
-  const [messages, setMessages] = useState<FilMessage[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const key = keys.fil(parentType, parentId)
+  const { data, isLoading } = useFil(parentType, parentId)
+  const messages = data?.messages ?? []
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const load = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch(`/api/venator/fil?parent_type=${parentType}&parent_id=${parentId}`)
-      if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      const { messages }: { messages: FilMessage[] } = await res.json()
-      setMessages(messages ?? [])
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
-      setMessages([])
-    } finally {
-      setLoading(false)
-    }
-  }, [parentType, parentId])
-
-  useEffect(() => {
-    load()
-  }, [load])
-
+  // Ajout de note optimiste : le message apparaît tout de suite, rollback si l'appel échoue.
   async function handleAjouter() {
-    if (!note.trim() || submitting) return
+    const contenu = note.trim()
+    if (!contenu || submitting) return
     setSubmitting(true)
     setError(null)
+
+    const optimisticMessage: FilMessage = {
+      id: `temp-${Date.now()}`,
+      parent_type: parentType,
+      parent_id: parentId,
+      direction: 'note',
+      source: 'manuel',
+      from_email: null,
+      sujet: null,
+      contenu,
+      gmail_message_id: null,
+      created_at: new Date().toISOString(),
+    }
+    const previous = data
+    mutate(key, { messages: [...messages, optimisticMessage] }, { revalidate: false })
+    setNote('')
+
     try {
       const res = await fetch('/api/venator/fil', {
         method: 'POST',
@@ -71,16 +83,17 @@ export default function FilPanel({
           parent_id: parentId,
           direction: 'note',
           source: 'manuel',
-          contenu: note.trim(),
+          contenu,
         }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      setNote('')
-      await load()
+      await mutate(key)
     } catch (e) {
+      mutate(key, previous, { revalidate: true })
+      setNote(contenu)
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
       setSubmitting(false)
@@ -93,8 +106,8 @@ export default function FilPanel({
     <div className="flex flex-col gap-3">
       {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
 
-      {loading ? (
-        <p className="text-sm text-neutral-600">Chargement…</p>
+      {isLoading ? (
+        <FilSkeleton />
       ) : sorted.length === 0 ? (
         <p className="text-sm text-neutral-600">Aucun message pour l'instant.</p>
       ) : (
