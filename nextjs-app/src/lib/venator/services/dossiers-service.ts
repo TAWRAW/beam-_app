@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Dossier, DossierCreateInput, Etape } from '../types'
 import { instancierGabarit } from '../gabarits'
 import { logJournal } from './journal-service'
+import { purgerFil } from './fil-service'
 import { VenatorError } from './errors'
 
 export async function creerDossier(db: SupabaseClient, input: DossierCreateInput): Promise<{ dossier: Dossier; etapes: Etape[] }> {
@@ -64,4 +65,20 @@ export async function cloreDossier(db: SupabaseClient, id: string): Promise<Doss
   if (error || !data) throw new VenatorError('not_found', 'Dossier introuvable')
   await logJournal(db, { copro_id: data.copro_id, dossier_id: id, type_evenement: 'dossier_clos', contenu: `Dossier clos : ${data.titre}` })
   return data
+}
+
+export async function supprimerDossier(db: SupabaseClient, id: string): Promise<void> {
+  const { dossier } = await detailDossier(db, id) // throw not_found si absent
+  await logJournal(db, { copro_id: dossier.copro_id, dossier_id: id, type_evenement: 'dossier_supprime', contenu: `Dossier supprimé : ${dossier.titre}` })
+  // purge le fil du dossier + des tickets rattachés
+  await purgerFil(db, 'dossier', id)
+  const { data: tks } = await db.from('venator_tickets').select('id').eq('dossier_id', id)
+  for (const t of tks ?? []) await purgerFil(db, 'ticket', t.id)
+  await db.from('venator_dossiers').delete().eq('id', id) // étapes cascade, tickets set null (DB)
+}
+
+export async function supprimerEtape(db: SupabaseClient, id: string): Promise<void> {
+  const { data: e } = await db.from('venator_dossier_etapes').select('id').eq('id', id).maybeSingle()
+  if (!e) throw new VenatorError('not_found', 'Étape introuvable')
+  await db.from('venator_dossier_etapes').delete().eq('id', id)
 }

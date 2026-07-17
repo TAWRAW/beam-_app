@@ -13,6 +13,17 @@ const TABLE_DEFAULTS: Record<string, Row> = {
   venator_checklist_items: { fait: false },
 }
 
+class DeleteQuery {
+  private filters: [string, any][] = []
+  constructor(private rows: Row[]) {}
+  eq(col: string, val: any) { this.filters.push([col, val]); return this }
+  then(resolve: (v: { data: null; error: null }) => void) {
+    const toRemove = this.rows.filter(row => this.filters.every(([c, v]) => row[c] === v))
+    for (const row of toRemove) { const i = this.rows.indexOf(row); if (i !== -1) this.rows.splice(i, 1) }
+    resolve({ data: null, error: null })
+  }
+}
+
 class Query {
   private filters: [string, any][] = []
   private orderBy: { col: string; asc: boolean } | null = null
@@ -61,6 +72,7 @@ export function createFakeDb() {
             return { select: () => ({ single: async () => ({ data: matched[0] ?? null, error: matched[0] ? null : { message: 'no rows' } }) }), then: (res: any) => res({ data: matched, error: null }) }
           } }
         },
+        delete() { return new DeleteQuery(rows) },
       }
     },
   }

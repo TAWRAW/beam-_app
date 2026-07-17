@@ -2,6 +2,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Ticket, TicketCreateInput } from '../types'
 import { logJournal } from './journal-service'
+import { purgerFil } from './fil-service'
 import { VenatorError } from './errors'
 
 export async function creerTicket(db: SupabaseClient, input: TicketCreateInput): Promise<Ticket> {
@@ -28,4 +29,11 @@ export async function majTicket(db: SupabaseClient, id: string, patch: { statut?
   if (error || !data) throw new VenatorError('not_found', 'Ticket introuvable')
   if (patch.dossier_id) await logJournal(db, { copro_id: data.copro_id, ticket_id: id, dossier_id: patch.dossier_id, type_evenement: 'ticket_rattache', contenu: `Ticket rattaché : ${data.titre}` })
   return data
+}
+
+export async function supprimerTicket(db: SupabaseClient, id: string): Promise<void> {
+  const { data: ticket } = await db.from('venator_tickets').select('*').eq('id', id).maybeSingle()
+  if (!ticket) throw new VenatorError('not_found', 'Ticket introuvable')
+  await purgerFil(db, 'ticket', id)
+  await db.from('venator_tickets').delete().eq('id', id)
 }

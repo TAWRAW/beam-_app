@@ -19,3 +19,7 @@ export async function listerFil(db: SupabaseClient, parent_type: 'dossier' | 'ti
     .eq('parent_type', parent_type).eq('parent_id', parent_id).order('created_at', { ascending: true })
   return data ?? []
 }
+
+export async function purgerFil(db: SupabaseClient, parent_type: 'dossier' | 'ticket', parent_id: string): Promise<void> {
+  await db.from('venator_fil_messages').delete().eq('parent_type', parent_type).eq('parent_id', parent_id)
+}
