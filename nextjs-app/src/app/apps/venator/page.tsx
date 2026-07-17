@@ -9,9 +9,10 @@ import { cn } from '@/lib/utils'
 import DossierCard, { type ListItem } from './_components/DossierCard'
 import CreateDossierDialog from './_components/CreateDossierDialog'
 import TicketExpressDialog from './_components/TicketExpressDialog'
+import EmettreOsDialog, { type OsTicket } from './_components/EmettreOsDialog'
 import DndBoard from './_components/DndBoard'
 import { useCopros, useDossiers, useTickets } from '@/lib/venator/useVenator'
-import { DOSSIER_TYPES, DOSSIER_STATUTS, type DossierStatut, type DossierType } from '@/lib/venator/types'
+import { DOSSIER_TYPES, DOSSIER_STATUTS, type DossierStatut, type DossierType, type Ticket } from '@/lib/venator/types'
 
 const TYPE_LABELS: Record<DossierType, string> = {
   sinistre: 'Sinistre',
@@ -58,6 +59,7 @@ export default function VenatorDashboardPage() {
   const [error, setError] = useState<string | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
   const [ticketExpressOpen, setTicketExpressOpen] = useState(false)
+  const [osDialogTicket, setOsDialogTicket] = useState<OsTicket | null>(null)
   const [confirmMsg, setConfirmMsg] = useState<string | null>(null)
 
   const dossiersQuery = useMemo(() => {
@@ -107,6 +109,17 @@ export default function VenatorDashboardPage() {
     setTimeout(() => setConfirmMsg(null), 3000)
   }
 
+  async function handleOsEmis() {
+    setConfirmMsg('OS envoyé.')
+    await refreshAll()
+    setTimeout(() => setConfirmMsg(null), 3000)
+  }
+
+  async function handleTicketCreatedForOs(ticket: Ticket) {
+    setOsDialogTicket({ id: ticket.id, copro_id: ticket.copro_id, titre: ticket.titre })
+    await refreshAll()
+  }
+
   const coproById = useMemo(() => new Map(copros.map((c) => [c.id, c])), [copros])
 
   const listItems: ListItem[] = useMemo(() => {
@@ -118,6 +131,7 @@ export default function VenatorDashboardPage() {
       statut: d.statut,
       priorite: d.priorite,
       coproNom: coproById.get(d.copro_id)?.nom ?? '—',
+      copro_id: d.copro_id,
       created_at: d.created_at,
       href: `/apps/venator/dossiers/${d.id}`,
     }))
@@ -131,6 +145,7 @@ export default function VenatorDashboardPage() {
         statut: t.statut,
         priorite: null,
         coproNom: coproById.get(t.copro_id)?.nom ?? '—',
+        copro_id: t.copro_id,
         created_at: t.created_at,
         href: t.dossier_id ? `/apps/venator/dossiers/${t.dossier_id}` : `/apps/venator/copros/${t.copro_id}`,
       }))
@@ -149,6 +164,7 @@ export default function VenatorDashboardPage() {
         statut: d.statut,
         priorite: d.priorite,
         coproNom: coproById.get(d.copro_id)?.nom ?? '—',
+        copro_id: d.copro_id,
         created_at: d.created_at,
         href: `/apps/venator/dossiers/${d.id}`,
       })),
@@ -167,6 +183,7 @@ export default function VenatorDashboardPage() {
           statut: t.statut,
           priorite: null,
           coproNom: coproById.get(t.copro_id)?.nom ?? '—',
+          copro_id: t.copro_id,
           created_at: t.created_at,
           href: `/apps/venator/copros/${t.copro_id}`,
         })),
@@ -314,7 +331,7 @@ export default function VenatorDashboardPage() {
             <p className="text-sm text-neutral-600">Aucun dossier ni ticket pour l'instant.</p>
           )}
           {listItems.map((item) => (
-            <DossierCard key={`${item.kind}-${item.id}`} item={item} onDelete={handleDeleteItem} />
+            <DossierCard key={`${item.kind}-${item.id}`} item={item} onDelete={handleDeleteItem} onOsEmis={handleOsEmis} />
           ))}
         </div>
       ) : (
@@ -324,6 +341,7 @@ export default function VenatorDashboardPage() {
           onDossierStatutChange={handleDossierStatutChange}
           onTicketRattacher={handleTicketRattacher}
           onDelete={handleDeleteItem}
+          onOsEmis={handleOsEmis}
         />
       )}
 
@@ -341,6 +359,16 @@ export default function VenatorDashboardPage() {
         copros={copros}
         defaultCoproId={filters.copro_id !== 'all' ? filters.copro_id : undefined}
         onCreated={handleTicketExpressCreated}
+        onCreatedForOs={handleTicketCreatedForOs}
+      />
+
+      <EmettreOsDialog
+        ticket={osDialogTicket}
+        open={osDialogTicket !== null}
+        onOpenChange={(open) => {
+          if (!open) setOsDialogTicket(null)
+        }}
+        onEmis={handleOsEmis}
       />
     </div>
   )

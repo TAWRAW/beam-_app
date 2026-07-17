@@ -7,8 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { TICKET_TYPES, type Copro, type Dossier, type TicketType } from '@/lib/venator/types'
+import { TICKET_TYPES, type Copro, type Dossier, type Ticket, type TicketType } from '@/lib/venator/types'
 
 const TICKET_TYPE_LABELS: Record<TicketType, string> = {
   intervention: 'Intervention',
@@ -22,12 +21,15 @@ export default function TicketExpressDialog({
   copros,
   defaultCoproId,
   onCreated,
+  onCreatedForOs,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   copros: Copro[]
   defaultCoproId?: string
   onCreated?: () => void
+  /** Ticket créé via « OS en un clic » — le parent ouvre EmettreOsDialog pour ce ticket. */
+  onCreatedForOs?: (ticket: Ticket) => void
 }) {
   const [coproId, setCoproId] = useState(defaultCoproId ?? '')
   const [type, setType] = useState<TicketType>('intervention')
@@ -37,6 +39,7 @@ export default function TicketExpressDialog({
   const [dossierId, setDossierId] = useState('')
   const [dossiers, setDossiers] = useState<Dossier[]>([])
   const [submitting, setSubmitting] = useState(false)
+  const [submittingOs, setSubmittingOs] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const loadDossiers = useCallback(async (id: string) => {
@@ -78,35 +81,56 @@ export default function TicketExpressDialog({
     loadDossiers(id)
   }
 
-  const canSubmit = coproId.length > 0 && titre.trim().length > 0 && !submitting
+  const canSubmit = coproId.length > 0 && titre.trim().length > 0 && !submitting && !submittingOs
+
+  async function postTicket(): Promise<Ticket> {
+    const res = await fetch('/api/venator/tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        copro_id: coproId,
+        dossier_id: dossierId || undefined,
+        type,
+        titre: titre.trim(),
+        description: description.trim() || undefined,
+        prestataire_nom: prestataireNom.trim() || undefined,
+      }),
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => null)
+      throw new Error(body?.error ?? `Erreur ${res.status}`)
+    }
+    const { ticket }: { ticket: Ticket } = await res.json()
+    return ticket
+  }
 
   async function handleSubmit() {
     if (!canSubmit) return
     setSubmitting(true)
     setError(null)
     try {
-      const res = await fetch('/api/venator/tickets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          copro_id: coproId,
-          dossier_id: dossierId || undefined,
-          type,
-          titre: titre.trim(),
-          description: description.trim() || undefined,
-          prestataire_nom: prestataireNom.trim() || undefined,
-        }),
-      })
-      if (!res.ok) {
-        const body = await res.json().catch(() => null)
-        throw new Error(body?.error ?? `Erreur ${res.status}`)
-      }
+      await postTicket()
       onOpenChange(false)
       onCreated?.()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  async function handleSubmitWithOs() {
+    if (!canSubmit) return
+    setSubmittingOs(true)
+    setError(null)
+    try {
+      const ticket = await postTicket()
+      onOpenChange(false)
+      onCreatedForOs?.(ticket)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue')
+    } finally {
+      setSubmittingOs(false)
     }
   }
 
@@ -200,23 +224,15 @@ export default function TicketExpressDialog({
           {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
         </div>
         <DialogFooter className="flex items-center gap-2 sm:justify-between">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled
-                    className="rounded-full border-2 border-black bg-white font-semibold"
-                  >
-                    OS en un clic
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>V2</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleSubmitWithOs}
+            disabled={!canSubmit}
+            className="rounded-full border-2 border-black bg-white font-semibold"
+          >
+            {submittingOs ? 'Création…' : 'OS en un clic'}
+          </Button>
           <Button
             type="button"
             onClick={handleSubmit}

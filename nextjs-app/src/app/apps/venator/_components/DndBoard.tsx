@@ -32,6 +32,8 @@ interface DndBoardProps {
   onTicketRattacher: (ticketId: string, dossierId: string) => void | Promise<void>
   /** Suppression d'un dossier ou ticket depuis le menu ⋮ de la carte. */
   onDelete?: (item: ListItem) => void
+  /** OS émis depuis une carte ticket (menu ⋮). */
+  onOsEmis?: () => void
 }
 
 function dragStyle(transform: { x: number; y: number } | null) {
@@ -39,7 +41,15 @@ function dragStyle(transform: { x: number; y: number } | null) {
   return { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
 }
 
-function DossierBoardCard({ item, onDelete }: { item: ListItem; onDelete?: (item: ListItem) => void }) {
+function DossierBoardCard({
+  item,
+  onDelete,
+  onOsEmis,
+}: {
+  item: ListItem
+  onDelete?: (item: ListItem) => void
+  onOsEmis?: () => void
+}) {
   const draggable = useDraggable({ id: `dossier:${item.id}` })
   const droppable = useDroppable({ id: `rattacher:${item.id}` })
   const setRefs = (node: HTMLElement | null) => {
@@ -58,12 +68,20 @@ function DossierBoardCard({ item, onDelete }: { item: ListItem; onDelete?: (item
         droppable.isOver && 'ring-4 ring-[#FFC300]'
       )}
     >
-      <DossierCard item={item} onDelete={onDelete} />
+      <DossierCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
     </div>
   )
 }
 
-function TicketBoardCard({ item, onDelete }: { item: ListItem; onDelete?: (item: ListItem) => void }) {
+function TicketBoardCard({
+  item,
+  onDelete,
+  onOsEmis,
+}: {
+  item: ListItem
+  onDelete?: (item: ListItem) => void
+  onOsEmis?: () => void
+}) {
   const draggable = useDraggable({ id: `ticket:${item.id}` })
   return (
     <div
@@ -73,7 +91,7 @@ function TicketBoardCard({ item, onDelete }: { item: ListItem; onDelete?: (item:
       {...draggable.attributes}
       className={cn('touch-none', draggable.isDragging && 'opacity-40 relative z-50')}
     >
-      <DossierCard item={item} onDelete={onDelete} />
+      <DossierCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
     </div>
   )
 }
@@ -90,7 +108,7 @@ function StatutColumn({ statut, children }: { statut: DossierStatut; children: R
   )
 }
 
-export default function DndBoard({ boardItems, unassignedTickets, onDossierStatutChange, onTicketRattacher, onDelete }: DndBoardProps) {
+export default function DndBoard({ boardItems, unassignedTickets, onDossierStatutChange, onTicketRattacher, onDelete, onOsEmis }: DndBoardProps) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
   const columns = useMemo(
@@ -125,7 +143,7 @@ export default function DndBoard({ boardItems, unassignedTickets, onDossierStatu
             <h2 className="text-xs font-bold uppercase px-2">{STATUT_LABELS[statut]}</h2>
             <StatutColumn statut={statut}>
               {items.map((item) => (
-                <DossierBoardCard key={item.id} item={item} onDelete={onDelete} />
+                <DossierBoardCard key={item.id} item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
               ))}
             </StatutColumn>
           </div>
@@ -140,7 +158,7 @@ export default function DndBoard({ boardItems, unassignedTickets, onDossierStatu
           <div className="flex flex-wrap gap-2">
             {unassignedTickets.map((item) => (
               <div key={item.id} className="w-56">
-                <TicketBoardCard item={item} onDelete={onDelete} />
+                <TicketBoardCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
               </div>
             ))}
           </div>

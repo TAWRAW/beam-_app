@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
+import { MoreVertical, Send, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -8,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import EmettreOsDialog from './EmettreOsDialog'
 
 export type ListItemKind = 'dossier' | 'ticket'
 
@@ -19,6 +22,7 @@ export interface ListItem {
   statut: string
   priorite: number | null
   coproNom: string
+  copro_id: string
   created_at: string
   href: string
 }
@@ -72,7 +76,18 @@ function PrioriteDots({ priorite }: { priorite: number | null }) {
   )
 }
 
-export default function DossierCard({ item, onDelete }: { item: ListItem; onDelete?: (item: ListItem) => void }) {
+export default function DossierCard({
+  item,
+  onDelete,
+  onOsEmis,
+}: {
+  item: ListItem
+  onDelete?: (item: ListItem) => void
+  onOsEmis?: () => void
+}) {
+  const [osOpen, setOsOpen] = useState(false)
+  const isOsEnvoye = item.kind === 'ticket' && item.statut === 'os_envoye'
+
   return (
     <div className="relative border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] transition">
       <Link href={item.href as any} className="block p-3">
@@ -89,14 +104,19 @@ export default function DossierCard({ item, onDelete }: { item: ListItem; onDele
           </div>
           <div className="flex flex-col items-end gap-1 shrink-0 pr-5">
             <PrioriteDots priorite={item.priorite} />
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full border border-black bg-[#F2F1E6]">
+            <span
+              className={cn(
+                'text-xs font-semibold px-2 py-0.5 rounded-full border',
+                isOsEnvoye ? 'bg-blue-100 text-blue-800 border-blue-600' : 'border-black bg-[#F2F1E6]'
+              )}
+            >
               {STATUT_LABELS[item.statut] ?? item.statut}
             </span>
           </div>
         </div>
       </Link>
 
-      {onDelete && (
+      {(onDelete || item.kind === 'ticket') && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -105,21 +125,44 @@ export default function DossierCard({ item, onDelete }: { item: ListItem; onDele
               aria-label="Menu"
               className="absolute top-2 right-2 h-6 w-6 flex items-center justify-center rounded-full border-2 border-black bg-white text-sm font-bold leading-none shadow-[2px_2px_0px_0px_#000] hover:bg-[#F2F1E6]"
             >
-              ⋮
+              <MoreVertical className="h-3.5 w-3.5 mx-auto" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation()
-                onDelete(item)
-              }}
-              className="text-red-600 focus:text-red-600 focus:bg-red-50"
-            >
-              🗑 Supprimer
-            </DropdownMenuItem>
+            {item.kind === 'ticket' && (
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setOsOpen(true)
+                }}
+              >
+                <Send className="h-3.5 w-3.5 mr-1.5" />
+                Émettre OS
+              </DropdownMenuItem>
+            )}
+            {onDelete && (
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(item)
+                }}
+                className="text-red-600 focus:text-red-600 focus:bg-red-50"
+              >
+                <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                Supprimer
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
+      )}
+
+      {item.kind === 'ticket' && (
+        <EmettreOsDialog
+          ticket={{ id: item.id, copro_id: item.copro_id, titre: item.titre }}
+          open={osOpen}
+          onOpenChange={setOsOpen}
+          onEmis={onOsEmis}
+        />
       )}
     </div>
   )
