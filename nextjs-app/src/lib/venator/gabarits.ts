@@ -61,6 +61,11 @@ export const GABARITS: Record<DossierType, GabaritEtape[]> = {
     { titre: 'Suivi' },
     { titre: 'Clôture' },
   ],
+  autre: [
+    { titre: 'Ouverture' },
+    { titre: 'Suivi' },
+    { titre: 'Clôture' },
+  ],
 }
 
 export const CHECKLIST_NOUVELLE_COPRO: { libelle: string; categorie: string; auto_check_key?: string }[] = [

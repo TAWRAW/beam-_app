@@ -18,6 +18,7 @@ const TYPE_LABELS: Record<DossierType, string> = {
   ag: 'AG',
   conseil_syndical: 'Conseil syndical',
   vie_copro: 'Vie copro',
+  autre: 'Autre',
 }
 
 type Filters = { copro_id: string; type: string; vue: 'liste' | 'board' }

@@ -3,8 +3,9 @@ import { GABARITS, CHECKLIST_NOUVELLE_COPRO, instancierGabarit } from '../gabari
 import { DOSSIER_TYPES } from '../types'
 
 describe('gabarits', () => {
-  it('couvre les 7 types de dossiers', () => {
+  it('couvre les 8 types de dossiers', () => {
     for (const t of DOSSIER_TYPES) expect(GABARITS[t].length).toBeGreaterThan(2)
+    expect(GABARITS.autre.length).toBe(3)
   })
   it('instancie le gabarit sinistre avec ordres croissants et échéances calculées', () => {
     const etapes = instancierGabarit('sinistre', new Date('2026-07-16'))

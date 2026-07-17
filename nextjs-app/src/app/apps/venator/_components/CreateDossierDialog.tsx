@@ -23,6 +23,7 @@ const TYPE_LABELS: Record<DossierType, string> = {
   ag: 'AG',
   conseil_syndical: 'Conseil syndical',
   vie_copro: 'Vie copro',
+  autre: 'Autre',
 }
 
 const PRIORITE_LABELS: Record<number, string> = {

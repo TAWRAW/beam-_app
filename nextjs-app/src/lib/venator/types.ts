@@ -1,7 +1,7 @@
 // src/lib/venator/types.ts — types partagés Venator (AUCUN import next/*)
 import { z } from 'zod'
 
-export const DOSSIER_TYPES = ['sinistre','travaux','procedure','mutation','ag','conseil_syndical','vie_copro'] as const
+export const DOSSIER_TYPES = ['sinistre','travaux','procedure','mutation','ag','conseil_syndical','vie_copro','autre'] as const
 export type DossierType = (typeof DOSSIER_TYPES)[number]
 export const DOSSIER_STATUTS = ['ouvert','en_cours','en_attente','clos'] as const
 export type DossierStatut = (typeof DOSSIER_STATUTS)[number]
