@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
-import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket } from 'lucide-react'
+import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket, KeyRound } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -69,6 +69,12 @@ const adminItems: NavItem[] = [
     href: '/apps/venator',
     label: 'Venator',
     icon: Rocket,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/cles',
+    label: 'Clés',
+    icon: KeyRound,
     adminOnly: true,
   },
   {
