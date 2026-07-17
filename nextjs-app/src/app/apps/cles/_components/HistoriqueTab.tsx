@@ -83,7 +83,12 @@ export function HistoriqueTab() {
 
   const selectedRemises = remises.filter((r) => selected.has(r.id))
   const selectedOwnerIds = new Set(selectedRemises.map((r) => r.estale_owner_id))
-  const canGenerateBordereau = selectedRemises.length > 0 && selectedOwnerIds.size === 1
+  const selectedCondoIds = new Set(selectedRemises.map((r) => r.estale_condo_id))
+  // Un bordereau = un seul copropriétaire ET une seule copro (l'entête n'en porte
+  // qu'une) : en vue « toutes les copropriétés » on garde-fou contre une sélection
+  // mixte qui misattribuerait des lignes à la mauvaise copro.
+  const canGenerateBordereau =
+    selectedRemises.length > 0 && selectedOwnerIds.size === 1 && selectedCondoIds.size === 1
 
   const genererBordereau = async () => {
     if (!canGenerateBordereau) return
