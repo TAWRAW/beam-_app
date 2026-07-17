@@ -2,6 +2,12 @@
 
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 export type ListItemKind = 'dossier' | 'ticket'
 
@@ -66,30 +72,55 @@ function PrioriteDots({ priorite }: { priorite: number | null }) {
   )
 }
 
-export default function DossierCard({ item }: { item: ListItem }) {
+export default function DossierCard({ item, onDelete }: { item: ListItem; onDelete?: (item: ListItem) => void }) {
   return (
-    <Link
-      href={item.href as any}
-      className="block border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white p-3 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] transition"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col gap-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <TypeBadge type={item.type} />
-            {item.kind === 'ticket' && (
-              <span className="text-[10px] font-bold uppercase text-neutral-500">Ticket</span>
-            )}
+    <div className="relative border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] transition">
+      <Link href={item.href as any} className="block p-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <TypeBadge type={item.type} />
+              {item.kind === 'ticket' && (
+                <span className="text-[10px] font-bold uppercase text-neutral-500">Ticket</span>
+              )}
+            </div>
+            <p className="font-bold text-sm truncate">{item.titre}</p>
+            <p className="text-xs text-neutral-600 truncate">{item.coproNom}</p>
           </div>
-          <p className="font-bold text-sm truncate">{item.titre}</p>
-          <p className="text-xs text-neutral-600 truncate">{item.coproNom}</p>
+          <div className="flex flex-col items-end gap-1 shrink-0 pr-5">
+            <PrioriteDots priorite={item.priorite} />
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full border border-black bg-[#F2F1E6]">
+              {STATUT_LABELS[item.statut] ?? item.statut}
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <PrioriteDots priorite={item.priorite} />
-          <span className="text-xs font-semibold px-2 py-0.5 rounded-full border border-black bg-[#F2F1E6]">
-            {STATUT_LABELS[item.statut] ?? item.statut}
-          </span>
-        </div>
-      </div>
-    </Link>
+      </Link>
+
+      {onDelete && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              onClick={(e) => e.stopPropagation()}
+              aria-label="Menu"
+              className="absolute top-2 right-2 h-6 w-6 flex items-center justify-center rounded-full border-2 border-black bg-white text-sm font-bold leading-none shadow-[2px_2px_0px_0px_#000] hover:bg-[#F2F1E6]"
+            >
+              ⋮
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete(item)
+              }}
+              className="text-red-600 focus:text-red-600 focus:bg-red-50"
+            >
+              🗑 Supprimer
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </div>
   )
 }

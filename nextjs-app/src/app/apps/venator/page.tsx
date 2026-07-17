@@ -183,6 +183,21 @@ export default function VenatorDashboardPage() {
     }
   }
 
+  async function handleDeleteItem(item: ListItem) {
+    if (!window.confirm(`Supprimer définitivement ce ${item.kind === 'ticket' ? 'ticket' : 'dossier'} ? Cette action est irréversible.`)) return
+    try {
+      const endpoint = item.kind === 'ticket' ? `/api/venator/tickets/${item.id}` : `/api/venator/dossiers/${item.id}`
+      const res = await fetch(endpoint, { method: 'DELETE' })
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.error ?? `Erreur ${res.status}`)
+      }
+      await loadDossiers()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur de suppression')
+    }
+  }
+
   async function handleTicketRattacher(ticketId: string, dossierId: string) {
     try {
       const res = await fetch(`/api/venator/tickets/${ticketId}`, {
@@ -287,7 +302,7 @@ export default function VenatorDashboardPage() {
             <p className="text-sm text-neutral-600">Aucun dossier ni ticket pour l'instant.</p>
           )}
           {listItems.map((item) => (
-            <DossierCard key={`${item.kind}-${item.id}`} item={item} />
+            <DossierCard key={`${item.kind}-${item.id}`} item={item} onDelete={handleDeleteItem} />
           ))}
         </div>
       ) : (
@@ -296,6 +311,7 @@ export default function VenatorDashboardPage() {
           unassignedTickets={unassignedTicketItems}
           onDossierStatutChange={handleDossierStatutChange}
           onTicketRattacher={handleTicketRattacher}
+          onDelete={handleDeleteItem}
         />
       )}
 

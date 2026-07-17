@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -42,6 +43,7 @@ const TICKET_STATUT_LABELS: Record<string, string> = {
 
 export default function DossierPage({ params }: { params: { id: string } }) {
   const dossierId = params.id
+  const router = useRouter()
 
   const [dossier, setDossier] = useState<Dossier | null>(null)
   const [etapes, setEtapes] = useState<Etape[]>([])
@@ -49,6 +51,7 @@ export default function DossierPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [closing, setClosing] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [createTicketOpen, setCreateTicketOpen] = useState(false)
 
   const loadDossier = useCallback(async () => {
@@ -115,6 +118,24 @@ export default function DossierPage({ params }: { params: { id: string } }) {
     }
   }
 
+  async function handleSupprimer() {
+    if (!dossier) return
+    if (!window.confirm('Supprimer définitivement ce dossier ? Cette action est irréversible.')) return
+    setDeleting(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/venator/dossiers/${dossierId}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.error ?? `Erreur ${res.status}`)
+      }
+      router.push('/apps/venator')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue')
+      setDeleting(false)
+    }
+  }
+
   if (loading) {
     return <p className="text-sm text-neutral-600">Chargement…</p>
   }
@@ -154,17 +175,27 @@ export default function DossierPage({ params }: { params: { id: string } }) {
                 </div>
                 <h1 className="font-bold text-xl">{dossier.titre}</h1>
               </div>
-              {dossier.statut !== 'clos' && (
+              <div className="flex items-center gap-2 shrink-0">
+                {dossier.statut !== 'clos' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleClore}
+                    disabled={closing}
+                    className="rounded-full border-2 border-black bg-white font-semibold shrink-0"
+                  >
+                    {closing ? 'Clôture…' : 'Clore le dossier'}
+                  </Button>
+                )}
                 <Button
                   type="button"
-                  variant="outline"
-                  onClick={handleClore}
-                  disabled={closing}
-                  className="rounded-full border-2 border-black bg-white font-semibold shrink-0"
+                  onClick={handleSupprimer}
+                  disabled={deleting}
+                  className="bg-red-600 text-white border-2 border-black rounded-full font-semibold shrink-0 hover:bg-red-700"
                 >
-                  {closing ? 'Clôture…' : 'Clore le dossier'}
+                  {deleting ? 'Suppression…' : '🗑 Supprimer le dossier'}
                 </Button>
-              )}
+              </div>
             </div>
           </div>
 

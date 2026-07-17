@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireVenatorRole } from '@/lib/venator/auth-guard'
 import { createVenatorAdminClient } from '@/lib/venator/services/_supabase-admin'
-import { detailDossier, cloreDossier, majStatutDossier } from '@/lib/venator/services/dossiers-service'
+import { detailDossier, cloreDossier, majStatutDossier, supprimerDossier } from '@/lib/venator/services/dossiers-service'
 import { VenatorError, httpStatus } from '@/lib/venator/services/errors'
 
 const patchSchema = z.object({ action: z.literal('clore') }).or(

@@ -73,6 +73,25 @@ export default function EtapesTimeline({
     patchEtape(etape.id, { notes: val })
   }
 
+  async function handleSupprimer(etape: Etape) {
+    if (!window.confirm('Supprimer définitivement cette étape ? Cette action est irréversible.')) return
+    setError(null)
+    try {
+      const res = await fetch(`/api/venator/dossiers/${dossierId}/etapes`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ etape_id: etape.id }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.error ?? `Erreur ${res.status}`)
+      }
+      onChange()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue')
+    }
+  }
+
   async function handleAjouter() {
     if (!nouvelleTitre.trim() || submitting) return
     setSubmitting(true)
@@ -146,6 +165,12 @@ export default function EtapesTimeline({
                     Sauter
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleNotes(etape)}>Notes</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleSupprimer(etape)}
+                    className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                  >
+                    🗑 Supprimer l&apos;étape
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </li>
