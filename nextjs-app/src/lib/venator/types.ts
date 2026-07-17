@@ -11,6 +11,8 @@ export const TICKET_TYPES = ['intervention','demande','signalement'] as const
 export type TicketType = (typeof TICKET_TYPES)[number]
 export const TICKET_STATUTS = ['nouveau','os_envoye','planifie','realise','clos'] as const
 export type TicketStatut = (typeof TICKET_STATUTS)[number]
+export const OS_STATUTS = ['brouillon','envoye','erreur'] as const
+export type OsStatut = (typeof OS_STATUTS)[number]
 export type VenatorRole = 'admin' | 'gestionnaire' | 'invite'
 export type FilDirection = 'entrant' | 'sortant' | 'note'
 export type FilSource = 'gmail' | 'manuel' | 'ia' | 'venator'
@@ -23,6 +25,7 @@ export interface FilMessage { id: string; parent_type: 'dossier' | 'ticket'; par
 export interface Checklist { id: string; copro_id: string; created_at: string }
 export interface ChecklistItem { id: string; checklist_id: string; ordre: number; libelle: string; categorie: string; fait: boolean; fait_at: string | null; auto_check_key: string | null }
 export interface JournalEntry { id: string; copro_id: string; dossier_id: string | null; ticket_id: string | null; type_evenement: string; contenu: string; acteur: string; created_at: string }
+export interface Os { id: string; ticket_id: string; copro_id: string; prestataire_nom: string; objet: string; estale_task_id: string | null; estale_event_id: string | null; statut: OsStatut; erreur: string | null; sent_at: string | null; created_at: string }
 
 export const dossierCreateSchema = z.object({
   copro_id: z.string().uuid(),
@@ -60,3 +63,14 @@ export const etapeUpdateSchema = z.object({
   notes: z.string().max(5000).nullish(),
 })
 export const checklistItemUpdateSchema = z.object({ fait: z.boolean() })
+
+export const osEmettreSchema = z.object({
+  ticket_id: z.string().uuid(),
+  prestataire_contact_id: z.string().min(1),
+  prestataire_nom: z.string().min(1),
+  objet: z.string().min(1).max(200),
+  description: z.string().min(1).max(20000),
+  urgent: z.boolean().default(false),
+  code_acces: z.string().max(100).nullish(),
+})
+export type OsEmettreInput = z.infer<typeof osEmettreSchema>
