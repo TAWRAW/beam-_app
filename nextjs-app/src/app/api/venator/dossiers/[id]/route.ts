@@ -37,3 +37,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     throw e
   }
 }
+
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await requireVenatorRole('gestionnaire')
+  if (!auth.ok) return auth.response
+  try {
+    await supprimerDossier(createVenatorAdminClient(), params.id)
+    return NextResponse.json({ ok: true })
+  } catch (e) {
+    if (e instanceof VenatorError) return NextResponse.json({ error: e.message }, { status: httpStatus[e.code] })
+    throw e
+  }
+}
