@@ -1,14 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useSWRConfig } from 'swr'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import DossierCard, { type ListItem } from './_components/DossierCard'
 import CreateDossierDialog from './_components/CreateDossierDialog'
 import TicketExpressDialog from './_components/TicketExpressDialog'
 import DndBoard from './_components/DndBoard'
-import { DOSSIER_TYPES, type Copro, type Dossier, type DossierStatut, type DossierType, type Ticket } from '@/lib/venator/types'
+import { useCopros, useDossiers, useTickets } from '@/lib/venator/useVenator'
+import { DOSSIER_TYPES, DOSSIER_STATUTS, type DossierStatut, type DossierType } from '@/lib/venator/types'
 
 const TYPE_LABELS: Record<DossierType, string> = {
   sinistre: 'Sinistre',
@@ -23,63 +26,66 @@ const TYPE_LABELS: Record<DossierType, string> = {
 
 type Filters = { copro_id: string; type: string; vue: 'liste' | 'board' }
 
+function ListSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+      ))}
+    </div>
+  )
+}
+
+function BoardSkeleton() {
+  return (
+    <div className="grid grid-cols-4 gap-3">
+      {DOSSIER_STATUTS.map((statut) => (
+        <div key={statut} className="flex flex-col gap-2">
+          <div className="h-4 w-20 rounded bg-neutral-200 animate-pulse" />
+          {[0, 1].map((i) => (
+            <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function VenatorDashboardPage() {
-  const [copros, setCopros] = useState<Copro[]>([])
-  const [dossiers, setDossiers] = useState<Dossier[]>([])
-  const [tickets, setTickets] = useState<Ticket[]>([])
+  const { mutate } = useSWRConfig()
   const [filters, setFilters] = useState<Filters>({ copro_id: 'all', type: 'all', vue: 'liste' })
-  const [loading, setLoading] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
   const [ticketExpressOpen, setTicketExpressOpen] = useState(false)
   const [confirmMsg, setConfirmMsg] = useState<string | null>(null)
 
-  const loadCopros = useCallback(async () => {
-    try {
-      const res = await fetch('/api/venator/copros')
-      if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      const { copros } = await res.json()
-      setCopros(copros ?? [])
-    } catch {
-      setCopros([])
-    }
-  }, [])
-
-  const loadDossiers = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const params = new URLSearchParams()
-      if (filters.copro_id !== 'all') params.set('copro_id', filters.copro_id)
-      if (filters.type !== 'all') params.set('type', filters.type)
-
-      const [dossiersRes, ticketsRes] = await Promise.all([
-        fetch(`/api/venator/dossiers?${params.toString()}`),
-        fetch(`/api/venator/tickets${filters.copro_id !== 'all' ? `?copro_id=${filters.copro_id}` : ''}`),
-      ])
-      if (!dossiersRes.ok) throw new Error(`Erreur dossiers ${dossiersRes.status}`)
-      if (!ticketsRes.ok) throw new Error(`Erreur tickets ${ticketsRes.status}`)
-      const dossiersBody = await dossiersRes.json()
-      const ticketsBody = await ticketsRes.json()
-      setDossiers(dossiersBody.dossiers ?? [])
-      setTickets(ticketsBody.tickets ?? [])
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
-      setDossiers([])
-      setTickets([])
-    } finally {
-      setLoading(false)
-    }
+  const dossiersQuery = useMemo(() => {
+    const params = new URLSearchParams()
+    if (filters.copro_id !== 'all') params.set('copro_id', filters.copro_id)
+    if (filters.type !== 'all') params.set('type', filters.type)
+    return params.toString()
   }, [filters.copro_id, filters.type])
 
-  useEffect(() => {
-    loadCopros()
-  }, [loadCopros])
+  const ticketsQuery = useMemo(() => {
+    const params = new URLSearchParams()
+    if (filters.copro_id !== 'all') params.set('copro_id', filters.copro_id)
+    return params.toString()
+  }, [filters.copro_id])
 
-  useEffect(() => {
-    loadDossiers()
-  }, [loadDossiers])
+  const { data: coprosData } = useCopros()
+  const { data: dossiersData, isLoading: dossiersLoading } = useDossiers(dossiersQuery)
+  const { data: ticketsData, isLoading: ticketsLoading } = useTickets(ticketsQuery)
+
+  const copros = coprosData?.copros ?? []
+  const dossiers = dossiersData?.dossiers ?? []
+  const tickets = ticketsData?.tickets ?? []
+  const loading = dossiersLoading || ticketsLoading
+
+  // Rafraîchit toutes les clés Venator (copros, dossiers filtrés, tickets filtrés) après une mutation.
+  function refreshAll() {
+    return mutate((key) => typeof key === 'string' && key.startsWith('/api/venator/'))
+  }
 
   async function handleSync() {
     setSyncing(true)
@@ -87,8 +93,7 @@ export default function VenatorDashboardPage() {
     try {
       const res = await fetch('/api/venator/copros/sync', { method: 'POST' })
       if (!res.ok) throw new Error(`Erreur sync ${res.status}`)
-      await loadCopros()
-      await loadDossiers()
+      await refreshAll()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur de synchronisation')
     } finally {
@@ -98,7 +103,7 @@ export default function VenatorDashboardPage() {
 
   async function handleTicketExpressCreated() {
     setConfirmMsg('Ticket express créé.')
-    await loadDossiers()
+    await refreshAll()
     setTimeout(() => setConfirmMsg(null), 3000)
   }
 
@@ -177,7 +182,7 @@ export default function VenatorDashboardPage() {
         body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      await loadDossiers()
+      await refreshAll()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur de mise à jour du statut')
     }
@@ -192,7 +197,7 @@ export default function VenatorDashboardPage() {
         const body = await res.json().catch(() => null)
         throw new Error(body?.error ?? `Erreur ${res.status}`)
       }
-      await loadDossiers()
+      await refreshAll()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur de suppression')
     }
@@ -208,7 +213,7 @@ export default function VenatorDashboardPage() {
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       const dossier = dossiers.find((d) => d.id === dossierId)
       setConfirmMsg(`Ticket rattaché à ${dossier?.titre ?? 'dossier'}.`)
-      await loadDossiers()
+      await refreshAll()
       setTimeout(() => setConfirmMsg(null), 3000)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur de rattachement')
@@ -262,7 +267,14 @@ export default function VenatorDashboardPage() {
             disabled={syncing}
             className="rounded-full border-2 border-black bg-white font-semibold"
           >
-            {syncing ? 'Sync…' : '⟳ Sync copros'}
+            {syncing ? (
+              <span className="inline-flex items-center gap-1.5">
+                <span className={cn('h-3 w-3 rounded-full border-2 border-black border-t-transparent animate-spin')} />
+                Sync…
+              </span>
+            ) : (
+              '⟳ Sync copros'
+            )}
           </Button>
           <Button
             type="button"
@@ -295,7 +307,7 @@ export default function VenatorDashboardPage() {
       )}
 
       {loading ? (
-        <p className="text-sm text-neutral-600">Chargement…</p>
+        filters.vue === 'liste' ? <ListSkeleton /> : <BoardSkeleton />
       ) : filters.vue === 'liste' ? (
         <div className="flex flex-col gap-2">
           {listItems.length === 0 && (
@@ -320,6 +332,7 @@ export default function VenatorDashboardPage() {
         onOpenChange={setCreateOpen}
         copros={copros}
         defaultCoproId={filters.copro_id !== 'all' ? filters.copro_id : undefined}
+        onCreated={() => refreshAll()}
       />
 
       <TicketExpressDialog

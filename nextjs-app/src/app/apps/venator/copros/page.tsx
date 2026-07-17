@@ -1,35 +1,29 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
+import { useSWRConfig } from 'swr'
 import { Button } from '@/components/ui/button'
-import type { Copro } from '@/lib/venator/types'
+import { cn } from '@/lib/utils'
+import { useCopros } from '@/lib/venator/useVenator'
+
+function CoprosSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <div key={i} className="h-14 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+      ))}
+    </div>
+  )
+}
 
 export default function CoprosIndexPage() {
-  const [copros, setCopros] = useState<Copro[]>([])
-  const [loading, setLoading] = useState(true)
+  const { mutate } = useSWRConfig()
+  const { data, error: swrError, isLoading } = useCopros()
   const [syncing, setSyncing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const loadCopros = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch('/api/venator/copros')
-      if (!res.ok) throw new Error(`Erreur ${res.status}`)
-      const { copros }: { copros: Copro[] } = await res.json()
-      setCopros(copros ?? [])
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
-      setCopros([])
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    loadCopros()
-  }, [loadCopros])
+  const copros = data?.copros ?? []
 
   async function handleSync() {
     setSyncing(true)
@@ -37,13 +31,15 @@ export default function CoprosIndexPage() {
     try {
       const res = await fetch('/api/venator/copros/sync', { method: 'POST' })
       if (!res.ok) throw new Error(`Erreur sync ${res.status}`)
-      await loadCopros()
+      await mutate('/api/venator/copros')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur de synchronisation')
     } finally {
       setSyncing(false)
     }
   }
+
+  const displayError = error ?? (swrError ? 'Erreur de chargement' : null)
 
   return (
     <div className="flex flex-col gap-4">
@@ -56,18 +52,25 @@ export default function CoprosIndexPage() {
           disabled={syncing}
           className="rounded-full border-2 border-black bg-white font-semibold"
         >
-          {syncing ? 'Sync…' : '⟳ Sync copros'}
+          {syncing ? (
+            <span className="inline-flex items-center gap-1.5">
+              <span className={cn('h-3 w-3 rounded-full border-2 border-black border-t-transparent animate-spin')} />
+              Sync…
+            </span>
+          ) : (
+            '⟳ Sync copros'
+          )}
         </Button>
       </div>
 
-      {error && (
+      {displayError && (
         <div className="border-2 border-red-600 rounded-2xl bg-white p-3 text-sm font-semibold text-red-600">
-          {error}
+          {displayError}
         </div>
       )}
 
-      {loading ? (
-        <p className="text-sm text-neutral-600">Chargement…</p>
+      {isLoading ? (
+        <CoprosSkeleton />
       ) : copros.length === 0 ? (
         <p className="text-sm text-neutral-600">
           Aucune copropriété. Cliquez sur « ⟳ Sync copros » pour importer depuis Estale.

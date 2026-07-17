@@ -37,11 +37,13 @@ export default function CreateDossierDialog({
   onOpenChange,
   copros,
   defaultCoproId,
+  onCreated,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   copros: Copro[]
   defaultCoproId?: string
+  onCreated?: (dossier: Dossier) => void
 }) {
   const router = useRouter()
   const [coproId, setCoproId] = useState(defaultCoproId ?? '')
@@ -69,6 +71,7 @@ export default function CreateDossierDialog({
       }
       const { dossier }: { dossier: Dossier } = await res.json()
       onOpenChange(false)
+      onCreated?.(dossier)
       router.push(`/apps/venator/dossiers/${dossier.id}` as any)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue')
