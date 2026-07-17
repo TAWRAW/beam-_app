@@ -82,6 +82,7 @@ export interface EstaleAgency {
 export interface EstaleCondo {
   id: string
   name: string
+  reference?: string
   address?: string
   zipCode?: string
   city?: string
@@ -295,6 +296,7 @@ export async function getCondos(): Promise<{ condos: EstaleCondo[]; collaborator
           condos(archived: false) {
             id
             name
+            reference
             address {
               housenumber
               street
@@ -327,6 +329,7 @@ export async function getCondos(): Promise<{ condos: EstaleCondo[]; collaborator
     return {
       id: condo.id,
       name: condo.name,
+      reference: condo.reference ?? undefined,
       address: streetFull,
       zipCode: addr?.postcode || '',
       city: addr?.city || '',

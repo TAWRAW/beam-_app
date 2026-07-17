@@ -11,7 +11,7 @@ export async function creerDossier(db: SupabaseClient, input: DossierCreateInput
   if (error || !dossier) throw new VenatorError('invalid', error?.message ?? 'création impossible')
   const gabarit = instancierGabarit(input.type, new Date())
   const { data: etapes } = await db.from('venator_dossier_etapes')
-    .insert(gabarit.map(g => ({ ...g, dossier_id: dossier.id })))
+    .insert(gabarit.map(g => ({ ...g, dossier_id: dossier.id }))).select()
   await logJournal(db, { copro_id: dossier.copro_id, dossier_id: dossier.id, type_evenement: 'dossier_cree', contenu: `Dossier ${input.type} créé : ${input.titre}` })
   return { dossier, etapes: (etapes ?? []) as Etape[] }
 }

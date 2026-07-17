@@ -126,7 +126,7 @@ export default function VenatorDashboardPage() {
         priorite: null,
         coproNom: coproById.get(t.copro_id)?.nom ?? '—',
         created_at: t.created_at,
-        href: t.dossier_id ? `/apps/venator/dossiers/${t.dossier_id}` : `/apps/venator/tickets/${t.id}`,
+        href: t.dossier_id ? `/apps/venator/dossiers/${t.dossier_id}` : `/apps/venator/copros/${t.copro_id}`,
       }))
     return [...fromDossiers, ...fromTickets].sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -162,7 +162,7 @@ export default function VenatorDashboardPage() {
           priorite: null,
           coproNom: coproById.get(t.copro_id)?.nom ?? '—',
           created_at: t.created_at,
-          href: `/apps/venator/tickets/${t.id}`,
+          href: `/apps/venator/copros/${t.copro_id}`,
         })),
     [tickets, coproById]
   )

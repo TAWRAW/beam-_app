@@ -48,7 +48,11 @@ export function createFakeDb() {
             }
           }
           rows.push(...arr)
-          return { select: () => ({ single: async () => ({ data: arr[0], error: null }) }), then: (res: any) => res({ data: arr, error: null }) }
+          // Fidèle à supabase-js : insert SANS .select() ⇒ data: null ; .select() ⇒ tableau ; .select().single() ⇒ 1 ligne.
+          return {
+            select: () => ({ single: async () => ({ data: arr[0], error: null }), then: (res: any) => res({ data: arr, error: null }) }),
+            then: (res: any) => res({ data: null, error: null }),
+          }
         },
         update(patch: Row) {
           return { eq(col: string, val: any) {
