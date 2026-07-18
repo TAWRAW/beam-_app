@@ -3,16 +3,26 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { mutate } from 'swr'
+import { Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { TypeBadge } from '../../_components/DossierCard'
 import ChecklistPanel from '../../_components/ChecklistPanel'
-import { keys, useCopros, useDossiers, useJournal } from '@/lib/venator/useVenator'
+import EmettreOsDialog, { type OsTicket } from '../../_components/EmettreOsDialog'
+import { keys, useCopros, useDossiers, useJournal, useTickets } from '@/lib/venator/useVenator'
 
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
   ouvert: 'Ouvert',
   en_cours: 'En cours',
   en_attente: 'En attente',
+  clos: 'Clos',
+}
+
+const TICKET_STATUT_LABELS: Record<string, string> = {
+  nouveau: 'Nouveau',
+  os_envoye: 'OS envoyé',
+  planifie: 'Planifié',
+  realise: 'Réalisé',
   clos: 'Clos',
 }
 
@@ -60,11 +70,15 @@ export default function CoproPage({ params }: { params: { id: string } }) {
   const { data: dossiersData, isLoading: dossiersLoading } = useDossiers(`copro_id=${coproId}`)
   const dossiers = (dossiersData?.dossiers ?? []).filter((d) => d.statut !== 'clos')
 
+  const { data: ticketsData, isLoading: ticketsLoading } = useTickets(`copro_id=${coproId}`)
+  const tickets = (ticketsData?.tickets ?? []).filter((t) => t.statut !== 'clos')
+
   const [error, setError] = useState<string | null>(null)
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [osDialogTicket, setOsDialogTicket] = useState<OsTicket | null>(null)
 
-  const loading = coprosLoading || journalLoading || dossiersLoading
+  const loading = coprosLoading || journalLoading || dossiersLoading || ticketsLoading
 
   async function handleAjouterNote() {
     if (!note.trim() || submitting) return
@@ -167,6 +181,42 @@ export default function CoproPage({ params }: { params: { id: string } }) {
           </div>
 
           <div className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white p-3 flex flex-col gap-2">
+            <h2 className="font-bold text-sm">Tickets ouverts</h2>
+            {tickets.length === 0 ? (
+              <p className="text-xs text-neutral-600">Aucun ticket ouvert.</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {tickets.map((t) => (
+                  <li key={t.id} className="border border-black rounded-xl p-2 flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border border-black bg-[#F2F1E6]">
+                          {TICKET_STATUT_LABELS[t.statut] ?? t.statut}
+                        </span>
+                        {t.prestataire_nom && (
+                          <span className="text-[10px] text-neutral-500 truncate">{t.prestataire_nom}</span>
+                        )}
+                      </div>
+                      <p className="text-sm font-semibold truncate">{t.titre}</p>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => setOsDialogTicket({ id: t.id, copro_id: t.copro_id, titre: t.titre })}
+                      disabled={t.statut === 'os_envoye'}
+                      title={t.statut === 'os_envoye' ? 'OS déjà envoyé' : 'Émettre un OS Estale'}
+                      className="shrink-0 bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300] disabled:opacity-50"
+                    >
+                      <Send className="h-3.5 w-3.5 mr-1" />
+                      Émettre OS
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white p-3 flex flex-col gap-2">
             <h2 className="font-bold text-sm">Dossiers ouverts</h2>
             {dossiers.length === 0 ? (
               <p className="text-xs text-neutral-600">Aucun dossier ouvert.</p>
@@ -198,6 +248,18 @@ export default function CoproPage({ params }: { params: { id: string } }) {
           <ChecklistPanel coproId={coproId} />
         </div>
       </div>
+
+      <EmettreOsDialog
+        ticket={osDialogTicket}
+        open={osDialogTicket !== null}
+        onOpenChange={(open) => {
+          if (!open) setOsDialogTicket(null)
+        }}
+        onEmis={() => {
+          mutate(keys.tickets(`copro_id=${coproId}`))
+          mutate(keys.journal(coproId))
+        }}
+      />
     </div>
   )
 }
