@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useCopros } from '@/lib/venator/useVenator'
 
 /** Ticket minimal requis pour émettre un OS (id + rattachement copro + titre par défaut). */
@@ -58,6 +58,7 @@ export default function EmettreOsDialog({
   )
 
   const [suppliers, setSuppliers] = useState<EstaleCondoSupplier[]>([])
+  const [cabinetSuppliers, setCabinetSuppliers] = useState<EstaleCondoSupplier[]>([])
   const [suppliersLoading, setSuppliersLoading] = useState(false)
   const [suppliersError, setSuppliersError] = useState<string | null>(null)
 
@@ -75,6 +76,7 @@ export default function EmettreOsDialog({
   useEffect(() => {
     if (!open || !ticket) {
       setSuppliers([])
+      setCabinetSuppliers([])
       setSuppliersError(null)
       setPrestataireContactId('')
       setObjet('')
@@ -103,10 +105,13 @@ export default function EmettreOsDialog({
           const body = await res.json().catch(() => null)
           throw new Error(body?.error ?? `Erreur ${res.status}`)
         }
-        return res.json() as Promise<{ suppliers: EstaleCondoSupplier[] }>
+        return res.json() as Promise<{ suppliers: EstaleCondoSupplier[]; cabinetSuppliers?: EstaleCondoSupplier[] }>
       })
-      .then(({ suppliers }) => {
-        if (!cancelled) setSuppliers(suppliers ?? [])
+      .then(({ suppliers, cabinetSuppliers }) => {
+        if (!cancelled) {
+          setSuppliers(suppliers ?? [])
+          setCabinetSuppliers(cabinetSuppliers ?? [])
+        }
       })
       .catch((e) => {
         if (!cancelled) setSuppliersError(e instanceof Error ? e.message : 'Erreur de chargement des fournisseurs')
@@ -120,16 +125,20 @@ export default function EmettreOsDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, ticket?.id, coproEstaleId])
 
+  const toOptions = (list: EstaleCondoSupplier[]): ContactOption[] =>
+    list.flatMap((s) =>
+      s.contacts.map((c) => ({
+        contactId: c.id,
+        label: `${s.name} — ${c.name} (${c.email ?? 'pas d\'email'})`,
+        prestataireNom: `${s.name} — ${c.name}`,
+      }))
+    )
+
+  const coproContacts: ContactOption[] = useMemo(() => toOptions(suppliers), [suppliers])
+  const cabinetContacts: ContactOption[] = useMemo(() => toOptions(cabinetSuppliers), [cabinetSuppliers])
   const contacts: ContactOption[] = useMemo(
-    () =>
-      suppliers.flatMap((s) =>
-        s.contacts.map((c) => ({
-          contactId: c.id,
-          label: `${s.name} — ${c.name} (${c.email ?? 'pas d\'email'})`,
-          prestataireNom: `${s.name} — ${c.name}`,
-        }))
-      ),
-    [suppliers]
+    () => [...coproContacts, ...cabinetContacts],
+    [coproContacts, cabinetContacts]
   )
 
   const canSubmit =
@@ -204,11 +213,26 @@ export default function EmettreOsDialog({
                 />
               </SelectTrigger>
               <SelectContent>
-                {contacts.map((c) => (
-                  <SelectItem key={c.contactId} value={c.contactId}>
-                    {c.label}
-                  </SelectItem>
-                ))}
+                {coproContacts.length > 0 && (
+                  <SelectGroup>
+                    <SelectLabel>Fournisseurs de la copro</SelectLabel>
+                    {coproContacts.map((c) => (
+                      <SelectItem key={c.contactId} value={c.contactId}>
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                )}
+                {cabinetContacts.length > 0 && (
+                  <SelectGroup>
+                    <SelectLabel>Autres fournisseurs du cabinet</SelectLabel>
+                    {cabinetContacts.map((c) => (
+                      <SelectItem key={c.contactId} value={c.contactId}>
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                )}
               </SelectContent>
             </Select>
             {suppliersError && <p className="text-xs text-red-600 font-semibold">{suppliersError}</p>}

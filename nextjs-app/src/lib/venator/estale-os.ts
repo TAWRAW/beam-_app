@@ -92,6 +92,19 @@ export async function loadCondoSuppliers(condoEstaleId: string): Promise<EstaleC
   return d.condo?.suppliers ?? []
 }
 
+/**
+ * TOUS les fournisseurs (+ contacts) du cabinet, via me.establishment.suppliers.
+ * Vérifié en réel le 18/07/2026 : les contact ids sont bien résolus à ce niveau.
+ * (Pas d'argument archived sur establishment.suppliers, contrairement à condo.suppliers.)
+ */
+export async function loadEstablishmentSuppliers(): Promise<EstaleCondoSupplier[]> {
+  const d = await estaleGraphQL<{ me: { establishment: { suppliers: EstaleCondoSupplier[] } | null } }>(
+    `query { me { establishment { suppliers { id name contacts { id name email phone } } } } }`,
+    {},
+  )
+  return d.me?.establishment?.suppliers ?? []
+}
+
 /** Collaborateur connecté : managerID (= me.collaborator.id) + establishmentID. Port réduit de `loadMe`. */
 export async function loadMeCollaborator(): Promise<{ managerID: string; establishmentID: string | null }> {
   const d = await estaleGraphQL<{
