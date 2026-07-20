@@ -238,6 +238,14 @@ export async function GET(req: NextRequest) {
     const condosData = await estaleGql<{ me: { establishment: { condos: Condo[] } } }>(cookie, GET_ALL_CONDOS)
     const condos = condosData.me.establishment.condos
 
+    // Seuil glissant : on ignore les écritures/transactions de plus d'un mois.
+    // Sans ça le rapport remontait le legacy non lettré jusqu'en janvier et
+    // noyait le signal (demande comptable — 20/07/2026). Un item non traité de
+    // plus d'un mois disparaît donc volontairement du rapport.
+    const cutoff = new Date()
+    cutoff.setMonth(cutoff.getMonth() - 1)
+    const isRecent = (n: MonitoringNode) => new Date(n.date) >= cutoff
+
     // 3. Données comptables par copropriété
     const reports: CondoReport[] = []
     for (const condo of condos) {
@@ -248,10 +256,10 @@ export async function GET(req: NextRequest) {
         const bankReports: BankReport[] = banks.map((b) => {
           const allNodes = b.monitoring.edges.map((e) => e.node).filter(Boolean)
           const unscoredTx = allNodes.filter(
-            (n) => Array.isArray(n.entries) && n.entries.length === 0 && !Array.isArray(n.transactions)
+            (n) => isRecent(n) && Array.isArray(n.entries) && n.entries.length === 0 && !Array.isArray(n.transactions)
           )
           const unscoredEntries = allNodes.filter(
-            (n) => Array.isArray(n.transactions) && n.transactions.length === 0 && !Array.isArray(n.entries)
+            (n) => isRecent(n) && Array.isArray(n.transactions) && n.transactions.length === 0 && !Array.isArray(n.entries)
           )
           return { label: b.label, institution: b.institution, balance: b.balance, unscoredTx, unscoredEntries }
         })
