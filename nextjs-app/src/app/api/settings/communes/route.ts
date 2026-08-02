@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { requireAdmin } from '@/lib/server-auth'
 
 const DATA_FILE = path.join(process.cwd(), 'data', 'communes.json')
 
@@ -19,11 +20,21 @@ async function writeData(data: Record<string, unknown>): Promise<void> {
 }
 
 export async function GET() {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   const data = await readData()
   return NextResponse.json(data)
 }
 
 export async function POST(request: Request) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     const body = await request.json()
     await writeData(body)

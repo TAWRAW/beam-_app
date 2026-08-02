@@ -11,6 +11,10 @@ const supabaseAdmin = createClient(
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  // DEV ONLY (smoke-test local) : cohérent avec le bypass de requireAdmin en dev. Aucun effet en prod.
+  if (process.env.NODE_ENV === 'development' && process.env.DEV_AUTH_BYPASS === '1') {
+    return NextResponse.json({ role: 'admin', debug: { authType: 'dev-bypass' } })
+  }
   try {
     console.log('=== DEBUG: Checking user role ===')
     

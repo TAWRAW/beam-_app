@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
+import { requireAdmin } from '@/lib/server-auth'
 
 // Client Supabase avec les permissions d'admin pour l'upload
 const supabase = createClient(
@@ -13,6 +14,11 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'im
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 
 export async function POST(request: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
@@ -89,6 +95,11 @@ export async function POST(request: NextRequest) {
 
 // GET pour lister les images (optionnel)
 export async function GET() {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     // Cette route pourrait être étendue pour lister les images uploadées
     return NextResponse.json(

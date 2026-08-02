@@ -5,10 +5,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import type { GetPendingArticlesResponse, SocialPlatform } from '@/types/social-publishing'
+import { requireAdmin } from '@/lib/server-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     // Récupérer les paramètres de requête
     const searchParams = request.nextUrl.searchParams
