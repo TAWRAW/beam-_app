@@ -86,3 +86,40 @@ export async function requireAdmin(): Promise<RequireAdminResult> {
     authType: 'supabase',
   }
 }
+
+/**
+ * Exige une session, sans regarder le rôle.
+ *
+ * requireAdmin refuse tout ce qui n'est pas admin ou employé : trop strict
+ * pour les routes où un utilisateur agit sur ses propres données, comme son
+ * profil. Mêmes parcours d'authentification (app_session hérité, puis
+ * Supabase Auth), sans la lecture du rôle.
+ */
+export async function requireUser(): Promise<RequireAdminResult> {
+  const cookieStore = cookies()
+
+  const legacyToken = cookieStore.get('app_session')?.value
+  if (legacyToken) {
+    const session = verifySession(legacyToken)
+    if (session) {
+      return { ok: true, email: session.email, authType: 'legacy' }
+    }
+  }
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: () => {},
+        remove: () => {},
+      },
+    },
+  )
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { ok: false, response: NextResponse.json({ error: 'unauthorized' }, { status: 401 }) }
+  }
+  return { ok: true, email: user.email, supabaseUserId: user.id, authType: 'supabase' }
+}

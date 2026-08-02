@@ -9,6 +9,7 @@ import {
   ArticleType
 } from '@/types/article'
 import { authenticateApiKey } from '@/lib/api-auth'
+import { requireAdmin } from '@/lib/server-auth'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,6 +36,11 @@ const supabaseAdmin = createClient(
  * - meta_title: string (optionnel)
  */
 export async function POST(request: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   // 1. Authentification
   const authResult = authenticateApiKey(request)
   if (!authResult.authenticated) {
@@ -262,6 +268,11 @@ export async function POST(request: NextRequest) {
  * GET /api/articles/import
  */
 export async function GET(request: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   const authResult = authenticateApiKey(request)
   if (!authResult.authenticated) {
     return NextResponse.json(

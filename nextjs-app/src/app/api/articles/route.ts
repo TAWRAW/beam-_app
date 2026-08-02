@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import slugify from 'slugify'
+import { requireAdmin } from '@/lib/server-auth'
 import {
   CreateArticleRequest,
   ArticleFilters,
@@ -19,6 +20,11 @@ const supabaseAdmin = createClient(
 
 // GET /api/articles - Liste des articles avec filtres et pagination
 export async function GET(request: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     const { searchParams } = new URL(request.url)
     
@@ -147,6 +153,11 @@ export async function GET(request: NextRequest) {
 
 // POST /api/articles - Création d'un nouvel article
 export async function POST(request: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     const body: CreateArticleRequest = await request.json()
 

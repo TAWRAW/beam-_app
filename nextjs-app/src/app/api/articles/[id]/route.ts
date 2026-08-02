@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import slugify from 'slugify'
+import { requireAdmin } from '@/lib/server-auth'
 import {
   UpdateArticleRequest,
   ArticleResponse,
@@ -18,6 +19,11 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     const { data: article, error } = await supabaseAdmin
       .from('articles')
@@ -59,6 +65,11 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     const body: UpdateArticleRequest = await request.json()
 
@@ -216,6 +227,11 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   try {
     // Vérifier que l'article existe
     const { data: existingArticle } = await supabaseAdmin

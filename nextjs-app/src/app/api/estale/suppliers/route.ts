@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getSuppliersByCondo, getSuppliersByCabinet, isEstaleConfigured } from '@/lib/estale-api'
+import { requireAdmin } from '@/lib/server-auth'
 
 export async function GET(request: Request) {
+  // Données Estale : réservées au cabinet. La route est publique sur Internet,
+  // le middleware ne couvrant que /apps/* — la garde doit être ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   const { searchParams } = new URL(request.url)
   const condoId = searchParams.get('condoId')
 

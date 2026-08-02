@@ -1,8 +1,14 @@
 export const runtime = 'nodejs'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/server-auth'
 
 export async function GET(_req: NextRequest) {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   const webhookUrl = process.env.N8N_MANDAT_WEBHOOK_URL
   const token = process.env.N8N_MANDAT_TOKEN
   const basicUser = process.env.N8N_MANDAT_BASIC_USER

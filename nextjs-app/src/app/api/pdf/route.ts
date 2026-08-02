@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import puppeteer from 'puppeteer-core'
 import chromium from '@sparticuz/chromium'
+import { requireUser } from '@/lib/server-auth'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -16,6 +17,11 @@ interface PDFRequestBody {
 }
 
 export async function POST(request: NextRequest) {
+  // Génération PDF réservée aux comptes connectés : la route était ouverte,
+  // et Puppeteer rend n'importe quel HTML fourni par l'appelant.
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response!
+
   try {
     const body: PDFRequestBody = await request.json()
 

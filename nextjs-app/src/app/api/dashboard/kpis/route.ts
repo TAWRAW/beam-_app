@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server'
+import { requireAdmin } from '@/lib/server-auth'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 300 // 5 minutes
 
 export async function GET() {
+  // Réservé au cabinet : le middleware ne filtre que /apps/*, une route API
+  // reste joignable depuis Internet sans garde explicite ici.
+  const guard = await requireAdmin()
+  if (!guard.ok) return guard.response!
+
   const webhookUrl = process.env.N8N_DASHBOARD_WEBHOOK_URL
 
   if (!webhookUrl) {
