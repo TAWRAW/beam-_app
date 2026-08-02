@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import puppeteer from 'puppeteer-core'
 import chromium from '@sparticuz/chromium'
+import { requireUser } from '@/lib/server-auth'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -16,6 +17,10 @@ interface PDFRequestBody {
 }
 
 export async function POST(request: NextRequest) {
+  // Génération PDF réservée aux utilisateurs connectés (la route était ouverte à tous)
+  const auth = await requireUser()
+  if (!auth.ok) return auth.response!
+
   try {
     const body: PDFRequestBody = await request.json()
 
@@ -64,6 +69,15 @@ export async function POST(request: NextRequest) {
     }
     /* Règlement Intérieur - multi-pages */
     .reglement-page {
+      width: 210mm !important;
+      height: 297mm !important;
+      max-width: 210mm !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      break-after: page;
+    }
+    /* Constat DDE - 3 exemplaires */
+    .constat-page {
       width: 210mm !important;
       height: 297mm !important;
       max-width: 210mm !important;

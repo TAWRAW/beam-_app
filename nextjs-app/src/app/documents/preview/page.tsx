@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { DocumentPreview } from '@/components/documents/DocumentPreview'
 import { ReglementInterieurTemplate } from '@/components/documents/templates/ReglementInterieurTemplate'
 import { ContactsUtilesTemplate } from '@/components/documents/templates/ContactsUtilesTemplate'
+import { ConstatDdeDocument } from '@/components/documents/constat/ConstatDdeDocument'
+import { constatDefaults, type ConstatFormInput } from '@/components/documents/constat/constat-schema'
 import { mockBuilding, mockAgency } from '@/lib/mock-data'
 
 // Format A4 a 96 dpi : 210mm = 794px, 297mm = 1123px
@@ -13,7 +15,7 @@ const PAGE_WIDTH_PX = 794
 const PAGE_HEIGHT_PX = 1123
 
 interface PreviewData {
-  templateType?: 'affiche' | 'reglement' | 'contacts'
+  templateType?: 'affiche' | 'reglement' | 'contacts' | 'constat'
   buildingNom?: string
   buildingAdresse?: string
   buildingCodePostal?: string
@@ -36,6 +38,7 @@ function getFileName(data: PreviewData): string {
   const building = slugify(String(data.buildingNom || ''))
   if (data.templateType === 'contacts') return `contacts-utiles-${building}-${date}`
   if (data.templateType === 'reglement') return `reglement-interieur-${building}-${date}`
+  if (data.templateType === 'constat') return `constat-dde-${building}-${date}`
   const titre = slugify(String((data as Record<string, unknown>).titre || 'affiche'))
   return `${titre}-${building}-${date}`
 }
@@ -43,7 +46,34 @@ function getFileName(data: PreviewData): string {
 function getLabel(data: PreviewData): string {
   if (data.templateType === 'contacts') return 'Contacts Utiles'
   if (data.templateType === 'reglement') return 'Règlement Intérieur'
+  if (data.templateType === 'constat') return 'Constat DDE'
   return String((data as Record<string, unknown>).titre || 'Affiche')
+}
+
+// /api/pdf injecte le HTML via page.setContent() sans <base href> : les URLs relatives
+// (/images/...) ne se résolvent pas dans Puppeteer. On inline donc chaque <img> same-origin
+// en data URI avant l'envoi (les fichiers sont déjà dans le cache navigateur).
+async function inlineImages(html: string): Promise<string> {
+  const srcs = Array.from(html.matchAll(/<img[^>]+src="(\/[^"]+)"/g), (m) => m[1])
+  const unique = Array.from(new Set(srcs))
+  let result = html
+  for (const src of unique) {
+    try {
+      const res = await fetch(src)
+      if (!res.ok) continue
+      const blob = await res.blob()
+      const dataUri = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(String(reader.result))
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+      result = result.split(`src="${src}"`).join(`src="${dataUri}"`)
+    } catch {
+      // image inaccessible : on laisse l'URL relative (dégradation silencieuse)
+    }
+  }
+  return result
 }
 
 export default function DocumentPreviewPage() {
@@ -71,7 +101,7 @@ export default function DocumentPreviewPage() {
     try {
       const el = document.getElementById('preview-target')
       if (!el) throw new Error('Document introuvable dans la page')
-      const html = el.innerHTML
+      const html = await inlineImages(el.innerHTML)
       const title = getFileName(data)
       const res = await fetch('/api/pdf', {
         method: 'POST',
@@ -128,6 +158,7 @@ export default function DocumentPreviewPage() {
 
   const isReglement = data.templateType === 'reglement'
   const isContacts = data.templateType === 'contacts'
+  const isConstat = data.templateType === 'constat'
   const previewAgency = (data.previewAgency as Record<string, unknown> | undefined) || mockAgency
 
   return (
@@ -181,7 +212,11 @@ export default function DocumentPreviewPage() {
             className="shadow-2xl print:shadow-none bg-white"
             style={{ width: PAGE_WIDTH_PX, minHeight: PAGE_HEIGHT_PX }}
           >
-            {isContacts ? (
+            {isConstat ? (
+              <ConstatDdeDocument
+                data={{ ...constatDefaults, ...((data.constat as Partial<ConstatFormInput>) || {}) }}
+              />
+            ) : isContacts ? (
               <ContactsUtilesTemplate
                 data={{
                   buildingNom: building.nom,
@@ -293,6 +328,16 @@ export default function DocumentPreviewPage() {
 
           /* Reglement Interieur - multi-pages */
           .reglement-page {
+            width: 210mm !important;
+            height: 297mm !important;
+            max-width: 210mm !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            break-after: page;
+          }
+
+          /* Constat DDE - 3 exemplaires */
+          .constat-page {
             width: 210mm !important;
             height: 297mm !important;
             max-width: 210mm !important;
