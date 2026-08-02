@@ -86,7 +86,7 @@ export function CondoSelect({
 }) {
   return (
     <Select value={value ?? undefined} onValueChange={onChange}>
-      <SelectTrigger className="w-full max-w-md border-2 border-black bg-white font-semibold shadow-[2px_2px_0px_0px_#000]">
+      <SelectTrigger className="w-full max-w-md border-2 border-app-border-strong bg-app-surface font-semibold shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

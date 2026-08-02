@@ -10,7 +10,7 @@ import { FacturerTab } from './_components/FacturerTab'
 export default function ClesPage() {
   return (
     <Tabs defaultValue="inventaire" className="flex w-full flex-col items-center">
-      <TabsList className="mb-4 inline-flex gap-2 rounded-full border-2 border-black bg-white p-1 shadow-[2px_2px_0px_0px_#000]">
+      <TabsList className="mb-4 inline-flex gap-2 rounded-full border-2 border-app-border-strong bg-app-surface p-1 shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
         <ClesTab value="inventaire">Inventaire</ClesTab>
         <ClesTab value="historique">Historique</ClesTab>
         <ClesTab value="facturer">Facturer</ClesTab>
@@ -33,7 +33,7 @@ function ClesTab({ value, children }: { value: string; children: React.ReactNode
   return (
     <TabsTrigger
       value={value}
-      className="rounded-full border-2 border-transparent px-4 py-1.5 text-sm font-bold transition data-[state=active]:border-black data-[state=active]:bg-primary data-[state=active]:text-black data-[state=active]:shadow-none"
+      className="rounded-full border-2 border-transparent px-4 py-1.5 text-sm font-bold transition data-[state=active]:border-app-border-strong data-[state=active]:bg-primary data-[state=active]:text-app-accent-foreground data-[state=active]:shadow-none"
     >
       {children}
     </TabsTrigger>

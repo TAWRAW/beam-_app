@@ -39,12 +39,12 @@ const roleLabels = {
 }
 
 const roleColors = {
-  visiteur: 'bg-gray-100 text-gray-800',
-  inscrit: 'bg-blue-100 text-blue-800',
-  payant: 'bg-green-100 text-green-800',
+  visiteur: 'bg-app-surface-2 text-app-fg',
+  inscrit: 'bg-app-info-bg text-app-info-fg',
+  payant: 'bg-app-success-bg text-app-success-fg',
   employe: 'bg-purple-100 text-purple-800',
-  admin: 'bg-red-100 text-red-800',
-  vip: 'bg-yellow-100 text-yellow-800'
+  admin: 'bg-app-danger-bg text-app-danger-fg',
+  vip: 'bg-app-warning-bg text-app-warning-fg'
 }
 
 const formatDate = (date: string) => {
@@ -73,18 +73,18 @@ export const columns: ColumnDef<UserWithProfile>[] = [
                 alt=""
               />
             ) : (
-              <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="h-10 w-10 rounded-full bg-app-surface-hover flex items-center justify-center">
+                <span className="text-sm font-medium text-app-fg">
                   {user.email?.charAt(0).toUpperCase()}
                 </span>
               </div>
             )}
           </div>
           <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900">
+            <div className="text-sm font-medium text-app-fg">
               {profile?.full_name || 'Nom non défini'}
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-app-fg-muted">
               {user.email}
             </div>
           </div>
@@ -114,7 +114,7 @@ export const columns: ColumnDef<UserWithProfile>[] = [
       const { profile } = row.original
       return (
         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          profile ? roleColors[profile.role] : 'bg-gray-100 text-gray-800'
+          profile ? roleColors[profile.role] : 'bg-app-surface-2 text-app-fg'
         }`}>
           {profile ? roleLabels[profile.role] : 'Aucun profil'}
         </span>
@@ -136,7 +136,7 @@ export const columns: ColumnDef<UserWithProfile>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-app-fg-muted">
           {formatDate(row.original.user.created_at)}
         </div>
       )

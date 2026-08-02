@@ -20,11 +20,11 @@ export default function ClesLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F1E6] overflow-x-hidden">
-      <header className="sticky top-0 z-10 flex items-center gap-2 border-b-2 border-black bg-white px-4 py-3">
+    <div className="min-h-screen bg-app-bg overflow-x-hidden">
+      <header className="sticky top-0 z-10 flex items-center gap-2 border-b-2 border-app-border-strong bg-app-surface px-4 py-3">
         <KeyRound className="h-5 w-5 text-amber-500" />
         <h1 className="text-lg font-bold">Clés</h1>
-        <span className="ml-2 hidden text-xs text-gray-500 sm:inline">
+        <span className="ml-2 hidden text-xs text-app-fg-muted sm:inline">
           Accès parties communes — inventaire, remises, facturation
         </span>
       </header>

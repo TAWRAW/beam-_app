@@ -105,7 +105,7 @@ export default function VisitDetailPage({
 
   if (loading) {
     return (
-      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl font-bold">
+      <div className="bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5 rounded-2xl font-bold">
         Chargement…
       </div>
     )
@@ -114,7 +114,7 @@ export default function VisitDetailPage({
   const entete: Entete | null = draft?.entete || remoteVisit
   if (!entete) {
     return (
-      <div className="bg-[#FF6B6B] border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 font-bold rounded-2xl">
+      <div className="bg-[#FF6B6B] border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5 font-bold rounded-2xl">
         Visite introuvable.
       </div>
     )
@@ -124,9 +124,9 @@ export default function VisitDetailPage({
 
   return (
     <div className="space-y-5">
-      <section className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl">
+      <section className="bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5 rounded-2xl">
         <div className="font-black uppercase tracking-tight text-lg">{entete.object}</div>
-        <div className="text-sm font-medium text-gray-700 mt-1">
+        <div className="text-sm font-medium text-app-fg mt-1">
           {new Date(entete.date).toLocaleString('fr-FR', {
             dateStyle: 'short',
             timeStyle: 'short',
@@ -136,7 +136,7 @@ export default function VisitDetailPage({
           {VISIT_CATEGORY_FR[entete.category]}
         </div>
         {draft && !draft.estaleVisitId && (
-          <div className="mt-3 inline-block bg-primary border-2 border-black px-3 py-1 text-xs font-bold uppercase shadow-[2px_2px_0px_0px_#000]">
+          <div className="mt-3 inline-block bg-primary border-2 border-app-border-strong px-3 py-1 text-xs font-bold uppercase shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
             ⏳ Pas encore poussée vers estale
           </div>
         )}
@@ -156,21 +156,21 @@ export default function VisitDetailPage({
               <Link
                 key={c.localId}
                 href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/${c.localId}` as any}
-                className="flex gap-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-3 rounded-2xl transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
+                className="flex gap-3 bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-3 rounded-2xl transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)]"
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold">
                     {idx + 1}. {VISIT_PLACE_FR[p.place]} → {VISIT_COMPONENT_FR[p.component]}
                   </div>
-                  <div className="text-sm text-gray-700 line-clamp-2 mt-1">{p.content}</div>
+                  <div className="text-sm text-app-fg line-clamp-2 mt-1">{p.content}</div>
                   {c.syncStatus !== 'synced' && (
-                    <span className="inline-block mt-2 bg-primary border-2 border-black px-2 py-0.5 text-xs font-bold uppercase">
+                    <span className="inline-block mt-2 bg-primary border-2 border-app-border-strong px-2 py-0.5 text-xs font-bold uppercase">
                       ⏳ pas synced
                     </span>
                   )}
                 </div>
                 {photo?.url && (
-                  <div className="relative shrink-0 w-20 h-20 border-2 border-black overflow-hidden rounded-xl">
+                  <div className="relative shrink-0 w-20 h-20 border-2 border-app-border-strong overflow-hidden rounded-xl">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={photo.url}
@@ -185,7 +185,7 @@ export default function VisitDetailPage({
                   </div>
                 )}
                 {!photo?.url && photo?.count === 0 && (
-                  <div className="shrink-0 w-20 h-20 border-2 border-dashed border-black/30 flex items-center justify-center text-black/30 text-2xl rounded-xl">
+                  <div className="shrink-0 w-20 h-20 border-2 border-dashed border-app-border-strong/30 flex items-center justify-center text-app-fg-muted text-2xl rounded-xl">
                     —
                   </div>
                 )}
@@ -193,7 +193,7 @@ export default function VisitDetailPage({
             )
           })}
           {localComments.length === 0 && (
-            <p className="bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] p-3 text-gray-700 text-sm font-medium rounded-2xl">
+            <p className="bg-app-surface border-2 border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] p-3 text-app-fg text-sm font-medium rounded-2xl">
               Aucune ligne pour le moment.
             </p>
           )}
@@ -202,7 +202,7 @@ export default function VisitDetailPage({
 
       <Link
         href={`/apps/visites/${params.condoId}/${params.visitId}/lignes/new` as any}
-        className="block w-full text-center bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000]"
+        className="block w-full text-center bg-primary border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)]"
       >
         + Ajouter une ligne
       </Link>

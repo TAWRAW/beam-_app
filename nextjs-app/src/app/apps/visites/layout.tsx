@@ -44,8 +44,8 @@ export default function VisitesLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F1E6] overflow-x-hidden overscroll-contain">
-      <header className="sticky top-0 z-10 bg-white border-b-2 border-black px-4 py-3 flex items-center justify-between gap-3">
+    <div className="min-h-screen bg-app-bg overflow-x-hidden overscroll-contain">
+      <header className="sticky top-0 z-10 bg-app-surface border-b-2 border-app-border-strong px-4 py-3 flex items-center justify-between gap-3">
         <h1 className="font-bold text-lg">Visites</h1>
         <div className="flex items-center gap-2 shrink-0">
           {backHref && (
@@ -53,7 +53,7 @@ export default function VisitesLayout({ children }: { children: React.ReactNode 
               type="button"
               onClick={handleBack}
               aria-label="Retour aux lignes de la visite"
-              className="text-xs font-semibold px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000] bg-[#FFC300] text-black active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition"
+              className="text-xs font-semibold px-3 py-1 rounded-full border-2 border-app-border-strong shadow-[2px_2px_0px_0px_var(--app-border-strong)] bg-[#FFC300] text-app-accent-foreground active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] transition"
             >
               ← Retour
             </button>

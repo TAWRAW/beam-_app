@@ -34,7 +34,7 @@ export function ProjectionChart({
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600">
+        <CardTitle className="text-sm font-medium text-app-fg-muted">
           Projection: Signés vs Prospects
         </CardTitle>
       </CardHeader>
@@ -74,20 +74,20 @@ export function ProjectionChart({
         {/* Résumé */}
         <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-4 text-center">
           <div>
-            <div className="text-xs text-gray-500 mb-1">Si 100% conversion</div>
+            <div className="text-xs text-app-fg-muted mb-1">Si 100% conversion</div>
             <div className="text-lg font-bold" style={{ color: '#DC651F' }}>
               {coprosSignees + coprosProspects} copros
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-app-fg-muted">
               {lotsSignes + lotsProspects} lots
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-500 mb-1">Croissance potentielle</div>
+            <div className="text-xs text-app-fg-muted mb-1">Croissance potentielle</div>
             <div className="text-lg font-bold" style={{ color: '#FFC300' }}>
               +{coprosProspects} copros
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-app-fg-muted">
               +{lotsProspects} lots
             </div>
           </div>

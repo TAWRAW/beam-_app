@@ -138,7 +138,7 @@ export function HistoriqueTab() {
                 ? undefined
                 : 'Sélectionnez une ou plusieurs remises d’un même copropriétaire'
             }
-            className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0px_0px_#000] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-app-border-strong bg-app-surface px-4 py-2 text-sm font-bold shadow-[3px_3px_0px_0px_var(--app-border-strong)] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] disabled:opacity-50"
           >
             {generatingBordereau ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -152,7 +152,7 @@ export function HistoriqueTab() {
               condo={condo}
               onSaved={() => reload(condoId)}
               trigger={
-                <button className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-primary px-4 py-2 text-sm font-bold shadow-[3px_3px_0px_0px_#000] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]">
+                <button className="inline-flex items-center gap-2 rounded-full border-2 border-app-border-strong bg-primary px-4 py-2 text-sm font-bold shadow-[3px_3px_0px_0px_var(--app-border-strong)] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)]">
                   <Plus className="h-4 w-4" /> Nouvelle remise
                 </button>
               }
@@ -162,32 +162,32 @@ export function HistoriqueTab() {
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-black bg-[#FFF1F1] px-3 py-2 text-sm font-semibold text-red-700">
+        <div className="rounded-xl border-2 border-app-border-strong bg-red-500/10 px-3 py-2 text-sm font-semibold text-app-danger-fg">
           {error}
         </div>
       )}
       {bordereauError && (
-        <div className="rounded-xl border-2 border-black bg-[#FFF1F1] px-3 py-2 text-sm font-semibold text-red-700">
+        <div className="rounded-xl border-2 border-app-border-strong bg-red-500/10 px-3 py-2 text-sm font-semibold text-app-danger-fg">
           {bordereauError}
         </div>
       )}
 
       {loading && (
         <div className="flex justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-black/50" />
+          <Loader2 className="h-6 w-6 animate-spin text-app-fg-muted" />
         </div>
       )}
 
       {!loading && remises.length === 0 && !error && (
-        <div className="rounded-2xl border-2 border-dashed border-black/30 bg-white/50 p-6 text-center text-sm text-gray-600">
+        <div className="rounded-2xl border-2 border-dashed border-app-border-strong/30 bg-app-surface/50 p-6 text-center text-sm text-app-fg-muted">
           Aucune remise enregistrée{condoId ? ' pour cette copropriété' : ''}.
         </div>
       )}
 
       {!loading && remises.length > 0 && (
-        <div className="overflow-hidden rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
+        <div className="overflow-hidden rounded-2xl border-2 border-app-border-strong bg-app-surface shadow-[4px_4px_0px_0px_var(--app-border-strong)]">
           <table className="w-full text-sm">
-            <thead className="border-b-2 border-black bg-[#F2F1E6] text-left">
+            <thead className="border-b-2 border-app-border-strong bg-app-bg text-left">
               <tr>
                 <th className="w-10 px-3 py-2"></th>
                 <th className="px-3 py-2 text-xs font-black uppercase">Date</th>
@@ -199,7 +199,7 @@ export function HistoriqueTab() {
             </thead>
             <tbody>
               {remises.map((r) => (
-                <tr key={r.id} className="border-b border-black/10 last:border-0">
+                <tr key={r.id} className="border-b border-app-border-strong/10 last:border-0">
                   <td className="px-3 py-2">
                     <input
                       type="checkbox"
@@ -215,14 +215,14 @@ export function HistoriqueTab() {
                   </td>
                   <td className="px-3 py-2">
                     {r.cle_libelle}{' '}
-                    <span className="text-xs text-gray-500">({CLE_TYPE_LABELS[r.cle_type]})</span>
+                    <span className="text-xs text-app-fg-muted">({CLE_TYPE_LABELS[r.cle_type]})</span>
                   </td>
                   <td className="px-3 py-2 text-right">{r.quantite}</td>
                   <td className="px-3 py-2">
                     {r.facture_id ? (
-                      <span className="rounded-full bg-[#A8E6A1] px-2 py-0.5 text-xs font-bold">facturé</span>
+                      <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-bold">facturé</span>
                     ) : (
-                      <span className="rounded-full bg-[#FFE9A8] px-2 py-0.5 text-xs font-bold">à facturer</span>
+                      <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs font-bold">à facturer</span>
                     )}
                   </td>
                 </tr>
@@ -316,17 +316,17 @@ function RemiseFormDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="border-2 border-black">
+      <DialogContent className="border-2 border-app-border-strong">
         <DialogHeader>
           <DialogTitle>Remettre des clés — {condo.name}</DialogTitle>
         </DialogHeader>
 
         {loadingRefs ? (
           <div className="flex justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-black/50" />
+            <Loader2 className="h-6 w-6 animate-spin text-app-fg-muted" />
           </div>
         ) : refsError ? (
-          <div className="rounded-xl border-2 border-black bg-[#FFF1F1] px-3 py-2 text-sm font-semibold text-red-700">
+          <div className="rounded-xl border-2 border-app-border-strong bg-red-500/10 px-3 py-2 text-sm font-semibold text-app-danger-fg">
             {refsError}
           </div>
         ) : (
@@ -334,7 +334,7 @@ function RemiseFormDialog({
             <div className="space-y-1">
               <Label>Copropriétaire</Label>
               <Select value={ownerId} onValueChange={setOwnerId}>
-                <SelectTrigger className="border-2 border-black">
+                <SelectTrigger className="border-2 border-app-border-strong">
                   <SelectValue placeholder="Choisir un copropriétaire…" />
                 </SelectTrigger>
                 <SelectContent>
@@ -349,7 +349,7 @@ function RemiseFormDialog({
             <div className="space-y-1">
               <Label>Clé</Label>
               <Select value={cleId} onValueChange={setCleId}>
-                <SelectTrigger className="border-2 border-black">
+                <SelectTrigger className="border-2 border-app-border-strong">
                   <SelectValue placeholder="Choisir une clé…" />
                 </SelectTrigger>
                 <SelectContent>
@@ -368,7 +368,7 @@ function RemiseFormDialog({
               <div className="space-y-1">
                 <Label>Quantité</Label>
                 <Input
-                  className="border-2 border-black"
+                  className="border-2 border-app-border-strong"
                   type="number"
                   min={1}
                   max={selectedKey?.stock ?? undefined}
@@ -379,7 +379,7 @@ function RemiseFormDialog({
               <div className="space-y-1">
                 <Label>Date de remise</Label>
                 <Input
-                  className="border-2 border-black"
+                  className="border-2 border-app-border-strong"
                   type="date"
                   value={dateRemise}
                   onChange={(e) => setDateRemise(e.target.value)}
@@ -387,12 +387,12 @@ function RemiseFormDialog({
               </div>
             </div>
             {keys.length === 0 && (
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-app-fg-muted">
                 Aucune clé active dans l’inventaire de cette copropriété. Ajoutez-en une dans l’onglet Inventaire.
               </p>
             )}
             {err && (
-              <div className="rounded-xl border-2 border-black bg-[#FFF1F1] px-3 py-2 text-sm font-semibold text-red-700">
+              <div className="rounded-xl border-2 border-app-border-strong bg-red-500/10 px-3 py-2 text-sm font-semibold text-app-danger-fg">
                 {err}
               </div>
             )}
@@ -403,7 +403,7 @@ function RemiseFormDialog({
           <button
             disabled={saving || !owner || !selectedKey || (selectedKey?.stock ?? 0) <= 0}
             onClick={submit}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-primary px-4 py-2 text-sm font-bold shadow-[3px_3px_0px_0px_#000] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-app-border-strong bg-primary px-4 py-2 text-sm font-bold shadow-[3px_3px_0px_0px_var(--app-border-strong)] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] disabled:opacity-50"
           >
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             Enregistrer la remise

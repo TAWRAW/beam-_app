@@ -10,7 +10,7 @@ export function SyncIndicator() {
   const [busy, setBusy] = useState(false)
 
   const base =
-    'text-xs font-semibold px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] transition disabled:opacity-60'
+    'text-xs font-semibold px-3 py-1 rounded-full border-2 border-app-border-strong shadow-[2px_2px_0px_0px_var(--app-border-strong)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] transition disabled:opacity-60'
 
   // Le badge est cliquable : tap → force flushAll() pour pousser les drafts
   // pending sans attendre le tick de 30 s.
@@ -30,7 +30,7 @@ export function SyncIndicator() {
         type="button"
         onClick={handleForceSync}
         disabled
-        className={`${base} bg-gray-200 text-black`}
+        className={`${base} bg-app-surface-2 text-app-fg`}
         aria-label="Hors-ligne"
         title="Hors-ligne — la sync redémarrera automatiquement au retour du réseau"
       >
@@ -45,7 +45,7 @@ export function SyncIndicator() {
         type="button"
         onClick={handleForceSync}
         disabled={busy}
-        className={`${base} bg-[#A8E6A1] text-black`}
+        className={`${base} bg-[#A8E6A1] text-app-accent-foreground`}
         aria-label="Forcer une resync"
         title="Tap pour forcer une resync"
       >
@@ -63,7 +63,7 @@ export function SyncIndicator() {
       type="button"
       onClick={handleForceSync}
       disabled={busy}
-      className={`${base} ${isLate ? 'bg-[#FF6B6B]' : 'bg-primary'} text-black`}
+      className={`${base} ${isLate ? 'bg-[#FF6B6B]' : 'bg-primary'} text-app-accent-foreground`}
       aria-label={`${pendingCount} en attente — tap pour forcer la sync`}
       title="Tap pour forcer la sync maintenant"
     >

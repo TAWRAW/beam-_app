@@ -40,7 +40,7 @@ export function RevenueComparison({ caSignes, caProspects }: RevenueComparisonPr
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600">
+        <CardTitle className="text-sm font-medium text-app-fg-muted">
           Comparaison CA
         </CardTitle>
       </CardHeader>
@@ -83,7 +83,7 @@ export function RevenueComparison({ caSignes, caProspects }: RevenueComparisonPr
         </ChartContainer>
         <div className="mt-4 pt-4 border-t">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Total Potentiel</span>
+            <span className="text-sm text-app-fg-muted">Total Potentiel</span>
             <span className="text-lg font-bold">{formatEuro(total)}</span>
           </div>
         </div>

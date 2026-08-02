@@ -218,7 +218,7 @@ export function FacturerTab() {
         <CondoSelect condos={condos} value={condoId} onChange={setCondoId} />
         {condoId && (
           <Select value={ownerId} onValueChange={setOwnerId}>
-            <SelectTrigger className="w-full max-w-xs border-2 border-black bg-white font-semibold shadow-[2px_2px_0px_0px_#000]">
+            <SelectTrigger className="w-full max-w-xs border-2 border-app-border-strong bg-app-surface font-semibold shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
               <SelectValue placeholder="Copropriétaire…" />
             </SelectTrigger>
             <SelectContent>
@@ -233,18 +233,18 @@ export function FacturerTab() {
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-black bg-[#FFF1F1] px-3 py-2 text-sm font-semibold text-red-700">
+        <div className="rounded-xl border-2 border-app-border-strong bg-red-500/10 px-3 py-2 text-sm font-semibold text-app-danger-fg">
           {error}
         </div>
       )}
       {done && (
-        <div className="rounded-xl border-2 border-black bg-[#A8E6A1] px-3 py-2 text-sm font-semibold">
+        <div className="rounded-xl border-2 border-app-border-strong bg-emerald-500/15 px-3 py-2 text-sm font-semibold">
           {done}
         </div>
       )}
 
       {!ownerId && (
-        <div className="rounded-2xl border-2 border-dashed border-black/30 bg-white/50 p-6 text-center text-sm text-gray-600">
+        <div className="rounded-2xl border-2 border-dashed border-app-border-strong/30 bg-app-surface/50 p-6 text-center text-sm text-app-fg-muted">
           Choisissez une copropriété puis un copropriétaire pour facturer ses clés.
         </div>
       )}
@@ -255,7 +255,7 @@ export function FacturerTab() {
           <div className="flex flex-wrap gap-3">
             <RefBadge label="Réf. copropriété" value={condo?.reference || '—'} />
             <RefBadge label="Réf. copropriétaire" value={owner?.reference || '—'} />
-            <div className="flex items-center rounded-2xl border-2 border-black bg-white px-4 py-2 text-sm font-semibold shadow-[2px_2px_0px_0px_#000]">
+            <div className="flex items-center rounded-2xl border-2 border-app-border-strong bg-app-surface px-4 py-2 text-sm font-semibold shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
               {owner?.fullname}
             </div>
           </div>
@@ -266,14 +266,14 @@ export function FacturerTab() {
               Clés de l’inventaire
             </h3>
             {keys.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-black/30 bg-white/50 p-6 text-center text-sm text-gray-600">
+              <div className="rounded-2xl border-2 border-dashed border-app-border-strong/30 bg-app-surface/50 p-6 text-center text-sm text-app-fg-muted">
                 Aucune clé active dans l’inventaire de cette copropriété. Ajoutez-en dans l’onglet
                 Inventaire.
               </div>
             ) : (
-              <div className="overflow-hidden rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
+              <div className="overflow-hidden rounded-2xl border-2 border-app-border-strong bg-app-surface shadow-[4px_4px_0px_0px_var(--app-border-strong)]">
                 <table className="w-full text-sm">
-                  <thead className="border-b-2 border-black bg-[#F2F1E6] text-left">
+                  <thead className="border-b-2 border-app-border-strong bg-app-bg text-left">
                     <tr>
                       <th className="px-3 py-2 text-xs font-black uppercase">Clé</th>
                       <th className="px-3 py-2 text-right text-xs font-black uppercase">Stock</th>
@@ -287,10 +287,10 @@ export function FacturerTab() {
                       const q = parseInt(qty[k.id] || '0', 10) || 0
                       const out = k.stock <= 0
                       return (
-                        <tr key={k.id} className="border-b border-black/10 last:border-0">
+                        <tr key={k.id} className="border-b border-app-border-strong/10 last:border-0">
                           <td className="px-3 py-2">
                             {k.libelle}{' '}
-                            <span className="text-xs text-gray-500">({CLE_TYPE_LABELS[k.type]})</span>
+                            <span className="text-xs text-app-fg-muted">({CLE_TYPE_LABELS[k.type]})</span>
                           </td>
                           <td className="px-3 py-2 text-right">{k.stock}</td>
                           <td className="px-3 py-2 text-right">{formatEur(k.prix_unitaire_ht)}</td>
@@ -303,7 +303,7 @@ export function FacturerTab() {
                               onChange={(e) => setQ(k.id, e.target.value)}
                               disabled={out}
                               placeholder="0"
-                              className="mx-auto w-20 border-2 border-black text-center"
+                              className="mx-auto w-20 border-2 border-app-border-strong text-center"
                             />
                           </td>
                           <td className="px-3 py-2 text-right font-semibold">
@@ -324,9 +324,9 @@ export function FacturerTab() {
               <h3 className="mb-2 text-sm font-black uppercase tracking-tight">
                 Remises déjà enregistrées (non facturées)
               </h3>
-              <div className="overflow-hidden rounded-2xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
+              <div className="overflow-hidden rounded-2xl border-2 border-app-border-strong bg-app-surface shadow-[4px_4px_0px_0px_var(--app-border-strong)]">
                 <table className="w-full text-sm">
-                  <thead className="border-b-2 border-black bg-[#F2F1E6] text-left">
+                  <thead className="border-b-2 border-app-border-strong bg-app-bg text-left">
                     <tr>
                       <th className="w-10 px-3 py-2"></th>
                       <th className="px-3 py-2 text-xs font-black uppercase">Date</th>
@@ -339,7 +339,7 @@ export function FacturerTab() {
                     {remises.map((r) => {
                       const pu = priceByCle.get(r.cle_id) ?? 0
                       return (
-                        <tr key={r.id} className="border-b border-black/10 last:border-0">
+                        <tr key={r.id} className="border-b border-app-border-strong/10 last:border-0">
                           <td className="px-3 py-2">
                             <input
                               type="checkbox"
@@ -351,7 +351,7 @@ export function FacturerTab() {
                           <td className="px-3 py-2">{formatDate(r.date_remise)}</td>
                           <td className="px-3 py-2">
                             {r.cle_libelle}{' '}
-                            <span className="text-xs text-gray-500">({CLE_TYPE_LABELS[r.cle_type]})</span>
+                            <span className="text-xs text-app-fg-muted">({CLE_TYPE_LABELS[r.cle_type]})</span>
                           </td>
                           <td className="px-3 py-2 text-right">{r.quantite}</td>
                           <td className="px-3 py-2 text-right font-semibold">
@@ -368,13 +368,13 @@ export function FacturerTab() {
 
           {loading && (
             <div className="flex justify-center py-4">
-              <Loader2 className="h-5 w-5 animate-spin text-black/50" />
+              <Loader2 className="h-5 w-5 animate-spin text-app-fg-muted" />
             </div>
           )}
 
           {/* Totaux + action */}
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="rounded-2xl border-2 border-black bg-white px-4 py-3 text-sm shadow-[2px_2px_0px_0px_#000]">
+            <div className="rounded-2xl border-2 border-app-border-strong bg-app-surface px-4 py-3 text-sm shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
               <div className="flex justify-between gap-8">
                 <span>Total HT</span>
                 <span className="font-semibold">{formatEur(montantHT)}</span>
@@ -383,7 +383,7 @@ export function FacturerTab() {
                 <span>TVA {TVA}%</span>
                 <span className="font-semibold">{formatEur(montantTVA)}</span>
               </div>
-              <div className="mt-1 flex justify-between gap-8 border-t-2 border-black pt-1 text-base font-black">
+              <div className="mt-1 flex justify-between gap-8 border-t-2 border-app-border-strong pt-1 text-base font-black">
                 <span>Total TTC</span>
                 <span>{formatEur(montantTTC)}</span>
               </div>
@@ -392,7 +392,7 @@ export function FacturerTab() {
             <button
               disabled={generating || nbLignes === 0}
               onClick={generer}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-primary px-5 py-3 text-sm font-bold shadow-[3px_3px_0px_0px_#000] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-app-border-strong bg-primary px-5 py-3 text-sm font-bold shadow-[3px_3px_0px_0px_var(--app-border-strong)] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] disabled:opacity-50"
             >
               {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
               Générer la facture PDF
@@ -406,7 +406,7 @@ export function FacturerTab() {
 
 function RefBadge({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border-2 border-black bg-primary px-4 py-2 shadow-[2px_2px_0px_0px_#000]">
+    <div className="rounded-2xl border-2 border-app-border-strong bg-primary px-4 py-2 shadow-[2px_2px_0px_0px_var(--app-border-strong)]">
       <div className="text-[10px] font-black uppercase tracking-tight">{label}</div>
       <div className="text-lg font-black leading-none">{value}</div>
     </div>

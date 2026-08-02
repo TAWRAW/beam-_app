@@ -166,41 +166,41 @@ export function SocialPublishModal({ article, trigger, open: controlledOpen, onO
       onClick={() => setOpen(false)}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
+        className="bg-app-surface rounded-lg shadow-xl max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {success ? (
-          <div className="p-6 text-center bg-white">
-            <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+          <div className="p-6 text-center bg-app-surface">
+            <div className="mx-auto w-12 h-12 rounded-full bg-app-success-bg flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p className="text-lg font-medium text-gray-900">
+            <p className="text-lg font-medium text-app-fg">
               {publishMode === 'now' && 'Publication en cours...'}
               {publishMode === 'schedule' && 'Publication programmée !'}
               {publishMode === 'queue' && 'Ajouté à la file !'}
             </p>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-app-fg-muted mt-2">
               Fermeture automatique...
             </p>
           </div>
         ) : (
           <>
             {/* Header */}
-            <div className="p-6 border-b border-gray-200 bg-white">
+            <div className="p-6 border-b border-app-border bg-app-surface">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold leading-none tracking-tight text-gray-900">
+                  <h2 className="text-lg font-semibold leading-none tracking-tight text-app-fg">
                     Publier sur les réseaux sociaux
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1.5">
+                  <p className="text-sm text-app-fg-muted mt-1.5">
                     Partagez "{article.title}" sur vos réseaux sociaux
                   </p>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="rounded-sm opacity-70 hover:opacity-100 transition-opacity text-gray-900"
+                  className="rounded-sm opacity-70 hover:opacity-100 transition-opacity text-app-fg"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -210,7 +210,7 @@ export function SocialPublishModal({ article, trigger, open: controlledOpen, onO
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6 bg-white">
+            <div className="p-6 space-y-6 bg-app-surface">
             {/* Platform Selection */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -238,11 +238,11 @@ export function SocialPublishModal({ article, trigger, open: controlledOpen, onO
                       className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
                         isSelected
                           ? 'border-primary bg-primary/5'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-app-border hover:border-app-border'
                       }`}
                     >
                       <Checkbox checked={isSelected} onCheckedChange={() => togglePlatform(platform)} />
-                      <Icon className="h-5 w-5 text-gray-700" />
+                      <Icon className="h-5 w-5 text-app-fg" />
                       <span className="text-sm font-medium">{platformLabels[platform]}</span>
                     </div>
                   )
@@ -277,14 +277,14 @@ export function SocialPublishModal({ article, trigger, open: controlledOpen, onO
 
             {/* Schedule DateTime */}
             {publishMode === 'schedule' && (
-              <div className="space-y-3 pl-6 border-l-2 border-gray-200">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="space-y-3 pl-6 border-l-2 border-app-border">
+                <div className="flex items-center gap-2 text-sm text-app-fg-muted">
                   <Clock className="h-4 w-4" />
                   <span>Choisissez la date et l&apos;heure</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor="date" className="text-xs text-gray-600">Date</Label>
+                    <Label htmlFor="date" className="text-xs text-app-fg-muted">Date</Label>
                     <Input
                       id="date"
                       type="date"
@@ -294,7 +294,7 @@ export function SocialPublishModal({ article, trigger, open: controlledOpen, onO
                     />
                   </div>
                   <div>
-                    <Label htmlFor="time" className="text-xs text-gray-600">Heure</Label>
+                    <Label htmlFor="time" className="text-xs text-app-fg-muted">Heure</Label>
                     <Input
                       id="time"
                       type="time"
@@ -308,8 +308,8 @@ export function SocialPublishModal({ article, trigger, open: controlledOpen, onO
 
             {/* Error Message */}
             {error && (
-              <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="p-3 rounded-lg bg-app-danger-bg border border-app-danger-fg/30">
+                <p className="text-sm text-app-danger-fg">{error}</p>
               </div>
             )}
 

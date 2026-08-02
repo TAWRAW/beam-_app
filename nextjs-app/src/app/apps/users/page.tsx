@@ -39,8 +39,8 @@ export default function UsersPage() {
   return (
     <div className="container mx-auto py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Gestion des utilisateurs</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-3xl font-bold text-app-fg">Gestion des utilisateurs</h1>
+        <p className="text-app-fg-muted mt-2">
           Gérez les rôles et permissions des utilisateurs de l'application.
         </p>
       </div>
