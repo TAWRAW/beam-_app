@@ -32,7 +32,7 @@ export async function cocherItem(db: SupabaseClient, itemId: string, fait: boole
   const { data: checklist } = await db.from('venator_checklists').select('*').eq('id', data.checklist_id).maybeSingle()
   if (checklist) {
     const etat = await etatChecklist(db, checklist.copro_id)
-    if (etat && etat.progression === 100) await logJournal(db, { copro_id: checklist.copro_id, type_evenement: 'checklist_complete', contenu: 'Checklist nouvelle copro complétée ✅', acteur: 'system' })
+    if (etat && etat.progression === 100) await logJournal(db, { copro_id: checklist.copro_id, type_evenement: 'checklist_complete', contenu: 'Checklist nouvelle copro complétée', acteur: 'system' })
   }
   return data
 }

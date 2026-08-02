@@ -1,71 +1,16 @@
-// src/lib/venator/gabarits.ts — gabarits d'étapes par type de dossier + checklist onboarding.
-// Données volontairement en code (V1). Modifiables par dossier après instanciation.
+// src/lib/venator/gabarits.ts — instanciation d'un gabarit d'étapes + checklist onboarding.
+// AUCUN import next/* : logique pure.
+//
+// Les listes d'étapes par type de dossier NE SONT PLUS codées ici : elles vivent
+// en base (table venator_gabarit_etapes) et se règlent depuis /apps/venator/reglages.
+// Un type sans gabarit défini produit un dossier SANS étape — c'est le
+// comportement voulu depuis la suppression des étapes par défaut (31/07/2026).
 import type { DossierType } from './types'
 
-export interface GabaritEtape { titre: string; echeanceOffsetJours?: number }
-
-export const GABARITS: Record<DossierType, GabaritEtape[]> = {
-  sinistre: [
-    { titre: 'Déclaration assureur', echeanceOffsetJours: 5 },
-    { titre: 'Mesures conservatoires' },
-    { titre: 'Expertise' },
-    { titre: 'Devis réparation' },
-    { titre: 'Accord assureur' },
-    { titre: 'Travaux' },
-    { titre: 'Réception' },
-    { titre: 'Indemnisation / Clôture' },
-  ],
-  travaux: [
-    { titre: 'Résolution AG (référence)' },
-    { titre: 'Consultation devis', echeanceOffsetJours: 21 },
-    { titre: 'Ordre de service' },
-    { titre: 'Planification' },
-    { titre: 'Réalisation' },
-    { titre: 'Réception' },
-    { titre: 'Levée des réserves' },
-    { titre: 'Solde facture' },
-  ],
-  procedure: [
-    { titre: 'Relance amiable', echeanceOffsetJours: 15 },
-    { titre: 'Relance LRAR', echeanceOffsetJours: 30 },
-    { titre: 'Mise en demeure' },
-    { titre: 'Transmission avocat / huissier' },
-    { titre: 'Suivi contentieux' },
-    { titre: 'Recouvrement / Clôture' },
-  ],
-  mutation: [
-    { titre: 'Réception avis de mutation' },
-    { titre: 'Pré-état daté / État daté', echeanceOffsetJours: 10 },
-    { titre: 'Opposition art. 20 si impayé' },
-    { titre: 'Mise à jour registre / Estale' },
-    { titre: 'Clôture' },
-  ],
-  ag: [
-    { titre: 'Ordre du jour + conseil syndical' },
-    { titre: 'Convocation (J-21 copro / J-15 ASL)' },
-    { titre: 'Tenue de l’AG' },
-    { titre: 'Procès-verbal', echeanceOffsetJours: 7 },
-    { titre: 'Notification du PV' },
-    { titre: 'Exécution des résolutions' },
-  ],
-  conseil_syndical: [
-    { titre: 'Préparation' },
-    { titre: 'Réunion' },
-    { titre: 'Compte rendu', echeanceOffsetJours: 7 },
-    { titre: 'Actions décidées' },
-  ],
-  vie_copro: [
-    { titre: 'Signalement' },
-    { titre: 'Qualification' },
-    { titre: 'Médiation / courrier' },
-    { titre: 'Suivi' },
-    { titre: 'Clôture' },
-  ],
-  autre: [
-    { titre: 'Ouverture' },
-    { titre: 'Suivi' },
-    { titre: 'Clôture' },
-  ],
+export interface GabaritEtape {
+  titre: string
+  /** Jours ajoutés à la date de création pour calculer l'échéance. null/absent = pas d'échéance. */
+  echeanceOffsetJours?: number | null
 }
 
 export const CHECKLIST_NOUVELLE_COPRO: { libelle: string; categorie: string; auto_check_key?: string }[] = [
@@ -81,8 +26,13 @@ export const CHECKLIST_NOUVELLE_COPRO: { libelle: string; categorie: string; aut
   { libelle: 'GED remplie (RCP, PV, diagnostics)', categorie: 'Estale' },
 ]
 
-export function instancierGabarit(type: DossierType, dateBase: Date) {
-  return GABARITS[type].map((g, i) => {
+/**
+ * Transforme un gabarit (réglé par l'utilisateur) en lignes d'étapes prêtes à
+ * insérer. Fonction pure : la lecture du gabarit en base est faite par
+ * l'appelant (gabarits-service), pour que ce calcul reste testable seul.
+ */
+export function instancierGabarit(gabarit: GabaritEtape[], dateBase: Date) {
+  return gabarit.map((g, i) => {
     let echeance: string | null = null
     if (g.echeanceOffsetJours != null) {
       const d = new Date(dateBase)
@@ -91,4 +41,9 @@ export function instancierGabarit(type: DossierType, dateBase: Date) {
     }
     return { ordre: i + 1, titre: g.titre, echeance }
   })
+}
+
+/** Type de dossier valide ? Garde-fou pour les entrées d'API des Réglages. */
+export function estTypeDossier(value: string, types: readonly string[]): value is DossierType {
+  return types.includes(value)
 }
