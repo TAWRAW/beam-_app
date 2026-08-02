@@ -27,6 +27,10 @@ const supabaseAdmin = createClient(
 )
 
 export async function requireAdmin(): Promise<RequireAdminResult> {
+  // DEV ONLY (smoke-test local) : bypass cohérent avec /api/user/role. Aucun effet en prod. [dev-bypass-venator]
+  if (process.env.NODE_ENV === 'development' && process.env.DEV_AUTH_BYPASS === '1') {
+    return { ok: true, email: 'dev@local', authType: 'legacy' }
+  }
   const cookieStore = cookies()
 
   // 1) Tentative legacy
@@ -77,6 +81,48 @@ export async function requireAdmin(): Promise<RequireAdminResult> {
     return {
       ok: false,
       response: NextResponse.json({ error: 'forbidden' }, { status: 403 }),
+    }
+  }
+  return {
+    ok: true,
+    email: user.email,
+    supabaseUserId: user.id,
+    authType: 'supabase',
+  }
+}
+
+// Exige un utilisateur authentifié, quel que soit son rôle (admin ou employe).
+// Mêmes flows que requireAdmin (legacy app_session puis Supabase Auth), sans lecture du rôle.
+export async function requireUser(): Promise<RequireAdminResult> {
+  if (process.env.NODE_ENV === 'development' && process.env.DEV_AUTH_BYPASS === '1') {
+    return { ok: true, email: 'dev@local', authType: 'legacy' }
+  }
+  const cookieStore = cookies()
+
+  const legacyToken = cookieStore.get('app_session')?.value
+  if (legacyToken) {
+    const session = verifySession(legacyToken)
+    if (session) {
+      return { ok: true, email: session.email, authType: 'legacy' }
+    }
+  }
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: () => {},
+        remove: () => {},
+      },
+    },
+  )
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return {
+      ok: false,
+      response: NextResponse.json({ error: 'unauthorized' }, { status: 401 }),
     }
   }
   return {
