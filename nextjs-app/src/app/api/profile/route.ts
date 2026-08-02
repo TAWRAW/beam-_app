@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { requireUser } from '@/lib/server-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,6 +10,10 @@ const supabase = createClient(
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  // Session requise : le middleware ne couvre pas /api/*.
+  const guard = await requireUser()
+  if (!guard.ok) return guard.response!
+
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
@@ -41,6 +46,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  // Session requise : le middleware ne couvre pas /api/*.
+  const guard = await requireUser()
+  if (!guard.ok) return guard.response!
+
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
