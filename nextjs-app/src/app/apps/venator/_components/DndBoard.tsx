@@ -12,6 +12,8 @@ import {
 } from '@dnd-kit/core'
 import { cn } from '@/lib/utils'
 import DossierCard, { type ListItem } from './DossierCard'
+import { venatorMicroLabel } from './venator-ui-classes'
+import { DOSSIER_STATUT_ICONS } from './type-icons'
 import { DOSSIER_STATUTS, type DossierStatut } from '@/lib/venator/types'
 
 const STATUT_LABELS: Record<DossierStatut, string> = {
@@ -34,6 +36,8 @@ interface DndBoardProps {
   onDelete?: (item: ListItem) => void
   /** OS émis depuis une carte ticket (menu ⋮). */
   onOsEmis?: () => void
+  /** Ouvre le détail d'un ticket au clic sur sa carte. */
+  onOuvrirTicket?: (ticketId: string) => void
 }
 
 function dragStyle(transform: { x: number; y: number } | null) {
@@ -63,9 +67,9 @@ function DossierBoardCard({
       {...draggable.listeners}
       {...draggable.attributes}
       className={cn(
-        'touch-none rounded-2xl',
+        'touch-none rounded-[var(--venator-radius-lg)]',
         draggable.isDragging && 'opacity-40 relative z-50',
-        droppable.isOver && 'ring-4 ring-[#FFC300]'
+        droppable.isOver && 'ring-1 ring-venator-accent'
       )}
     >
       <DossierCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
@@ -77,10 +81,12 @@ function TicketBoardCard({
   item,
   onDelete,
   onOsEmis,
+  onOuvrirTicket,
 }: {
   item: ListItem
   onDelete?: (item: ListItem) => void
   onOsEmis?: () => void
+  onOuvrirTicket?: (ticketId: string) => void
 }) {
   const draggable = useDraggable({ id: `ticket:${item.id}` })
   return (
@@ -91,7 +97,7 @@ function TicketBoardCard({
       {...draggable.attributes}
       className={cn('touch-none', draggable.isDragging && 'opacity-40 relative z-50')}
     >
-      <DossierCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
+      <DossierCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} onOuvrirTicket={onOuvrirTicket} />
     </div>
   )
 }
@@ -101,14 +107,17 @@ function StatutColumn({ statut, children }: { statut: DossierStatut; children: R
   return (
     <div
       ref={setNodeRef}
-      className={cn('flex flex-col gap-2 rounded-2xl min-h-[100px] p-1 transition-colors', isOver && 'bg-[#FFF6D8]')}
+      className={cn(
+        'flex min-h-[120px] flex-col gap-1.5 rounded-[var(--venator-radius-lg)] p-1.5 transition-colors',
+        isOver ? 'bg-venator-accent/[0.06]' : 'bg-white/[0.015]'
+      )}
     >
       {children}
     </div>
   )
 }
 
-export default function DndBoard({ boardItems, unassignedTickets, onDossierStatutChange, onTicketRattacher, onDelete, onOsEmis }: DndBoardProps) {
+export default function DndBoard({ boardItems, unassignedTickets, onDossierStatutChange, onTicketRattacher, onDelete, onOsEmis, onOuvrirTicket }: DndBoardProps) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
   const columns = useMemo(
@@ -137,28 +146,40 @@ export default function DndBoard({ boardItems, unassignedTickets, onDossierStatu
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-4 gap-3">
-        {columns.map(({ statut, items }) => (
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {columns.map(({ statut, items }) => {
+          const StatutIcon = DOSSIER_STATUT_ICONS[statut]
+          return (
           <div key={statut} className="flex flex-col gap-2">
-            <h2 className="text-xs font-bold uppercase px-2">{STATUT_LABELS[statut]}</h2>
+            <h2 className={cn(venatorMicroLabel, 'flex items-center gap-1.5 px-2')}>
+              <StatutIcon className="h-3 w-3" />
+              <span className="flex-1">{STATUT_LABELS[statut]}</span>
+              <span className="tabular-nums">{items.length}</span>
+            </h2>
             <StatutColumn statut={statut}>
               {items.map((item) => (
                 <DossierBoardCard key={item.id} item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
               ))}
             </StatutColumn>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {unassignedTickets.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xs font-bold uppercase px-2">
+        <div className="mt-8 flex flex-col gap-2">
+          <h2 className={cn(venatorMicroLabel, 'px-2')}>
             Tickets non rattachés — glisser sur une carte dossier pour rattacher
           </h2>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {unassignedTickets.map((item) => (
               <div key={item.id} className="w-56">
-                <TicketBoardCard item={item} onDelete={onDelete} onOsEmis={onOsEmis} />
+                <TicketBoardCard
+                  item={item}
+                  onDelete={onDelete}
+                  onOsEmis={onOsEmis}
+                  onOuvrirTicket={onOuvrirTicket}
+                />
               </div>
             ))}
           </div>

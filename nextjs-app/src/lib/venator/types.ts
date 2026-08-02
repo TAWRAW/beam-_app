@@ -1,7 +1,7 @@
 // src/lib/venator/types.ts — types partagés Venator (AUCUN import next/*)
 import { z } from 'zod'
 
-export const DOSSIER_TYPES = ['sinistre','travaux','procedure','mutation','ag','conseil_syndical','vie_copro','autre'] as const
+export const DOSSIER_TYPES = ['sinistre','travaux','contrat','procedure','mutation','ag','conseil_syndical','vie_copro','autre'] as const
 export type DossierType = (typeof DOSSIER_TYPES)[number]
 export const DOSSIER_STATUTS = ['ouvert','en_cours','en_attente','clos'] as const
 export type DossierStatut = (typeof DOSSIER_STATUTS)[number]
@@ -17,9 +17,13 @@ export type VenatorRole = 'admin' | 'gestionnaire' | 'invite'
 export type FilDirection = 'entrant' | 'sortant' | 'note'
 export type FilSource = 'gmail' | 'manuel' | 'ia' | 'venator'
 
-export interface Copro { id: string; estale_id: string; reference: string; nom: string }
+export interface Copro { id: string; estale_id: string; reference: string; nom: string; drive_folder_id?: string | null }
 export interface Etape { id: string; dossier_id: string; ordre: number; titre: string; statut: EtapeStatut; echeance: string | null; done_at: string | null; notes: string | null }
-export interface Dossier { id: string; copro_id: string; type: DossierType; titre: string; statut: DossierStatut; priorite: number; gabarit_key: string | null; estale_refs: Record<string, unknown>; created_at: string; closed_at: string | null }
+/**
+ * `travaux_vote` ne concerne que les dossiers de type 'travaux' (projet vs voté en AG) ; il reste à false et non affiché pour les autres types.
+ * `gmail_label_id` : libellé Gmail rattaché (id stable au renommage) ; `gmail_label_chemin` conserve le chemin complet pour désambiguïser, l'UI n'affichant que le dernier segment.
+ */
+export interface Dossier { id: string; copro_id: string; type: DossierType; titre: string; statut: DossierStatut; priorite: number; gabarit_key: string | null; travaux_vote: boolean; gmail_label_id: string | null; gmail_label_chemin: string | null; gmail_last_sync: string | null; gmail_label_erreur: string | null; drive_folder_id: string | null; drive_folder_url: string | null; estale_refs: Record<string, unknown>; created_at: string; closed_at: string | null }
 export interface Ticket { id: string; copro_id: string; dossier_id: string | null; type: TicketType; titre: string; description: string | null; statut: TicketStatut; prestataire_nom: string | null; created_at: string; closed_at: string | null }
 export interface FilMessage { id: string; parent_type: 'dossier' | 'ticket'; parent_id: string; direction: FilDirection; source: FilSource; from_email: string | null; sujet: string | null; contenu: string; gmail_message_id: string | null; created_at: string }
 export interface Checklist { id: string; copro_id: string; created_at: string }

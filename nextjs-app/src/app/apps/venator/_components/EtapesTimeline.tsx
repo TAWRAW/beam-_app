@@ -14,6 +14,7 @@ import {
 import { cn } from '@/lib/utils'
 import { keys } from '@/lib/venator/useVenator'
 import type { Dossier, Etape, EtapeStatut } from '@/lib/venator/types'
+import { venatorButtonNeutral } from './venator-ui-classes'
 
 const PASTILLE: Record<EtapeStatut, string> = {
   a_faire: '○',
@@ -127,17 +128,17 @@ export default function EtapesTimeline({
 
   return (
     <div className="flex flex-col gap-3">
-      {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+      {error && <p className="text-sm font-medium text-venator-danger">{error}</p>}
 
-      {etapes.length === 0 && <p className="text-sm text-neutral-600">Aucune étape.</p>}
+      {etapes.length === 0 && <p className="text-sm text-venator-fg-muted">Aucune étape.</p>}
 
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-1.5">
         {etapes.map((etape) => {
           const overdue = !!etape.echeance && etape.statut !== 'fait' && new Date(etape.echeance) < new Date(new Date().toDateString())
           return (
             <li
               key={etape.id}
-              className="flex items-center gap-3 border-2 border-black rounded-2xl bg-white p-3 shadow-[3px_3px_0px_0px_#000]"
+              className="group flex items-center gap-3 rounded-[var(--venator-radius-lg)] bg-venator-surface px-4 py-3 transition-colors hover:bg-venator-surface-2"
             >
               <button
                 type="button"
@@ -145,39 +146,59 @@ export default function EtapesTimeline({
                 disabled={!NEXT_STATUT[etape.statut]}
                 aria-label={`Statut : ${etape.statut}`}
                 className={cn(
-                  'text-xl leading-none shrink-0',
-                  NEXT_STATUT[etape.statut] ? 'cursor-pointer' : 'cursor-default opacity-70'
+                  'shrink-0 text-base leading-none',
+                  etape.statut === 'fait' ? 'text-venator-accent' : 'text-venator-fg-faint',
+                  NEXT_STATUT[etape.statut] ? 'cursor-pointer hover:text-venator-fg' : 'cursor-default'
                 )}
               >
                 {PASTILLE[etape.statut]}
               </button>
 
-              <div className="flex-1 min-w-0">
-                <p className={cn('text-sm font-semibold truncate', etape.statut === 'sautee' && 'line-through text-neutral-500')}>
+              <div className="min-w-0 flex-1">
+                <p
+                  className={cn(
+                    'truncate text-[13px] font-medium',
+                    etape.statut === 'sautee' ? 'text-venator-fg-faint line-through' : 'text-venator-fg'
+                  )}
+                >
                   {etape.titre}
                 </p>
                 {etape.echeance && (
-                  <p className={cn('text-xs', overdue ? 'text-red-600 font-bold' : 'text-neutral-600')}>
+                  <p className={cn('text-[12px]', overdue ? 'font-medium text-venator-danger' : 'text-venator-fg-muted')}>
                     Échéance : {formatEcheance(etape.echeance)}
                   </p>
                 )}
-                {etape.notes && <p className="text-xs text-neutral-600 whitespace-pre-wrap mt-1">{etape.notes}</p>}
+                {etape.notes && (
+                  <p className="mt-1 whitespace-pre-wrap text-[12px] text-venator-fg-muted">{etape.notes}</p>
+                )}
               </div>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button type="button" className="shrink-0 p-1.5" aria-label="Menu étape">
-                    <MoreVertical className="h-4 w-4" />
+                  <button
+                    type="button"
+                    className="shrink-0 rounded-md p-1.5 text-venator-fg-faint opacity-0 transition hover:bg-venator-surface-hover hover:text-venator-fg group-hover:opacity-100 focus-visible:opacity-100"
+                    aria-label="Menu étape"
+                  >
+                    <MoreVertical className="h-3.5 w-3.5" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => patchEtapeOptimistic(etape.id, { statut: 'sautee' })}>
+                <DropdownMenuContent align="end" className="border-venator-border bg-venator-surface text-venator-fg">
+                  <DropdownMenuItem
+                    onClick={() => patchEtapeOptimistic(etape.id, { statut: 'sautee' })}
+                    className="focus:bg-venator-surface-hover focus:text-venator-fg"
+                  >
                     Sauter
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleNotes(etape)}>Notes</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleNotes(etape)}
+                    className="focus:bg-venator-surface-hover focus:text-venator-fg"
+                  >
+                    Notes
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => handleSupprimer(etape)}
-                    className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                    className="text-venator-danger focus:bg-venator-danger/10 focus:text-venator-danger"
                   >
                     <Trash2 className="h-3.5 w-3.5 mr-1.5" />
                     Supprimer l&apos;étape
@@ -198,14 +219,15 @@ export default function EtapesTimeline({
           }}
           placeholder="Titre de l'étape"
           maxLength={200}
+          className="h-9 border-0 bg-venator-surface text-[13px] text-venator-fg placeholder:text-venator-fg-faint focus-visible:ring-1 focus-visible:ring-venator-border-strong"
         />
         <Button
           type="button"
           onClick={handleAjouter}
           disabled={!nouvelleTitre.trim() || submitting}
-          className="bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300] shrink-0"
+          className={cn(venatorButtonNeutral, 'h-9 shrink-0 px-3.5')}
         >
-          {submitting ? 'Ajout…' : 'Ajouter une étape'}
+          {submitting ? 'Ajout…' : 'Ajouter'}
         </Button>
       </div>
     </div>

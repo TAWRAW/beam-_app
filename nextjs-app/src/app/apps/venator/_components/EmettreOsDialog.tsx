@@ -4,7 +4,7 @@
 // Charge les fournisseurs (+ contacts) Estale de la copro du ticket, puis POST /api/venator/os.
 
 import { useEffect, useMemo, useState } from 'react'
-import { Loader2, Send } from 'lucide-react'
+import { CheckCircle2, Loader2, Send } from 'lucide-react'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,15 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useCopros } from '@/lib/venator/useVenator'
+import {
+  venatorButtonPrimary,
+  venatorDialogContent,
+  venatorInput,
+  venatorLabel,
+  venatorSelectContent,
+  venatorSelectItem,
+  venatorSelectTrigger,
+} from './venator-ui-classes'
 
 /** Ticket minimal requis pour émettre un OS (id + rattachement copro + titre par défaut). */
 export interface OsTicket {
@@ -189,19 +198,19 @@ export default function EmettreOsDialog({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !submitting && onOpenChange(v)}>
-      <DialogContent className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000]">
+      <DialogContent className={venatorDialogContent}>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Send className="h-4 w-4" />
+          <DialogTitle className="flex items-center gap-2 text-venator-fg">
+            <Send className="h-4 w-4 text-venator-accent" />
             Émettre un OS
           </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="os-prestataire">Prestataire</Label>
+            <Label htmlFor="os-prestataire" className={venatorLabel}>Prestataire</Label>
             <Select value={prestataireContactId} onValueChange={setPrestataireContactId} disabled={suppliersLoading || contacts.length === 0}>
-              <SelectTrigger id="os-prestataire">
+              <SelectTrigger id="os-prestataire" className={venatorSelectTrigger}>
                 <SelectValue
                   placeholder={
                     suppliersLoading
@@ -212,12 +221,12 @@ export default function EmettreOsDialog({
                   }
                 />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={venatorSelectContent}>
                 {coproContacts.length > 0 && (
                   <SelectGroup>
-                    <SelectLabel>Fournisseurs de la copro</SelectLabel>
+                    <SelectLabel className="text-venator-fg-muted">Fournisseurs de la copro</SelectLabel>
                     {coproContacts.map((c) => (
-                      <SelectItem key={c.contactId} value={c.contactId}>
+                      <SelectItem key={c.contactId} value={c.contactId} className={venatorSelectItem}>
                         {c.label}
                       </SelectItem>
                     ))}
@@ -225,9 +234,9 @@ export default function EmettreOsDialog({
                 )}
                 {cabinetContacts.length > 0 && (
                   <SelectGroup>
-                    <SelectLabel>Autres fournisseurs du cabinet</SelectLabel>
+                    <SelectLabel className="text-venator-fg-muted">Autres fournisseurs du cabinet</SelectLabel>
                     {cabinetContacts.map((c) => (
-                      <SelectItem key={c.contactId} value={c.contactId}>
+                      <SelectItem key={c.contactId} value={c.contactId} className={venatorSelectItem}>
                         {c.label}
                       </SelectItem>
                     ))}
@@ -235,56 +244,61 @@ export default function EmettreOsDialog({
                 )}
               </SelectContent>
             </Select>
-            {suppliersError && <p className="text-xs text-red-600 font-semibold">{suppliersError}</p>}
+            {suppliersError && <p className="text-xs font-medium text-venator-danger">{suppliersError}</p>}
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="os-objet">Objet</Label>
-            <Input id="os-objet" value={objet} onChange={(e) => setObjet(e.target.value)} maxLength={200} />
+            <Label htmlFor="os-objet" className={venatorLabel}>Objet</Label>
+            <Input id="os-objet" value={objet} onChange={(e) => setObjet(e.target.value)} maxLength={200} className={venatorInput} />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="os-description">Description</Label>
+            <Label htmlFor="os-description" className={venatorLabel}>Description</Label>
             <Textarea
               id="os-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Détail de l'intervention demandée…"
               maxLength={20000}
+              className={venatorInput}
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <Checkbox id="os-urgent" checked={urgent} onCheckedChange={(v) => setUrgent(v === true)} />
-            <Label htmlFor="os-urgent" className="cursor-pointer">
+            <Checkbox
+              id="os-urgent"
+              checked={urgent}
+              onCheckedChange={(v) => setUrgent(v === true)}
+              className="border-venator-border-strong data-[state=checked]:bg-venator-accent data-[state=checked]:border-venator-accent data-[state=checked]:text-venator-accent-foreground"
+            />
+            <Label htmlFor="os-urgent" className="cursor-pointer text-venator-fg">
               Urgent
             </Label>
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="os-code-acces">Code d&apos;accès clés (optionnel)</Label>
+            <Label htmlFor="os-code-acces" className={venatorLabel}>Code d&apos;accès clés (optionnel)</Label>
             <Input
               id="os-code-acces"
               value={codeAcces}
               onChange={(e) => setCodeAcces(e.target.value)}
               placeholder="Ex : boîte à clés 1234"
               maxLength={100}
+              className={venatorInput}
             />
           </div>
 
           {success && (
-            <div className="border-2 border-black rounded-2xl bg-green-100 p-3 text-sm font-semibold">OS envoyé ✅</div>
+            <div className="flex items-center gap-2 rounded-[var(--venator-radius-md)] bg-venator-surface-2 p-3 text-sm font-medium text-venator-fg">
+              <CheckCircle2 className="h-4 w-4 text-venator-accent" />
+              OS envoyé
+            </div>
           )}
-          {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+          {error && <p className="text-sm font-medium text-venator-danger">{error}</p>}
         </div>
 
         <DialogFooter>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            className="bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300]"
-          >
+          <Button type="button" onClick={handleSubmit} disabled={!canSubmit} className={venatorButtonPrimary}>
             {submitting ? (
               <span className="inline-flex items-center gap-1.5">
                 <Loader2 className="h-4 w-4 animate-spin" />

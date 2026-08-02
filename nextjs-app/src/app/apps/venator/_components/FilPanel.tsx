@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { keys, useFil } from '@/lib/venator/useVenator'
 import type { FilMessage, FilSource } from '@/lib/venator/types'
+import { venatorButtonNeutral, venatorMicroLabel } from './venator-ui-classes'
 
 const SOURCE_LABELS: Record<FilSource, string> = {
   gmail: 'Gmail',
@@ -31,7 +32,7 @@ function FilSkeleton() {
   return (
     <div className="flex flex-col gap-2">
       {[0, 1].map((i) => (
-        <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+        <div key={i} className="h-16 rounded-[var(--venator-radius-lg)] bg-venator-surface animate-pulse" />
       ))}
     </div>
   )
@@ -104,32 +105,31 @@ export default function FilPanel({
 
   return (
     <div className="flex flex-col gap-3">
-      {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+      {error && <p className="text-sm font-medium text-venator-danger">{error}</p>}
 
       {isLoading ? (
         <FilSkeleton />
       ) : sorted.length === 0 ? (
-        <p className="text-sm text-neutral-600">Aucun message pour l'instant.</p>
+        <p className="text-sm text-venator-fg-muted">Aucun message pour l&apos;instant.</p>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-1.5">
           {sorted.map((m) => (
-            <li key={m.id} className="border-2 border-black rounded-2xl bg-white p-3 shadow-[3px_3px_0px_0px_#000]">
-              <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span
-                  className={cn(
-                    'text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border-2 border-black',
-                    m.direction === 'entrant' && 'bg-blue-100',
-                    m.direction === 'sortant' && 'bg-green-100',
-                    m.direction === 'note' && 'bg-[#F2F1E6]'
-                  )}
-                >
+            <li key={m.id} className="rounded-[var(--venator-radius-lg)] bg-venator-surface px-4 py-3">
+              <div className={cn(venatorMicroLabel, 'mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1')}>
+                <span>
                   {SOURCE_LABELS[m.source]} · {DIRECTION_LABELS[m.direction]}
                 </span>
-                <span className="text-xs text-neutral-500">{formatDate(m.created_at)}</span>
-                {m.from_email && <span className="text-xs text-neutral-500">{m.from_email}</span>}
+                <span className="tabular-nums font-normal normal-case tracking-normal text-venator-fg-faint">
+                  {formatDate(m.created_at)}
+                </span>
+                {m.from_email && (
+                  <span className="font-normal normal-case tracking-normal text-venator-fg-faint">{m.from_email}</span>
+                )}
               </div>
-              {m.sujet && <p className="text-sm font-semibold">{m.sujet}</p>}
-              <p className="text-sm whitespace-pre-wrap">{m.contenu}</p>
+              {m.sujet && <p className="text-[13px] font-semibold text-venator-fg">{m.sujet}</p>}
+              <p className="whitespace-pre-wrap text-[13px] font-normal leading-relaxed text-venator-fg">
+                {m.contenu}
+              </p>
             </li>
           ))}
         </ul>
@@ -141,13 +141,13 @@ export default function FilPanel({
           onChange={(e) => setNote(e.target.value)}
           placeholder="Écrire une note…"
           maxLength={50000}
-          className="bg-white"
+          className="min-h-[72px] resize-none border-0 bg-venator-surface text-[13px] text-venator-fg placeholder:text-venator-fg-faint focus-visible:ring-1 focus-visible:ring-venator-border-strong"
         />
         <Button
           type="button"
           onClick={handleAjouter}
           disabled={!note.trim() || submitting}
-          className="self-end bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300]"
+          className={cn(venatorButtonNeutral, 'h-8 self-end px-3')}
         >
           {submitting ? 'Ajout…' : 'Ajouter une note'}
         </Button>

@@ -1,20 +1,23 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { Suspense, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { Rocket } from 'lucide-react'
 import { useUserRole } from '@/hooks/useUserRole'
-import { cn } from '@/lib/utils'
+import VenatorShell from './_components/nav/VenatorShell'
+import './venator-theme.css'
 
-const NAV = [
-  { href: '/apps/venator', label: 'Dashboard' },
-  { href: '/apps/venator/copros', label: 'Copros' },
-]
+function VenatorShellFallback() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center text-sm text-venator-fg-muted">
+      Chargement…
+    </div>
+  )
+}
 
 export default function VenatorLayout({ children }: { children: React.ReactNode }) {
   const { isAdmin, loading } = useUserRole()
   const router = useRouter()
-  const pathname = usePathname()
 
   useEffect(() => {
     if (!loading && !isAdmin) router.replace('/apps')
@@ -25,30 +28,15 @@ export default function VenatorLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F1E6]">
-      <header className="sticky top-0 z-10 bg-white border-b-2 border-black px-4 py-3">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-          <h1 className="font-bold text-lg">🚀 Venator</h1>
-          <nav className="flex items-center gap-2">
-            {NAV.map((item) => {
-              const active = item.href === '/apps/venator' ? pathname === item.href : pathname?.startsWith(item.href)
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href as any}
-                  className={cn(
-                    'text-xs font-semibold px-3 py-1 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_#000] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]',
-                    active ? 'bg-[#FFC300]' : 'bg-white'
-                  )}
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
-          </nav>
-        </div>
+    <div className="venator-theme min-h-screen bg-venator-bg text-venator-fg">
+      <header className="sticky top-0 z-30 flex items-center gap-2 bg-venator-bg/80 px-4 py-3.5 backdrop-blur-xl md:px-6">
+        <Rocket className="h-4 w-4 text-venator-accent" />
+        <h1 className="text-[13px] font-semibold tracking-[-0.01em]">Venator</h1>
       </header>
-      <main className="max-w-5xl mx-auto p-4">{children}</main>
+
+      <Suspense fallback={<VenatorShellFallback />}>
+        <VenatorShell>{children}</VenatorShell>
+      </Suspense>
     </div>
   )
 }

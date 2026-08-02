@@ -2,36 +2,45 @@
 
 import { useMemo, useState } from 'react'
 import { useSWRConfig } from 'swr'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Plus, RefreshCw, Zap } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import DossierCard, { type ListItem } from './_components/DossierCard'
+import TicketDetailDialog from './_components/TicketDetailDialog'
 import CreateDossierDialog from './_components/CreateDossierDialog'
 import TicketExpressDialog from './_components/TicketExpressDialog'
 import EmettreOsDialog, { type OsTicket } from './_components/EmettreOsDialog'
+import ChecklistPanel from './_components/ChecklistPanel'
 import DndBoard from './_components/DndBoard'
-import { useCopros, useDossiers, useTickets } from '@/lib/venator/useVenator'
-import { DOSSIER_TYPES, DOSSIER_STATUTS, type DossierStatut, type DossierType, type Ticket } from '@/lib/venator/types'
+import { JOURNAL_EVENT_FALLBACK, JOURNAL_EVENT_META } from './_components/journal-event-meta'
+import { useVenatorNavState } from './_components/nav/useVenatorNavState'
+import { useVenatorHotkey } from './_components/nav/useVenatorHotkey'
+import { useDossierTypeCounts } from './_components/nav/useDossierTypeCounts'
+import { useCopros, useJournal, useTickets } from '@/lib/venator/useVenator'
+import { DOSSIER_STATUTS, type DossierStatut, type Ticket } from '@/lib/venator/types'
+import { DOSSIER_TYPE_LABELS } from '@/lib/venator/labels'
+import {
+  venatorButtonNeutral,
+  venatorButtonPrimary,
+  venatorButtonSecondary,
+  venatorMicroLabel,
+  venatorSegmentedList,
+  venatorSegmentedTrigger,
+} from './_components/venator-ui-classes'
 
-const TYPE_LABELS: Record<DossierType, string> = {
-  sinistre: 'Sinistre',
-  travaux: 'Travaux',
-  procedure: 'Procédure',
-  mutation: 'Mutation',
-  ag: 'AG',
-  conseil_syndical: 'Conseil syndical',
-  vie_copro: 'Vie copro',
-  autre: 'Autre',
+function formatDate(iso: string) {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleString('fr-FR')
 }
-
-type Filters = { copro_id: string; type: string; vue: 'liste' | 'board' }
 
 function ListSkeleton() {
   return (
     <div className="flex flex-col gap-2">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+        <div key={i} className="h-16 rounded-[var(--venator-radius-lg)] bg-venator-surface animate-pulse" />
       ))}
     </div>
   )
@@ -39,12 +48,12 @@ function ListSkeleton() {
 
 function BoardSkeleton() {
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
       {DOSSIER_STATUTS.map((statut) => (
         <div key={statut} className="flex flex-col gap-2">
-          <div className="h-4 w-20 rounded bg-neutral-200 animate-pulse" />
+          <div className="h-4 w-20 rounded bg-venator-surface animate-pulse" />
           {[0, 1].map((i) => (
-            <div key={i} className="h-16 rounded-2xl border-2 border-black bg-neutral-200 animate-pulse" />
+            <div key={i} className="h-16 rounded-[var(--venator-radius-lg)] bg-venator-surface animate-pulse" />
           ))}
         </div>
       ))}
@@ -54,37 +63,51 @@ function BoardSkeleton() {
 
 export default function VenatorDashboardPage() {
   const { mutate } = useSWRConfig()
-  const [filters, setFilters] = useState<Filters>({ copro_id: 'all', type: 'all', vue: 'liste' })
+  const { nav, setVue } = useVenatorNavState()
   const [syncing, setSyncing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
   const [ticketExpressOpen, setTicketExpressOpen] = useState(false)
   const [osDialogTicket, setOsDialogTicket] = useState<OsTicket | null>(null)
   const [confirmMsg, setConfirmMsg] = useState<string | null>(null)
+  // Détail d'un ticket ouvert depuis une carte (liste ou board).
+  const [ticketDetailId, setTicketDetailId] = useState<string | null>(null)
+  const [note, setNote] = useState('')
+  const [noteSubmitting, setNoteSubmitting] = useState(false)
 
-  const dossiersQuery = useMemo(() => {
-    const params = new URLSearchParams()
-    if (filters.copro_id !== 'all') params.set('copro_id', filters.copro_id)
-    if (filters.type !== 'all') params.set('type', filters.type)
-    return params.toString()
-  }, [filters.copro_id, filters.type])
+  // Création au clavier — les dialogs eux-mêmes neutralisent ces touches (cf.
+  // garde de saisie dans useVenatorHotkey), pas de risque de réouverture.
+  useVenatorHotkey('n', () => setCreateOpen(true))
+  useVenatorHotkey('t', () => setTicketExpressOpen(true))
 
-  const ticketsQuery = useMemo(() => {
-    const params = new URLSearchParams()
-    if (filters.copro_id !== 'all') params.set('copro_id', filters.copro_id)
-    return params.toString()
-  }, [filters.copro_id])
+  const ticketsQuery = useMemo(
+    () => (nav.coproId !== 'all' ? `copro_id=${nav.coproId}` : ''),
+    [nav.coproId]
+  )
 
   const { data: coprosData } = useCopros()
-  const { data: dossiersData, isLoading: dossiersLoading } = useDossiers(dossiersQuery)
+  // Copro-filtrée uniquement (jamais par type) — sert au calcul des compteurs
+  // par type (panneaux de nav) ET à la liste affichée ci-dessous, filtrée par
+  // type côté client. Un seul appel réseau (cache SWR partagé avec VenatorShell).
+  const { dossiers, isLoading: dossiersLoading } = useDossierTypeCounts(nav.coproId)
   const { data: ticketsData, isLoading: ticketsLoading } = useTickets(ticketsQuery)
-
-  const copros = coprosData?.copros ?? []
-  const dossiers = dossiersData?.dossiers ?? []
-  const tickets = ticketsData?.tickets ?? []
   const loading = dossiersLoading || ticketsLoading
 
-  // Rafraîchit toutes les clés Venator (copros, dossiers filtrés, tickets filtrés) après une mutation.
+  const copros = coprosData?.copros ?? []
+  const copro = nav.coproId !== 'all' ? copros.find((c) => c.id === nav.coproId) ?? null : null
+  const filteredDossiers = useMemo(
+    () => (nav.type === 'all' ? dossiers : dossiers.filter((d) => d.type === nav.type)),
+    [dossiers, nav.type]
+  )
+  // Les tickets ont leur propre taxonomie (intervention/demande/signalement),
+  // sans rapport avec les types de dossier — on ne les affiche que dans la vue
+  // "Tous les types", pour éviter de les confronter à un filtre qui ne les concerne pas.
+  const tickets = nav.type === 'all' ? ticketsData?.tickets ?? [] : []
+
+  const { data: journalData, isLoading: journalLoading } = useJournal(copro ? nav.coproId : '')
+  const journalEntries = journalData?.entries ?? []
+
+  // Rafraîchit toutes les clés Venator (copros, dossiers, tickets, journal, checklist) après une mutation.
   function refreshAll() {
     return mutate((key) => typeof key === 'string' && key.startsWith('/api/venator/'))
   }
@@ -100,6 +123,29 @@ export default function VenatorDashboardPage() {
       setError(e instanceof Error ? e.message : 'Erreur de synchronisation')
     } finally {
       setSyncing(false)
+    }
+  }
+
+  async function handleAjouterNote() {
+    if (!note.trim() || noteSubmitting || !copro) return
+    setNoteSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/venator/journal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ copro_id: copro.id, contenu: note.trim(), type_evenement: 'note' }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.error ?? `Erreur ${res.status}`)
+      }
+      setNote('')
+      await refreshAll()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue')
+    } finally {
+      setNoteSubmitting(false)
     }
   }
 
@@ -123,7 +169,7 @@ export default function VenatorDashboardPage() {
   const coproById = useMemo(() => new Map(copros.map((c) => [c.id, c])), [copros])
 
   const listItems: ListItem[] = useMemo(() => {
-    const fromDossiers: ListItem[] = dossiers.map((d) => ({
+    const fromDossiers: ListItem[] = filteredDossiers.map((d) => ({
       id: d.id,
       kind: 'dossier',
       type: d.type,
@@ -135,28 +181,26 @@ export default function VenatorDashboardPage() {
       created_at: d.created_at,
       href: `/apps/venator/dossiers/${d.id}`,
     }))
-    const fromTickets: ListItem[] = tickets
-      .filter((t) => filters.type === 'all' || filters.type === t.type)
-      .map((t) => ({
-        id: t.id,
-        kind: 'ticket',
-        type: t.type,
-        titre: t.titre,
-        statut: t.statut,
-        priorite: null,
-        coproNom: coproById.get(t.copro_id)?.nom ?? '—',
-        copro_id: t.copro_id,
-        created_at: t.created_at,
-        href: t.dossier_id ? `/apps/venator/dossiers/${t.dossier_id}` : `/apps/venator/copros/${t.copro_id}`,
-      }))
+    const fromTickets: ListItem[] = tickets.map((t) => ({
+      id: t.id,
+      kind: 'ticket',
+      type: t.type,
+      titre: t.titre,
+      statut: t.statut,
+      priorite: null,
+      coproNom: coproById.get(t.copro_id)?.nom ?? '—',
+      copro_id: t.copro_id,
+      created_at: t.created_at,
+      href: t.dossier_id ? `/apps/venator/dossiers/${t.dossier_id}` : `/apps/venator?copro=${t.copro_id}`,
+    }))
     return [...fromDossiers, ...fromTickets].sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
-  }, [dossiers, tickets, coproById, filters.type])
+  }, [filteredDossiers, tickets, coproById])
 
   const boardItems: ListItem[] = useMemo(
     () =>
-      dossiers.map((d) => ({
+      filteredDossiers.map((d) => ({
         id: d.id,
         kind: 'dossier',
         type: d.type,
@@ -168,7 +212,7 @@ export default function VenatorDashboardPage() {
         created_at: d.created_at,
         href: `/apps/venator/dossiers/${d.id}`,
       })),
-    [dossiers, coproById]
+    [filteredDossiers, coproById]
   )
 
   const unassignedTicketItems: ListItem[] = useMemo(
@@ -185,7 +229,7 @@ export default function VenatorDashboardPage() {
           coproNom: coproById.get(t.copro_id)?.nom ?? '—',
           copro_id: t.copro_id,
           created_at: t.created_at,
-          href: `/apps/venator/copros/${t.copro_id}`,
+          href: `/apps/venator?copro=${t.copro_id}`,
         })),
     [tickets, coproById]
   )
@@ -237,101 +281,155 @@ export default function VenatorDashboardPage() {
     }
   }
 
+  const heading = copro ? copro.nom : nav.type !== 'all' ? DOSSIER_TYPE_LABELS[nav.type as keyof typeof DOSSIER_TYPE_LABELS] : "Vue d'ensemble"
+  const subheading = copro
+    ? nav.type !== 'all'
+      ? DOSSIER_TYPE_LABELS[nav.type as keyof typeof DOSSIER_TYPE_LABELS]
+      : copro.reference
+    : null
+
   return (
-    <div className="flex flex-col gap-4">
-      {/* Barre de filtres */}
-      <div className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] bg-white p-3 flex flex-wrap items-center gap-3">
-        <Select value={filters.copro_id} onValueChange={(v) => setFilters((f) => ({ ...f, copro_id: v }))}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Copropriété" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toutes les copros</SelectItem>
-            {copros.map((c) => (
-              <SelectItem key={c.id} value={c.id}>
-                {c.nom}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="truncate text-[26px] font-semibold leading-tight tracking-[-0.02em] text-venator-fg">
+            {heading}
+          </h2>
+          {subheading && <p className="mt-0.5 text-[13px] text-venator-fg-muted">{subheading}</p>}
+        </div>
 
-        <Select value={filters.type} onValueChange={(v) => setFilters((f) => ({ ...f, type: v }))}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous les types</SelectItem>
-            {DOSSIER_TYPES.map((t) => (
-              <SelectItem key={t} value={t}>
-                {TYPE_LABELS[t]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-1.5">
+          <Tabs value={nav.vue} onValueChange={(v) => setVue(v as 'liste' | 'board')}>
+            <TabsList className={venatorSegmentedList}>
+              <TabsTrigger value="liste" className={venatorSegmentedTrigger}>
+                Liste
+              </TabsTrigger>
+              <TabsTrigger value="board" className={venatorSegmentedTrigger}>
+                Board
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-        <Tabs value={filters.vue} onValueChange={(v) => setFilters((f) => ({ ...f, vue: v as Filters['vue'] }))}>
-          <TabsList>
-            <TabsTrigger value="liste">Liste</TabsTrigger>
-            <TabsTrigger value="board">Board</TabsTrigger>
-          </TabsList>
-        </Tabs>
-
-        <div className="flex items-center gap-2 ml-auto">
           <Button
             type="button"
             variant="outline"
+            size="icon"
             onClick={handleSync}
             disabled={syncing}
-            className="rounded-full border-2 border-black bg-white font-semibold"
+            aria-label="Synchroniser les copropriétés"
+            title={syncing ? 'Synchronisation…' : 'Synchroniser les copropriétés'}
+            className={cn(venatorButtonSecondary, 'h-8 w-8')}
           >
-            {syncing ? (
-              <span className="inline-flex items-center gap-1.5">
-                <span className={cn('h-3 w-3 rounded-full border-2 border-black border-t-transparent animate-spin')} />
-                Sync…
-              </span>
-            ) : (
-              '⟳ Sync copros'
-            )}
+            <RefreshCw className={cn('h-3.5 w-3.5', syncing && 'animate-spin')} />
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => setTicketExpressOpen(true)}
-            className="rounded-full border-2 border-black bg-white font-semibold"
+            title="Ticket express (T)"
+            className={cn(venatorButtonSecondary, 'h-8 gap-1.5 px-3')}
           >
-            + Ticket express
+            <Zap className="h-3.5 w-3.5" />
+            Ticket express
+            <kbd className="font-sans text-[10.5px] text-venator-fg-faint">T</kbd>
           </Button>
           <Button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300]"
+            title="Nouveau dossier (N)"
+            className={cn(venatorButtonPrimary, 'h-8 gap-1.5 px-3.5')}
           >
-            + Dossier
+            <Plus className="h-3.5 w-3.5" />
+            Nouveau dossier
+            <kbd className="font-sans text-[10.5px] opacity-60">N</kbd>
           </Button>
         </div>
       </div>
 
       {confirmMsg && (
-        <div className="border-2 border-black rounded-2xl bg-green-100 p-3 text-sm font-semibold">
+        <div className="rounded-[var(--venator-radius-md)] bg-venator-surface-2 p-3 text-sm font-medium text-venator-fg">
           {confirmMsg}
         </div>
       )}
 
       {error && (
-        <div className="border-2 border-red-600 rounded-2xl bg-white p-3 text-sm font-semibold text-red-600">
+        <div className="rounded-[var(--venator-radius-md)] border border-venator-danger/40 bg-venator-danger/10 p-3 text-sm font-medium text-venator-danger">
           {error}
         </div>
       )}
 
+      {copro && (
+        <section className="grid gap-4 md:grid-cols-3">
+          <div className="flex flex-col gap-3 rounded-[var(--venator-radius-lg)] bg-venator-surface p-5 md:col-span-2">
+            <h3 className={venatorMicroLabel}>Journal technique</h3>
+
+            {journalLoading ? (
+              <div className="h-16 rounded bg-venator-surface-2 animate-pulse" />
+            ) : journalEntries.length === 0 ? (
+              <p className="text-[13px] text-venator-fg-faint">Aucun événement pour l&apos;instant.</p>
+            ) : (
+              <ul className="flex max-h-64 flex-col divide-y divide-venator-border overflow-y-auto">
+                {journalEntries.map((e) => {
+                  const meta = JOURNAL_EVENT_META[e.type_evenement] ?? JOURNAL_EVENT_FALLBACK
+                  const Icon = meta.icon
+                  return (
+                    <li key={e.id} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
+                      <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-venator-fg-faint" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className={venatorMicroLabel}>{meta.label}</span>
+                          <span className="text-[10.5px] tabular-nums text-venator-fg-faint">
+                            {formatDate(e.created_at)}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 whitespace-pre-wrap text-[13px] font-normal leading-relaxed text-venator-fg">
+                          {e.contenu}
+                        </p>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+
+            <div className="flex flex-col gap-2 pt-1">
+              <Textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Note rapide…"
+                maxLength={5000}
+                className="min-h-[72px] resize-none border-0 bg-venator-surface-2 text-[13px] text-venator-fg placeholder:text-venator-fg-faint focus-visible:ring-1 focus-visible:ring-venator-border-strong"
+              />
+              <Button
+                type="button"
+                onClick={handleAjouterNote}
+                disabled={!note.trim() || noteSubmitting}
+                className={cn(venatorButtonNeutral, 'h-8 self-end px-3')}
+              >
+                {noteSubmitting ? 'Ajout…' : 'Ajouter au journal'}
+              </Button>
+            </div>
+          </div>
+
+          <ChecklistPanel coproId={copro.id} />
+        </section>
+      )}
+
       {loading ? (
-        filters.vue === 'liste' ? <ListSkeleton /> : <BoardSkeleton />
-      ) : filters.vue === 'liste' ? (
-        <div className="flex flex-col gap-2">
+        nav.vue === 'liste' ? <ListSkeleton /> : <BoardSkeleton />
+      ) : nav.vue === 'liste' ? (
+        <div className="flex flex-col gap-1.5">
           {listItems.length === 0 && (
-            <p className="text-sm text-neutral-600">Aucun dossier ni ticket pour l'instant.</p>
+            <p className="text-[13px] text-venator-fg-faint">Aucun dossier ni ticket pour l&apos;instant.</p>
           )}
           {listItems.map((item) => (
-            <DossierCard key={`${item.kind}-${item.id}`} item={item} onDelete={handleDeleteItem} onOsEmis={handleOsEmis} />
+            <DossierCard
+              key={`${item.kind}-${item.id}`}
+              item={item}
+              onDelete={handleDeleteItem}
+              onOsEmis={handleOsEmis}
+              onOuvrirTicket={setTicketDetailId}
+            />
           ))}
         </div>
       ) : (
@@ -342,14 +440,23 @@ export default function VenatorDashboardPage() {
           onTicketRattacher={handleTicketRattacher}
           onDelete={handleDeleteItem}
           onOsEmis={handleOsEmis}
+          onOuvrirTicket={setTicketDetailId}
         />
       )}
+
+      <TicketDetailDialog
+        ticket={ticketsData?.tickets.find((t) => t.id === ticketDetailId) ?? null}
+        open={ticketDetailId !== null}
+        onOpenChange={(open) => {
+          if (!open) setTicketDetailId(null)
+        }}
+      />
 
       <CreateDossierDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         copros={copros}
-        defaultCoproId={filters.copro_id !== 'all' ? filters.copro_id : undefined}
+        defaultCoproId={nav.coproId !== 'all' ? nav.coproId : undefined}
         onCreated={() => refreshAll()}
       />
 
@@ -357,7 +464,7 @@ export default function VenatorDashboardPage() {
         open={ticketExpressOpen}
         onOpenChange={setTicketExpressOpen}
         copros={copros}
-        defaultCoproId={filters.copro_id !== 'all' ? filters.copro_id : undefined}
+        defaultCoproId={nav.coproId !== 'all' ? nav.coproId : undefined}
         onCreated={handleTicketExpressCreated}
         onCreatedForOs={handleTicketCreatedForOs}
       />

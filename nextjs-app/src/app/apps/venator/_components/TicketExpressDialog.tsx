@@ -8,12 +8,18 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TICKET_TYPES, type Copro, type Dossier, type Ticket, type TicketType } from '@/lib/venator/types'
-
-const TICKET_TYPE_LABELS: Record<TicketType, string> = {
-  intervention: 'Intervention',
-  demande: 'Demande',
-  signalement: 'Signalement',
-}
+import { TICKET_TYPE_LABELS } from '@/lib/venator/labels'
+import {
+  venatorButtonPrimary,
+  venatorButtonSecondary,
+  venatorDialogContent,
+  venatorInput,
+  venatorLabel,
+  venatorSelectContent,
+  venatorSelectItem,
+  venatorSelectTrigger,
+} from './venator-ui-classes'
+import { cn } from '@/lib/utils'
 
 export default function TicketExpressDialog({
   open,
@@ -136,20 +142,20 @@ export default function TicketExpressDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000]">
+      <DialogContent className={venatorDialogContent}>
         <DialogHeader>
-          <DialogTitle>Ticket express</DialogTitle>
+          <DialogTitle className="text-venator-fg">Ticket express</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ticket-express-copro">Copropriété</Label>
+            <Label htmlFor="ticket-express-copro" className={venatorLabel}>Copropriété</Label>
             <Select value={coproId} onValueChange={handleCoproChange}>
-              <SelectTrigger id="ticket-express-copro">
+              <SelectTrigger id="ticket-express-copro" className={venatorSelectTrigger}>
                 <SelectValue placeholder="Choisir une copropriété" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={venatorSelectContent}>
                 {copros.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
+                  <SelectItem key={c.id} value={c.id} className={venatorSelectItem}>
                     {c.nom}
                   </SelectItem>
                 ))}
@@ -158,14 +164,14 @@ export default function TicketExpressDialog({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ticket-express-type">Type</Label>
+            <Label htmlFor="ticket-express-type" className={venatorLabel}>Type</Label>
             <Select value={type} onValueChange={(v) => setType(v as TicketType)}>
-              <SelectTrigger id="ticket-express-type">
+              <SelectTrigger id="ticket-express-type" className={venatorSelectTrigger}>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={venatorSelectContent}>
                 {TICKET_TYPES.map((t) => (
-                  <SelectItem key={t} value={t}>
+                  <SelectItem key={t} value={t} className={venatorSelectItem}>
                     {TICKET_TYPE_LABELS[t]}
                   </SelectItem>
                 ))}
@@ -174,46 +180,49 @@ export default function TicketExpressDialog({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ticket-express-titre">Titre</Label>
+            <Label htmlFor="ticket-express-titre" className={venatorLabel}>Titre</Label>
             <Input
               id="ticket-express-titre"
               value={titre}
               onChange={(e) => setTitre(e.target.value)}
               placeholder="Ex : Fuite chaufferie"
               maxLength={200}
+              className={venatorInput}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ticket-express-description">Description (optionnel)</Label>
+            <Label htmlFor="ticket-express-description" className={venatorLabel}>Description (optionnel)</Label>
             <Textarea
               id="ticket-express-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={5000}
+              className={venatorInput}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ticket-express-prestataire">Prestataire</Label>
+            <Label htmlFor="ticket-express-prestataire" className={venatorLabel}>Prestataire</Label>
             <Input
               id="ticket-express-prestataire"
               value={prestataireNom}
               onChange={(e) => setPrestataireNom(e.target.value)}
               placeholder="Ex : Plomberie Martin"
               maxLength={200}
+              className={venatorInput}
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ticket-express-dossier">Dossier de rattachement (optionnel)</Label>
+            <Label htmlFor="ticket-express-dossier" className={venatorLabel}>Dossier de rattachement (optionnel)</Label>
             <Select value={dossierId} onValueChange={setDossierId} disabled={!coproId}>
-              <SelectTrigger id="ticket-express-dossier">
+              <SelectTrigger id="ticket-express-dossier" className={venatorSelectTrigger}>
                 <SelectValue placeholder={coproId ? 'Aucun' : 'Choisir une copropriété d’abord'} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={venatorSelectContent}>
                 {dossiers.map((d) => (
-                  <SelectItem key={d.id} value={d.id}>
+                  <SelectItem key={d.id} value={d.id} className={venatorSelectItem}>
                     {d.titre}
                   </SelectItem>
                 ))}
@@ -221,7 +230,7 @@ export default function TicketExpressDialog({
             </Select>
           </div>
 
-          {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+          {error && <p className="text-sm font-medium text-venator-danger">{error}</p>}
         </div>
         <DialogFooter className="flex items-center gap-2 sm:justify-between">
           <Button
@@ -229,16 +238,11 @@ export default function TicketExpressDialog({
             variant="outline"
             onClick={handleSubmitWithOs}
             disabled={!canSubmit}
-            className="rounded-full border-2 border-black bg-white font-semibold"
+            className={cn(venatorButtonSecondary, 'border-0')}
           >
             {submittingOs ? 'Création…' : 'OS en un clic'}
           </Button>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            className="bg-[#FFC300] border-2 border-black rounded-full font-bold shadow-[3px_3px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#FFC300]"
-          >
+          <Button type="button" onClick={handleSubmit} disabled={!canSubmit} className={venatorButtonPrimary}>
             {submitting ? 'Création…' : 'Créer le ticket'}
           </Button>
         </DialogFooter>

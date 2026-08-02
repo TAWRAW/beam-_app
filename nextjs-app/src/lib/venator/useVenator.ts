@@ -2,7 +2,8 @@
 'use client'
 
 import useSWR from 'swr'
-import type { Checklist, ChecklistItem, Copro, Dossier, Etape, FilMessage, JournalEntry, Ticket } from '@/lib/venator/types'
+import type { Checklist, ChecklistItem, Copro, Dossier, DossierType, Etape, FilMessage, JournalEntry, Ticket } from '@/lib/venator/types'
+import type { GabaritEtape } from '@/lib/venator/gabarits'
 
 export const fetcher = (url: string) =>
   fetch(url).then((r) => {
@@ -20,6 +21,7 @@ export const keys = {
     `/api/venator/fil?parent_type=${parentType}&parent_id=${parentId}`,
   journal: (coproId: string) => `/api/venator/journal?copro_id=${coproId}`,
   checklist: (coproId: string) => `/api/venator/checklists?copro_id=${coproId}`,
+  gabarits: () => '/api/venator/gabarits',
 }
 
 export function useCopros() {
@@ -44,6 +46,11 @@ export function useFil(parentType: 'dossier' | 'ticket', parentId: string) {
 
 export function useJournal(coproId: string) {
   return useSWR<{ entries: JournalEntry[] }>(coproId ? keys.journal(coproId) : null, fetcher)
+}
+
+/** Gabarits d'étapes réglés par type de dossier. Un type absent = aucune étape à la création. */
+export function useGabarits() {
+  return useSWR<{ gabarits: Partial<Record<DossierType, GabaritEtape[]>> }>(keys.gabarits(), fetcher)
 }
 
 export function useChecklist(coproId: string) {
