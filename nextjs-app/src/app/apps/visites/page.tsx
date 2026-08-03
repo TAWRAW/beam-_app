@@ -33,18 +33,18 @@ export default function VisitesIndex() {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-app-fg-muted">
         Sélectionne une copropriété pour voir / créer une visite.
       </p>
       {condos.map((c) => (
         <Link
           key={c.id}
           href={`/apps/visites/${c.id}` as any}
-          className="block bg-white rounded-2xl border-2 border-black p-4 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
+          className="block bg-app-surface rounded-2xl border-2 border-app-border-strong p-4 shadow-[4px_4px_0px_0px_var(--app-border-strong)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition"
         >
           <div className="font-bold">{c.name}</div>
           {(c.address || c.city) && (
-            <div className="text-sm text-black/60">
+            <div className="text-sm text-app-fg-muted">
               {[c.address, c.zipCode, c.city].filter(Boolean).join(' ')}
             </div>
           )}

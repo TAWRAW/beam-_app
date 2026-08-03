@@ -7,7 +7,7 @@ import { addVisitDraft } from '@/lib/visites/db'
 import { flushAll } from '@/lib/visites/sync-engine'
 
 const FIELD =
-  'w-full bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] px-3 py-2 font-medium focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_#000] transition'
+  'w-full bg-app-surface border-2 border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] px-3 py-2 font-medium focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition'
 
 const LABEL = 'block text-xs font-bold uppercase tracking-wide mb-1'
 
@@ -66,13 +66,13 @@ export default function NewVisitePage({ params }: { params: { condoId: string } 
   return (
     <form
       onSubmit={submit}
-      className="space-y-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5"
+      className="space-y-4 bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5"
     >
-      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-black pb-2 mb-2">
+      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-app-border-strong pb-2 mb-2">
         Nouvelle visite
       </h2>
 
-      <div className="bg-primary border-2 border-black px-3 py-2 text-xs font-bold flex items-center justify-between gap-2">
+      <div className="bg-primary border-2 border-app-border-strong px-3 py-2 text-xs font-bold flex items-center justify-between gap-2">
         {meError ? (
           <span>⚠️ Estale : {meError}</span>
         ) : me ? (
@@ -132,14 +132,14 @@ export default function NewVisitePage({ params }: { params: { condoId: string } 
         />
       </div>
       {error && (
-        <p className="bg-[#FF6B6B] border-2 border-black px-3 py-2 text-sm font-bold">
+        <p className="bg-[#FF6B6B] border-2 border-app-border-strong px-3 py-2 text-sm font-bold">
           {error}
         </p>
       )}
       <button
         type="submit"
         disabled={saving || !me}
-        className="w-full bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] py-3 font-black uppercase tracking-wide transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {saving ? 'Enregistrement…' : me ? 'Créer la visite' : 'Chargement…'}
       </button>

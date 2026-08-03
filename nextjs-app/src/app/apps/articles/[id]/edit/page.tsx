@@ -228,7 +228,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     return (
       <div className="container mx-auto py-10">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Article non trouvé</h1>
+          <h1 className="text-2xl font-bold text-app-fg mb-4">Article non trouvé</h1>
           <Link href="/apps/articles">
             <Button>Retour aux articles</Button>
           </Link>
@@ -249,8 +249,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Modifier l'article</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-app-fg">Modifier l'article</h1>
+            <p className="text-app-fg-muted mt-2">
               {article.title}
             </p>
           </div>
@@ -306,24 +306,24 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
       {/* Statut de l'article */}
       <div className="mb-6">
-        <div className="bg-white p-4 rounded-lg shadow flex items-center justify-between">
+        <div className="bg-app-surface p-4 rounded-lg shadow flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-gray-700">Statut actuel:</span>
+            <span className="text-sm font-medium text-app-fg">Statut actuel:</span>
             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-              formData.status === 'published' ? 'bg-green-100 text-green-800' :
-              formData.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-gray-100 text-gray-800'
+              formData.status === 'published' ? 'bg-app-success-bg text-app-success-fg' :
+              formData.status === 'draft' ? 'bg-app-warning-bg text-app-warning-fg' :
+              'bg-app-surface-2 text-app-fg'
             }`}>
               {ARTICLE_STATUSES.find(s => s.value === formData.status)?.label}
             </span>
             
             {article.published_at && (
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-app-fg-muted">
                 Publié le {new Date(article.published_at).toLocaleDateString('fr-FR')}
               </span>
             )}
             
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-app-fg-muted">
               {article.views_count} vues • {article.reading_time_minutes} min de lecture
             </span>
           </div>
@@ -336,10 +336,10 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
           {!previewMode ? (
             <>
               {/* Titre */}
-              <div className="bg-white p-6 rounded-lg shadow">
+              <div className="bg-app-surface p-6 rounded-lg shadow">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-app-fg mb-2">
                       Titre de l'article *
                     </label>
                     <Input
@@ -354,7 +354,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-app-fg mb-2">
                       Slug (URL)
                     </label>
                     <Input
@@ -366,7 +366,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                     {errors.slug && (
                       <p className="text-red-500 text-sm mt-1">{errors.slug}</p>
                     )}
-                    <p className="text-gray-500 text-sm mt-1">
+                    <p className="text-app-fg-muted text-sm mt-1">
                       URL: /ressources/{formData.slug}
                     </p>
                   </div>
@@ -374,8 +374,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
               </div>
 
               {/* Contenu */}
-              <div className="bg-white p-6 rounded-lg shadow">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="bg-app-surface p-6 rounded-lg shadow">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Contenu de l'article *
                 </label>
                 <textarea
@@ -383,27 +383,27 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   onChange={(e) => handleInputChange('content', e.target.value)}
                   placeholder="Rédigez votre article en markdown..."
                   rows={20}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary font-mono ${
+                  className={`w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary font-mono ${
                     errors.content ? 'border-red-500' : ''
                   }`}
                 />
                 {errors.content && (
                   <p className="text-red-500 text-sm mt-1">{errors.content}</p>
                 )}
-                <p className="text-gray-500 text-sm mt-2">
+                <p className="text-app-fg-muted text-sm mt-2">
                   Utilisez la syntaxe Markdown pour formater votre contenu.
                 </p>
               </div>
             </>
           ) : (
             /* Aperçu */
-            <div className="bg-white p-6 rounded-lg shadow">
+            <div className="bg-app-surface p-6 rounded-lg shadow">
               <h1 className="text-3xl font-bold mb-4">{formData.title || 'Titre de l\'article'}</h1>
 
               {formData.excerpt && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <h4 className="text-sm font-medium text-blue-800 mb-2">Extrait (non affiché publiquement)</h4>
-                  <p className="text-blue-700 text-sm">{formData.excerpt}</p>
+                <div className="bg-app-info-bg border border-app-info-fg/30 rounded-lg p-4 mb-6">
+                  <h4 className="text-sm font-medium text-app-info-fg mb-2">Extrait (non affiché publiquement)</h4>
+                  <p className="text-app-info-fg text-sm">{formData.excerpt}</p>
                 </div>
               )}
 
@@ -415,17 +415,17 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Informations générales */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-app-surface p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Informations</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Auteur
                 </label>
                 <select
                   value={formData.author_id || ''}
                   onChange={(e) => handleInputChange('author_id', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                  className="w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 >
                   <option value="">Sélectionner un auteur</option>
                   {authors.map((author) => (
@@ -437,7 +437,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Extrait
                 </label>
                 <textarea
@@ -445,21 +445,21 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   onChange={(e) => handleInputChange('excerpt', e.target.value)}
                   placeholder="Résumé de l'article..."
                   rows={3}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                  className="w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 />
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-app-fg-muted text-sm mt-1">
                   Résumé interne, ne s'affiche pas publiquement
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Catégorie
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                  className="w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 >
                   {ARTICLE_CATEGORIES.map((category) => (
                     <option key={category.value} value={category.value}>
@@ -470,7 +470,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Tags (séparés par des virgules)
                 </label>
                 <Input
@@ -483,11 +483,11 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
           </div>
 
           {/* SEO */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-app-surface p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">SEO</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Titre SEO
                 </label>
                 <Input
@@ -502,7 +502,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Meta description
                 </label>
                 <textarea
@@ -510,20 +510,20 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   onChange={(e) => handleInputChange('meta_description', e.target.value)}
                   placeholder="Description pour les moteurs de recherche..."
                   rows={3}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary ${
+                  className={`w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary ${
                     errors.meta_description ? 'border-red-500' : ''
                   }`}
                 />
                 {errors.meta_description && (
                   <p className="text-red-500 text-sm mt-1">{errors.meta_description}</p>
                 )}
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-app-fg-muted text-sm mt-1">
                   {formData.meta_description?.length || 0}/160 caractères
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Mots-clés SEO
                 </label>
                 <Input
@@ -536,12 +536,12 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
           </div>
 
           {/* Images */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-app-surface p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Images</h3>
 
             {/* Upload d'images pour le contenu */}
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Upload d'images</h4>
+              <h4 className="text-sm font-medium text-app-fg mb-2">Upload d'images</h4>
               <ImageUpload
                 onImageUploaded={(url) => {
                   // Ajouter automatiquement l'image au contenu
@@ -554,14 +554,14 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                   navigator.clipboard.writeText(imageMarkdown)
                 }}
               />
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-app-fg-muted mt-2">
                 Les images uploadées sont ajoutées automatiquement au contenu de l'article
               </p>
             </div>
 
             {/* Image de couverture */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-app-fg mb-2">
                 Image de couverture (URL)
               </label>
               <Input

@@ -273,6 +273,26 @@ export default function MandatsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-semibold mb-4">Mandats</h1>
+
+      {/* Les mandats Beamô se rédigent désormais sur Oignon. Ce formulaire est
+          conservé pour consultation, mais ne doit plus servir à en établir de
+          nouveaux — d'où l'avertissement en tête plutôt qu'une suppression. */}
+      <div className="mb-6 rounded-[var(--app-radius-lg)] bg-app-warning-bg p-4">
+        <p className="text-sm font-semibold text-app-warning-fg">Outil obsolète</p>
+        <p className="mt-1 text-sm text-app-fg">
+          Les nouveaux mandats Beamô se créent désormais sur Oignon. Ce formulaire n&apos;est
+          maintenu que pour consulter l&apos;existant.
+        </p>
+        <a
+          href="https://oignon-eosin.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex h-8 items-center rounded-[var(--app-radius-btn)] bg-app-accent px-3 text-[13px] font-semibold text-app-accent-foreground transition hover:brightness-95"
+        >
+          Ouvrir Oignon
+        </a>
+      </div>
+
       <form onSubmit={onSubmit} className="grid md:grid-cols-2 gap-4">
         {/* Identité copropriété */}
         <div className="md:col-span-2">

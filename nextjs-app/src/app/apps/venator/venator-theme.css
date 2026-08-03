@@ -1,0 +1,38 @@
+/* Tokens du module Venator.
+   Importé UNIQUEMENT par src/app/apps/venator/layout.tsx.
+
+   Depuis l'harmonisation du 31/07/2026, Venator ne pose plus ses propres valeurs :
+   il alias celles de src/app/apps/apps-theme.css. Le module suit donc le thème
+   clair/sombre choisi dans les applications, sans qu'aucun de ses composants
+   (qui parlent tous en classes venator-*) ait à être réécrit.
+
+   Les variables restent définies sur :root en plus de .venator-theme : Radix rend
+   Dialog / Select / DropdownMenu / Sheet dans un portail attaché à document.body,
+   hors du sous-arbre du module — scopées à la seule classe, elles y seraient
+   indéfinies et les surfaces flottantes apparaîtraient transparentes (constaté). */
+
+:root,
+.venator-theme {
+  --venator-bg: var(--app-bg);
+  --venator-surface: var(--app-surface);
+  --venator-surface-2: var(--app-surface-2);
+  --venator-surface-hover: var(--app-surface-hover);
+
+  --venator-border: var(--app-border);
+  --venator-border-strong: var(--app-border-strong);
+
+  --venator-fg: var(--app-fg);
+  --venator-fg-muted: var(--app-fg-muted);
+  --venator-fg-faint: var(--app-fg-faint);
+
+  --venator-accent: var(--app-accent);
+  --venator-accent-foreground: var(--app-accent-foreground);
+
+  --venator-danger: var(--app-danger);
+
+  --venator-radius-lg: var(--app-radius-lg);
+  --venator-radius-md: var(--app-radius-md);
+  --venator-radius-btn: var(--app-radius-btn);
+
+  --venator-shadow-soft: var(--app-shadow-soft);
+}

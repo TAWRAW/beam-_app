@@ -160,19 +160,19 @@ export default function NewArticlePage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Nouvel article</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-app-fg">Nouvel article</h1>
+            <p className="text-app-fg-muted mt-2">
               Créez un nouvel article pour votre blog.
             </p>
           </div>
         </div>
         
         <div className="flex gap-2">
-          <div className="flex rounded-lg border border-gray-200 p-1">
+          <div className="flex rounded-lg border border-app-border p-1">
             <button
               onClick={() => setViewMode('edit')}
               className={`px-3 py-1.5 text-sm rounded ${
-                viewMode === 'edit' ? 'bg-primary text-white' : 'text-gray-600 hover:text-gray-900'
+                viewMode === 'edit' ? 'bg-primary text-white' : 'text-app-fg-muted hover:text-app-fg'
               }`}
             >
               Édition
@@ -180,7 +180,7 @@ export default function NewArticlePage() {
             <button
               onClick={() => setViewMode('split')}
               className={`px-3 py-1.5 text-sm rounded ${
-                viewMode === 'split' ? 'bg-primary text-white' : 'text-gray-600 hover:text-gray-900'
+                viewMode === 'split' ? 'bg-primary text-white' : 'text-app-fg-muted hover:text-app-fg'
               }`}
             >
               Split
@@ -188,7 +188,7 @@ export default function NewArticlePage() {
             <button
               onClick={() => setViewMode('preview')}
               className={`px-3 py-1.5 text-sm rounded ${
-                viewMode === 'preview' ? 'bg-primary text-white' : 'text-gray-600 hover:text-gray-900'
+                viewMode === 'preview' ? 'bg-primary text-white' : 'text-app-fg-muted hover:text-app-fg'
               }`}
             >
               Aperçu
@@ -221,10 +221,10 @@ export default function NewArticlePage() {
         {(viewMode === 'edit' || viewMode === 'split') && (
           <div className={`space-y-6 ${viewMode === 'split' ? 'lg:col-span-2' : 'lg:col-span-2'}`}>
             {/* Titre */}
-            <div className="bg-white p-6 rounded-lg shadow">
+            <div className="bg-app-surface p-6 rounded-lg shadow">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-app-fg mb-2">
                     Titre de l'article *
                   </label>
                   <Input
@@ -239,7 +239,7 @@ export default function NewArticlePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-app-fg mb-2">
                     Slug (URL)
                   </label>
                   <Input
@@ -251,7 +251,7 @@ export default function NewArticlePage() {
                   {errors.slug && (
                     <p className="text-red-500 text-sm mt-1">{errors.slug}</p>
                   )}
-                  <p className="text-gray-500 text-sm mt-1">
+                  <p className="text-app-fg-muted text-sm mt-1">
                     URL: /ressources/{formData.slug}
                   </p>
                 </div>
@@ -259,8 +259,8 @@ export default function NewArticlePage() {
             </div>
 
             {/* Contenu */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="bg-app-surface p-6 rounded-lg shadow">
+              <label className="block text-sm font-medium text-app-fg mb-2">
                 Contenu de l'article *
               </label>
               <textarea
@@ -268,14 +268,14 @@ export default function NewArticlePage() {
                 onChange={(e) => handleInputChange('content', e.target.value)}
                 placeholder="Rédigez votre article en markdown..."
                 rows={viewMode === 'split' ? 25 : 20}
-                className={`w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary font-mono resize-none ${
+                className={`w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary font-mono resize-none ${
                   errors.content ? 'border-red-500' : ''
                 }`}
               />
               {errors.content && (
                 <p className="text-red-500 text-sm mt-1">{errors.content}</p>
               )}
-              <p className="text-gray-500 text-sm mt-2">
+              <p className="text-app-fg-muted text-sm mt-2">
                 Utilisez la syntaxe Markdown pour formater votre contenu.
               </p>
             </div>
@@ -285,21 +285,21 @@ export default function NewArticlePage() {
         {/* Zone de prévisualisation */}
         {(viewMode === 'preview' || viewMode === 'split') && (
           <div className={`${viewMode === 'split' ? 'lg:col-span-2' : 'lg:col-span-2'}`}>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="mb-6 border-b border-gray-200 pb-4">
-                <h1 className="text-3xl font-bold text-gray-900">
+            <div className="bg-app-surface p-6 rounded-lg shadow">
+              <div className="mb-6 border-b border-app-border pb-4">
+                <h1 className="text-3xl font-bold text-app-fg">
                   {formData.title || 'Titre de l\'article'}
                 </h1>
-                <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                <div className="flex items-center gap-4 mt-3 text-sm text-app-fg-muted">
                   <span>Catégorie: {ARTICLE_CATEGORIES.find(c => c.value === formData.category)?.label}</span>
                   <span>Type: {ARTICLE_TYPES.find(t => t.value === formData.type)?.label}</span>
                 </div>
                 {formData.excerpt && (
-                  <div className="mt-3 p-3 bg-blue-50 border-l-4 border-blue-200 rounded">
-                    <p className="text-sm text-blue-800">
+                  <div className="mt-3 p-3 bg-app-info-bg border-l-4 border-app-info-fg/30 rounded">
+                    <p className="text-sm text-app-info-fg">
                       <strong>Extrait (affiché sur les listes d'articles) :</strong>
                     </p>
-                    <p className="text-blue-700 mt-1">{formData.excerpt}</p>
+                    <p className="text-app-info-fg mt-1">{formData.excerpt}</p>
                   </div>
                 )}
               </div>
@@ -313,11 +313,11 @@ export default function NewArticlePage() {
         {/* Sidebar */}
         <div className={`space-y-6 ${viewMode === 'split' ? 'lg:col-span-1' : 'lg:col-span-1'}`}>
           {/* Informations générales */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-app-surface p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Informations</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Extrait
                 </label>
                 <textarea
@@ -325,18 +325,18 @@ export default function NewArticlePage() {
                   onChange={(e) => handleInputChange('excerpt', e.target.value)}
                   placeholder="Résumé de l'article..."
                   rows={3}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                  className="w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Catégorie
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                  className="w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 >
                   {ARTICLE_CATEGORIES.map((category) => (
                     <option key={category.value} value={category.value}>
@@ -347,13 +347,13 @@ export default function NewArticlePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Type de contenu
                 </label>
                 <select
                   value={formData.type}
                   onChange={(e) => handleInputChange('type', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+                  className="w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
                 >
                   {ARTICLE_TYPES.map((type) => (
                     <option key={type.value} value={type.value}>
@@ -364,7 +364,7 @@ export default function NewArticlePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Tags (séparés par des virgules)
                 </label>
                 <Input
@@ -375,7 +375,7 @@ export default function NewArticlePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Pièce jointe (optionnel)
                 </label>
                 <Input
@@ -383,7 +383,7 @@ export default function NewArticlePage() {
                   onChange={(e) => handleInputChange('attachment_url', e.target.value)}
                   placeholder="https://drive.google.com/file/d/..."
                 />
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-app-fg-muted text-sm mt-1">
                   Ajoutez un lien vers un fichier Google Drive pour les modèles et documents
                 </p>
               </div>
@@ -391,11 +391,11 @@ export default function NewArticlePage() {
           </div>
 
           {/* SEO */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-app-surface p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">SEO</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Titre SEO
                 </label>
                 <Input
@@ -410,7 +410,7 @@ export default function NewArticlePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Meta description
                 </label>
                 <textarea
@@ -418,20 +418,20 @@ export default function NewArticlePage() {
                   onChange={(e) => handleInputChange('meta_description', e.target.value)}
                   placeholder="Description pour les moteurs de recherche..."
                   rows={3}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary ${
+                  className={`w-full border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary ${
                     errors.meta_description ? 'border-red-500' : ''
                   }`}
                 />
                 {errors.meta_description && (
                   <p className="text-red-500 text-sm mt-1">{errors.meta_description}</p>
                 )}
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-app-fg-muted text-sm mt-1">
                   {formData.meta_description?.length || 0}/160 caractères
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-app-fg mb-2">
                   Mots-clés SEO
                 </label>
                 <Input
@@ -444,12 +444,12 @@ export default function NewArticlePage() {
           </div>
 
           {/* Images */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-app-surface p-6 rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4">Images</h3>
 
             {/* Upload d'images pour le contenu */}
             <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Upload d'images</h4>
+              <h4 className="text-sm font-medium text-app-fg mb-2">Upload d'images</h4>
               <ImageUpload
                 onImageUploaded={(url) => {
                   // Ajouter automatiquement l'image au contenu
@@ -462,14 +462,14 @@ export default function NewArticlePage() {
                   navigator.clipboard.writeText(imageMarkdown)
                 }}
               />
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-app-fg-muted mt-2">
                 Les images uploadées sont ajoutées automatiquement au contenu de l'article
               </p>
             </div>
 
             {/* Image de couverture */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-app-fg mb-2">
                 Image de couverture (URL)
               </label>
               <Input

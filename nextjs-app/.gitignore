@@ -2,3 +2,6 @@
 
 # Google Credentials
 google-credentials.json
+
+# TypeScript incremental build info
+tsconfig.tsbuildinfo

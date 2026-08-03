@@ -82,6 +82,7 @@ export interface EstaleAgency {
 export interface EstaleCondo {
   id: string
   name: string
+  reference?: string
   address?: string
   zipCode?: string
   city?: string
@@ -295,6 +296,7 @@ export async function getCondos(): Promise<{ condos: EstaleCondo[]; collaborator
           condos(archived: false) {
             id
             name
+            reference
             address {
               housenumber
               street
@@ -327,6 +329,7 @@ export async function getCondos(): Promise<{ condos: EstaleCondo[]; collaborator
     return {
       id: condo.id,
       name: condo.name,
+      reference: condo.reference ?? undefined,
       address: streetFull,
       zipCode: addr?.postcode || '',
       city: addr?.city || '',
@@ -732,7 +735,7 @@ export async function getCondoContracts(condoId: string): Promise<EstaleContract
               category
               supplier {
                 name
-                contact {
+                contacts {
                   phone
                 }
               }
@@ -754,7 +757,7 @@ export async function getCondoContracts(condoId: string): Promise<EstaleContract
               category: string
               supplier?: {
                 name: string
-                contact?: { phone?: string }
+                contacts?: { phone?: string }[]
               }
             }[]
           }
@@ -770,7 +773,7 @@ export async function getCondoContracts(condoId: string): Promise<EstaleContract
       label: c.label,
       category: c.category || '',
       supplierName: c.supplier?.name || '',
-      supplierPhone: c.supplier?.contact?.phone || undefined,
+      supplierPhone: c.supplier?.contacts?.[0]?.phone || undefined,
     }))
   } catch (error) {
     console.error('Erreur récupération contrats:', error)

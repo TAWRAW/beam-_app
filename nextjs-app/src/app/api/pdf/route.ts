@@ -77,6 +77,15 @@ export async function POST(request: NextRequest) {
       box-shadow: none !important;
       break-after: page;
     }
+    /* Constat DDE - 3 exemplaires */
+    .constat-page {
+      width: 210mm !important;
+      height: 297mm !important;
+      max-width: 210mm !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      break-after: page;
+    }
     .page-gap {
       display: none !important;
     }

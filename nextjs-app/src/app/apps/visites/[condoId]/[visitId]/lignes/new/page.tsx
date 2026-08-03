@@ -136,9 +136,9 @@ export default function NewLignePage({
   return (
     <form
       onSubmit={submit}
-      className="space-y-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl"
+      className="space-y-4 bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5 rounded-2xl"
     >
-      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-black pb-2 mb-2">
+      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-app-border-strong pb-2 mb-2">
         Nouvelle ligne
       </h2>
       <div>
@@ -166,7 +166,7 @@ export default function NewLignePage({
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] px-3 py-2 font-medium min-h-[120px] rounded-xl focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_#000] transition"
+          className="w-full bg-app-surface border-2 border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] px-3 py-2 font-medium min-h-[120px] rounded-xl focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition"
           required
         />
       </div>
@@ -178,20 +178,20 @@ export default function NewLignePage({
           <PhotoSlot label="+ Autre" onCapture={handleAddPhoto} />
         </div>
         {photos.length > 0 && (
-          <p className="text-xs text-gray-700 mt-2 font-bold">
+          <p className="text-xs text-app-fg mt-2 font-bold">
             ✓ {photos.length} photo{photos.length > 1 ? 's' : ''} sauvegardée{photos.length > 1 ? 's' : ''} en local
           </p>
         )}
       </div>
       {error && (
-        <p className="bg-[#FF6B6B] border-2 border-black px-3 py-2 text-sm font-bold">
+        <p className="bg-[#FF6B6B] border-2 border-app-border-strong px-3 py-2 text-sm font-bold">
           {error}
         </p>
       )}
       <button
         type="submit"
         disabled={saving}
-        className="w-full bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {saving ? 'Enregistrement…' : 'Enregistrer'}
       </button>

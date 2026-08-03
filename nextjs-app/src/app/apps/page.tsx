@@ -50,7 +50,7 @@ export default function AppsHome() {
     return (
       <div className="p-4 md:p-8 max-w-5xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6">Tableau de bord</h1>
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-app-danger-fg/30 bg-app-danger-bg">
           <CardContent className="pt-6">
             <p className="text-red-600">{error}</p>
             <p className="text-sm text-red-500 mt-2">
@@ -83,7 +83,7 @@ export default function AppsHome() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Tableau de bord</h1>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-app-fg-muted">
           <Clock className="h-4 w-4" />
           <span>Mis a jour: {formatDate(kpis.updatedAt)}</span>
         </div>
@@ -91,7 +91,7 @@ export default function AppsHome() {
 
       {/* Section: Situation Actuelle */}
       <div>
-        <h2 className="text-lg font-medium text-gray-700 mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-medium text-app-fg mb-4 flex items-center gap-2">
           <TrendingUp className="h-5 w-5" />
           Situation Actuelle
         </h2>
@@ -145,21 +145,21 @@ export default function AppsHome() {
 
       {/* Section: Projections */}
       <div>
-        <h2 className="text-lg font-medium text-gray-700 mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-medium text-app-fg mb-4 flex items-center gap-2">
           <Target className="h-5 w-5" />
           Projections
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="border-amber-200 bg-amber-50">
+          <Card className="border-app-warning-fg/30 bg-app-warning-bg">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-amber-700">
+              <CardTitle className="text-sm font-medium text-app-warning-fg">
                 Objectif Minimum: 60 000 EUR
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-2xl font-bold text-amber-900">
+                  <p className="text-2xl font-bold text-app-warning-fg">
                     {kpis.projections.coprosNeeded60k} copros
                   </p>
                   <p className="text-sm text-amber-600">
@@ -175,16 +175,16 @@ export default function AppsHome() {
             </CardContent>
           </Card>
 
-          <Card className="border-green-200 bg-green-50">
+          <Card className="border-app-success-fg/30 bg-app-success-bg">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-green-700">
+              <CardTitle className="text-sm font-medium text-app-success-fg">
                 Objectif Stretch: 100 000 EUR
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-2xl font-bold text-green-900">
+                  <p className="text-2xl font-bold text-app-success-fg">
                     {kpis.projections.coprosNeeded100k} copros
                   </p>
                   <p className="text-sm text-green-600">
@@ -207,7 +207,7 @@ export default function AppsHome() {
         {/* Pipeline Prospects */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+            <CardTitle className="text-sm font-medium text-app-fg-muted flex items-center gap-2">
               <Users className="h-4 w-4" />
               Pipeline Prospects ({kpis.pipelineProspects.nbProspects})
             </CardTitle>
@@ -215,19 +215,19 @@ export default function AppsHome() {
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">CA Potentiel</span>
+                <span className="text-app-fg-muted">CA Potentiel</span>
                 <span className="font-semibold">{formatEuro(kpis.pipelineProspects.caProspects)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Lots Potentiels</span>
+                <span className="text-app-fg-muted">Lots Potentiels</span>
                 <span className="font-semibold">{kpis.pipelineProspects.lotsProspects}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Prix Moyen/Lot</span>
+                <span className="text-app-fg-muted">Prix Moyen/Lot</span>
                 <span className="font-semibold">{kpis.pipelineProspects.prixMoyenLotProspect} EUR</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Taille Moyenne</span>
+                <span className="text-app-fg-muted">Taille Moyenne</span>
                 <span className="font-semibold">{kpis.pipelineProspects.tailleMoyenneProspect} lots/copro</span>
               </div>
             </div>
@@ -235,9 +235,9 @@ export default function AppsHome() {
         </Card>
 
         {/* Total Potentiel */}
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-app-info-fg/30 bg-app-info-bg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-blue-700 flex items-center gap-2">
+            <CardTitle className="text-sm font-medium text-app-info-fg flex items-center gap-2">
               <Target className="h-4 w-4" />
               Total Potentiel (Signes + Prospects)
             </CardTitle>
@@ -246,19 +246,19 @@ export default function AppsHome() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-blue-600">CA Total</span>
-                <span className="text-xl font-bold text-blue-900">
+                <span className="text-xl font-bold text-app-info-fg">
                   {formatEuro(kpis.totalPotentiel.caTotalPotentiel)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-blue-600">Coproprietes</span>
-                <span className="font-semibold text-blue-900">
+                <span className="font-semibold text-app-info-fg">
                   {kpis.totalPotentiel.coprosTotalPotentiel}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-blue-600">Lots Totaux</span>
-                <span className="font-semibold text-blue-900">
+                <span className="font-semibold text-app-info-fg">
                   {kpis.totalPotentiel.lotsTotalPotentiel}
                 </span>
               </div>

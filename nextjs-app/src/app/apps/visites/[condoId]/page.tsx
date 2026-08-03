@@ -49,7 +49,7 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
     <div className="space-y-4">
       <Link
         href={`/apps/visites/${params.condoId}/new` as any}
-        className="block w-full text-center bg-primary text-black py-3 rounded-full font-bold border-2 border-black shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
+        className="block w-full text-center bg-primary text-app-accent-foreground py-3 rounded-full font-bold border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition"
       >
         + Nouvelle visite
       </Link>
@@ -57,12 +57,12 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
       <h2 className="font-bold uppercase tracking-wide text-sm">Visites en cours</h2>
       {loading && <p>Chargement…</p>}
       {error && (
-        <p className="bg-[#FF6B6B] border-2 border-black px-3 py-2 text-sm font-bold">
+        <p className="bg-[#FF6B6B] border-2 border-app-border-strong px-3 py-2 text-sm font-bold">
           {error}
         </p>
       )}
       {!loading && drafts.length === 0 && remoteOnly.length === 0 && !error && (
-        <p className="text-gray-700 font-medium">Aucune visite pour le moment.</p>
+        <p className="text-app-fg font-medium">Aucune visite pour le moment.</p>
       )}
 
       <div className="space-y-3">
@@ -73,32 +73,32 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
             <Link
               key={d.localId}
               href={`/apps/visites/${params.condoId}/${d.estaleVisitId || d.localId}` as any}
-              className="block bg-white rounded-2xl border-2 border-black p-3 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
+              className="block bg-app-surface rounded-2xl border-2 border-app-border-strong p-3 shadow-[4px_4px_0px_0px_var(--app-border-strong)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="font-bold">{d.entete.object || '(sans objet)'}</div>
                 {isSynced ? (
-                  <span className="bg-[#A8E6A1] border-2 border-black px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
+                  <span className="bg-emerald-500/15 border-2 border-app-border-strong px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
                     ✓ Synced
                   </span>
                 ) : isError ? (
-                  <span className="bg-[#FF6B6B] border-2 border-black px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
+                  <span className="bg-[#FF6B6B] border-2 border-app-border-strong px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
                     ❌ Erreur
                   </span>
                 ) : (
-                  <span className="bg-primary border-2 border-black px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
+                  <span className="bg-primary border-2 border-app-border-strong px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
                     ⏳ Local
                   </span>
                 )}
               </div>
-              <div className="text-sm text-black/60 mt-1">
+              <div className="text-sm text-app-fg-muted mt-1">
                 {new Date(d.entete.date).toLocaleString('fr-FR', {
                   dateStyle: 'short',
                   timeStyle: 'short',
                 })}
               </div>
               {isError && d.syncError && (
-                <div className="text-xs mt-2 bg-[#FFF1F1] border border-black/30 px-2 py-1 font-mono break-words">
+                <div className="text-xs mt-2 bg-red-500/10 border border-app-border-strong/30 px-2 py-1 font-mono break-words">
                   {d.syncError}
                 </div>
               )}
@@ -110,15 +110,15 @@ export default function VisitesCondoPage({ params }: { params: { condoId: string
           <Link
             key={v.id}
             href={`/apps/visites/${params.condoId}/${v.id}` as any}
-            className="block bg-white rounded-2xl border-2 border-black p-3 shadow-[4px_4px_0px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000] transition"
+            className="block bg-app-surface rounded-2xl border-2 border-app-border-strong p-3 shadow-[4px_4px_0px_0px_var(--app-border-strong)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="font-bold">{v.object || '(sans objet)'}</div>
-              <span className="bg-[#A8E6A1] border-2 border-black px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
+              <span className="bg-emerald-500/15 border-2 border-app-border-strong px-2 py-0.5 text-[10px] font-bold uppercase shrink-0">
                 ✓ Estale
               </span>
             </div>
-            <div className="text-sm text-black/60 mt-1">
+            <div className="text-sm text-app-fg-muted mt-1">
               {new Date(v.date).toLocaleString('fr-FR', {
                 dateStyle: 'short',
                 timeStyle: 'short',

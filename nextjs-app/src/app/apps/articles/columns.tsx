@@ -18,9 +18,9 @@ import { ArticleWithAuthor, ARTICLE_STATUSES, ARTICLE_CATEGORIES } from "@/types
 import { SocialPublishModal } from "./social-publish-modal"
 
 const statusColors = {
-  draft: 'bg-yellow-100 text-yellow-800',
-  published: 'bg-green-100 text-green-800',
-  archived: 'bg-gray-100 text-gray-800'
+  draft: 'bg-app-warning-bg text-app-warning-fg',
+  published: 'bg-app-success-bg text-app-success-fg',
+  archived: 'bg-app-surface-2 text-app-fg'
 }
 
 function ActionsCell({ article }: { article: ArticleWithAuthor }) {
@@ -157,10 +157,10 @@ function ActionsCell({ article }: { article: ArticleWithAuthor }) {
 }
 
 const categoryColors = {
-  general: 'bg-blue-100 text-blue-800',
+  general: 'bg-app-info-bg text-app-info-fg',
   guides: 'bg-purple-100 text-purple-800',
-  actualites: 'bg-red-100 text-red-800',
-  conseils: 'bg-green-100 text-green-800',
+  actualites: 'bg-app-danger-bg text-app-danger-fg',
+  conseils: 'bg-app-success-bg text-app-success-fg',
   reglementation: 'bg-orange-100 text-orange-800',
   immobilier: 'bg-indigo-100 text-indigo-800'
 }
@@ -194,7 +194,7 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
       return (
         <div className="max-w-md">
           <div className="flex items-center gap-2">
-            <div className="font-medium text-gray-900 truncate">
+            <div className="font-medium text-app-fg truncate">
               {article.title}
             </div>
             {article.import_source === 'notion' && (
@@ -204,11 +204,11 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
             )}
           </div>
           {article.excerpt && (
-            <div className="text-sm text-gray-500 truncate mt-1">
+            <div className="text-sm text-app-fg-muted truncate mt-1">
               {article.excerpt}
             </div>
           )}
-          <div className="text-xs text-gray-400 mt-1">
+          <div className="text-xs text-app-fg-faint mt-1">
             /{article.slug}
           </div>
         </div>
@@ -284,7 +284,7 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
     cell: ({ row }) => {
       const time = row.original.reading_time_minutes
       return (
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-app-fg-muted">
           {time} min
         </div>
       )
@@ -306,10 +306,10 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
     cell: ({ row }) => {
       const publishedAt = row.original.published_at
       if (!publishedAt) {
-        return <span className="text-gray-400">Non publié</span>
+        return <span className="text-app-fg-faint">Non publié</span>
       }
       return (
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-app-fg-muted">
           {formatDate(publishedAt)}
         </div>
       )
@@ -325,7 +325,7 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
 
       // Only show for published articles
       if (article.status !== 'published') {
-        return <span className="text-gray-400 text-xs">-</span>
+        return <span className="text-app-fg-faint text-xs">-</span>
       }
 
       return (
@@ -333,8 +333,8 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
           <div
             className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
               facebookPublished
-                ? 'bg-blue-100 text-blue-700'
-                : 'bg-gray-100 text-gray-500'
+                ? 'bg-app-info-bg text-app-info-fg'
+                : 'bg-app-surface-2 text-app-fg-muted'
             }`}
             title={facebookPublished
               ? `Publié le ${formatDate(article.published_on_facebook!)}`
@@ -352,8 +352,8 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
           <div
             className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
               linkedinPublished
-                ? 'bg-blue-100 text-blue-700'
-                : 'bg-gray-100 text-gray-500'
+                ? 'bg-app-info-bg text-app-info-fg'
+                : 'bg-app-surface-2 text-app-fg-muted'
             }`}
             title={linkedinPublished
               ? `Publié le ${formatDate(article.published_on_linkedin!)}`
@@ -387,7 +387,7 @@ export const columns: ColumnDef<ArticleWithAuthor>[] = [
     cell: ({ row }) => {
       const updatedAt = row.original.updated_at
       return (
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-app-fg-muted">
           {formatDate(updatedAt)}
         </div>
       )

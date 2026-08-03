@@ -29,16 +29,16 @@ const platformIcons: Record<Platform, any> = {
 }
 
 const platformColors: Record<Platform, string> = {
-  facebook: 'bg-blue-100 text-blue-800',
-  linkedin: 'bg-blue-100 text-blue-700',
+  facebook: 'bg-app-info-bg text-app-info-fg',
+  linkedin: 'bg-app-info-bg text-app-info-fg',
   instagram: 'bg-pink-100 text-pink-800',
-  tiktok: 'bg-gray-100 text-gray-800',
+  tiktok: 'bg-app-surface-2 text-app-fg',
 }
 
 const statusColors = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  published: 'bg-green-100 text-green-800',
-  failed: 'bg-red-100 text-red-800',
+  pending: 'bg-app-warning-bg text-app-warning-fg',
+  published: 'bg-app-success-bg text-app-success-fg',
+  failed: 'bg-app-danger-bg text-app-danger-fg',
 }
 
 const statusLabels = {
@@ -126,25 +126,25 @@ export default function SocialPublishingPage() {
     <div className="py-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Réseaux sociaux</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-3xl font-bold text-app-fg">Réseaux sociaux</h1>
+        <p className="text-app-fg-muted mt-2">
           Gérez vos publications sur les réseaux sociaux
         </p>
       </div>
 
       {/* Queue Settings */}
-      <div className="bg-white p-6 rounded-lg shadow mb-8">
+      <div className="bg-app-surface p-6 rounded-lg shadow mb-8">
         <div className="flex items-center gap-3 mb-4">
-          <Settings className="h-5 w-5 text-gray-700" />
-          <h2 className="text-lg font-semibold text-gray-900">Paramètres de la file d'attente</h2>
+          <Settings className="h-5 w-5 text-app-fg" />
+          <h2 className="text-lg font-semibold text-app-fg">Paramètres de la file d'attente</h2>
         </div>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm text-app-fg-muted mb-4">
           Définissez l'heure à laquelle les articles en file d'attente seront automatiquement publiés chaque jour.
         </p>
 
         <div className="flex items-end gap-4 max-w-md">
           <div className="flex-1">
-            <Label htmlFor="queue-time" className="text-sm font-medium text-gray-700 mb-2 block">
+            <Label htmlFor="queue-time" className="text-sm font-medium text-app-fg mb-2 block">
               Heure de publication quotidienne
             </Label>
             <Input
@@ -163,8 +163,8 @@ export default function SocialPublishingPage() {
           </Button>
         </div>
 
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
+        <div className="mt-4 p-3 bg-app-info-bg border border-app-info-fg/30 rounded-lg">
+          <p className="text-sm text-app-info-fg">
             <Clock className="h-4 w-4 inline mr-1" />
             Les articles ajoutés à la file seront publiés automatiquement chaque jour à {queueTime}.
           </p>
@@ -173,40 +173,40 @@ export default function SocialPublishingPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-sm text-app-fg-muted">Total</p>
+              <p className="text-2xl font-bold text-app-fg">{stats.total}</p>
             </div>
-            <Share2 className="h-8 w-8 text-gray-400" />
+            <Share2 className="h-8 w-8 text-app-fg-faint" />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">En attente</p>
+              <p className="text-sm text-app-fg-muted">En attente</p>
               <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
             </div>
             <Clock className="h-8 w-8 text-yellow-400" />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Publiés</p>
+              <p className="text-sm text-app-fg-muted">Publiés</p>
               <p className="text-2xl font-bold text-green-600">{stats.published}</p>
             </div>
             <CheckCircle className="h-8 w-8 text-green-400" />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Échecs</p>
+              <p className="text-sm text-app-fg-muted">Échecs</p>
               <p className="text-2xl font-bold text-red-600">{stats.failed}</p>
             </div>
             <XCircle className="h-8 w-8 text-red-400" />
@@ -215,7 +215,7 @@ export default function SocialPublishingPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow mb-6">
+      <div className="bg-app-surface rounded-lg shadow mb-6">
         <div className="p-4 border-b">
           <div className="flex gap-2">
             <Button
@@ -253,11 +253,11 @@ export default function SocialPublishingPage() {
         <div className="p-4">
           {filteredPublications.length === 0 ? (
             <div className="text-center py-12">
-              <Share2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Share2 className="h-12 w-12 text-app-fg-faint mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-app-fg mb-2">
                 Aucune publication
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-app-fg-muted mb-4">
                 {filter === 'all'
                   ? "Vous n'avez pas encore publié d'articles sur les réseaux sociaux."
                   : `Aucune publication avec le statut "${statusLabels[filter as keyof typeof statusLabels]}".`}
@@ -276,7 +276,7 @@ export default function SocialPublishingPage() {
                 return (
                   <div
                     key={pub.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    className="border rounded-lg p-4 hover:bg-app-surface-2 transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -291,7 +291,7 @@ export default function SocialPublishingPage() {
                           </span>
 
                           {pub.scheduled_for && pub.status === 'pending' && (
-                            <span className="flex items-center gap-1 text-xs text-gray-500">
+                            <span className="flex items-center gap-1 text-xs text-app-fg-muted">
                               <Calendar className="h-3 w-3" />
                               {new Date(pub.scheduled_for).toLocaleDateString('fr-FR', {
                                 day: 'numeric',
@@ -303,7 +303,7 @@ export default function SocialPublishingPage() {
                           )}
 
                           {pub.published_at && pub.status === 'published' && (
-                            <span className="flex items-center gap-1 text-xs text-gray-500">
+                            <span className="flex items-center gap-1 text-xs text-app-fg-muted">
                               <CheckCircle className="h-3 w-3" />
                               {new Date(pub.published_at).toLocaleDateString('fr-FR', {
                                 day: 'numeric',
@@ -317,7 +317,7 @@ export default function SocialPublishingPage() {
 
                         <Link
                           href={`/apps/articles/${pub.article_id}/edit`}
-                          className="font-medium text-gray-900 hover:text-primary"
+                          className="font-medium text-app-fg hover:text-primary"
                         >
                           {pub.article_title}
                         </Link>

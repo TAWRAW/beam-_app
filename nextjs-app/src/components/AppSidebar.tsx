@@ -3,7 +3,9 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
-import { LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import AppThemeToggle from '@/components/apps/AppThemeToggle'
+import { ChevronsLeft, ChevronsRight, LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket, KeyRound } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -66,6 +68,18 @@ const adminItems: NavItem[] = [
     adminOnly: true,
   },
   {
+    href: '/apps/venator',
+    label: 'Venator',
+    icon: Rocket,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/cles',
+    label: 'Clés',
+    icon: KeyRound,
+    adminOnly: true,
+  },
+  {
     href: '/apps/devis-mutation',
     label: 'Devis mutation',
     icon: ScrollText,
@@ -88,7 +102,8 @@ const adminItems: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname()
   const { isAdmin, loading } = useUserRole()
-  const { isMobile, setOpenMobile } = useSidebar()
+  const { isMobile, setOpenMobile, state, toggleSidebar } = useSidebar()
+  const replie = state === 'collapsed'
 
   const closeOnMobile = () => {
     if (isMobile) setOpenMobile(false)
@@ -104,10 +119,36 @@ export function AppSidebar() {
   const isDev = process.env.NODE_ENV === 'development'
 
   return (
-    <Sidebar>
+    // collapsible="icon" : repliée, la barre garde la largeur des icônes
+    // plutôt que de disparaître — la navigation reste accessible d'un coup d'œil.
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold">Beamô Apps</h2>
+        {/* Thème et repli vivent dans l'angle haut : des réglages qu'on touche
+            rarement ne doivent pas occuper la place d'une action. Repliée, la
+            barre ne garde que le chevron — le titre disparaît avec la largeur. */}
+        <div
+          className={cn(
+            'flex items-center gap-1 py-2',
+            replie ? 'flex-col px-1' : 'justify-between px-4'
+          )}
+        >
+          {!replie && <h2 className="truncate text-lg font-semibold">Beamô Apps</h2>}
+          <div className={cn('flex items-center gap-0.5', replie && 'flex-col')}>
+            <AppThemeToggle />
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              aria-label={replie ? 'Déplier le menu' : 'Replier le menu'}
+              title={replie ? 'Déplier le menu' : 'Replier le menu'}
+              className="flex h-7 w-7 items-center justify-center rounded-[var(--app-radius-btn)] text-app-fg-faint transition-colors hover:bg-app-surface-2 hover:text-app-fg"
+            >
+              {replie ? (
+                <ChevronsRight className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronsLeft className="h-3.5 w-3.5" />
+              )}
+            </button>
+          </div>
         </div>
       </SidebarHeader>
 

@@ -110,8 +110,8 @@ export default function ArticlesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Gestion des articles</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-app-fg">Gestion des articles</h1>
+          <p className="text-app-fg-muted mt-2">
             Créez, modifiez et gérez vos articles de blog et ressources.
           </p>
         </div>
@@ -125,56 +125,56 @@ export default function ArticlesPage() {
 
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
+            <div className="p-2 bg-app-info-bg rounded-lg">
               <FileText className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total articles</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-app-fg-muted">Total articles</p>
+              <p className="text-2xl font-bold text-app-fg">
                 {statsLoading ? '...' : stats?.total || 0}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-app-success-bg rounded-lg">
               <TrendingUp className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Publiés</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-app-fg-muted">Publiés</p>
+              <p className="text-2xl font-bold text-app-fg">
                 {statsLoading ? '...' : stats?.published || 0}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
+            <div className="p-2 bg-app-warning-bg rounded-lg">
               <Users className="h-6 w-6 text-yellow-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Brouillons</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-app-fg-muted">Brouillons</p>
+              <p className="text-2xl font-bold text-app-fg">
                 {statsLoading ? '...' : stats?.drafts || 0}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-app-surface p-6 rounded-lg shadow">
           <div className="flex items-center">
             <div className="p-2 bg-purple-100 rounded-lg">
               <Eye className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total vues</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-app-fg-muted">Total vues</p>
+              <p className="text-2xl font-bold text-app-fg">
                 {statsLoading ? '...' : (stats?.totalViews || 0).toLocaleString('fr-FR')}
               </p>
             </div>
@@ -183,16 +183,16 @@ export default function ArticlesPage() {
       </div>
 
       {/* Filtres */}
-      <div className="bg-white p-6 rounded-lg shadow mb-6">
+      <div className="bg-app-surface p-6 rounded-lg shadow mb-6">
         <div className="flex flex-wrap gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-app-fg mb-2">
               Statut
             </label>
             <select
               value={filters.status || 'all'}
               onChange={(e) => setFilters({ ...filters, status: e.target.value as any })}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+              className="border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
             >
               <option value="all">Tous les statuts</option>
               {ARTICLE_STATUSES.map((status) => (
@@ -204,13 +204,13 @@ export default function ArticlesPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-app-fg mb-2">
               Catégorie
             </label>
             <select
               value={filters.category || 'all'}
               onChange={(e) => setFilters({ ...filters, category: e.target.value as any })}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+              className="border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
             >
               <option value="all">Toutes les catégories</option>
               {ARTICLE_CATEGORIES.map((category) => (
@@ -222,13 +222,13 @@ export default function ArticlesPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-app-fg mb-2">
               Source
             </label>
             <select
               value={filters.import_source || 'all'}
               onChange={(e) => setFilters({ ...filters, import_source: e.target.value as any })}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+              className="border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
             >
               <option value="all">Toutes les sources</option>
               <option value="manual">Manuels</option>
@@ -238,13 +238,13 @@ export default function ArticlesPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-app-fg mb-2">
               Facebook
             </label>
             <select
               value={filters.facebook_status || 'all'}
               onChange={(e) => setFilters({ ...filters, facebook_status: e.target.value as any })}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+              className="border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
             >
               <option value="all">Tous</option>
               <option value="published">Publiés</option>
@@ -253,13 +253,13 @@ export default function ArticlesPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-app-fg mb-2">
               LinkedIn
             </label>
             <select
               value={filters.linkedin_status || 'all'}
               onChange={(e) => setFilters({ ...filters, linkedin_status: e.target.value as any })}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
+              className="border border-app-border rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary"
             >
               <option value="all">Tous</option>
               <option value="published">Publiés</option>
@@ -288,7 +288,7 @@ export default function ArticlesPage() {
       </div>
 
       {/* Table des articles */}
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-app-surface rounded-lg shadow">
         <DataTable 
           columns={columns} 
           data={articles} 
@@ -299,16 +299,16 @@ export default function ArticlesPage() {
 
       {/* Tags populaires */}
       {stats?.popularTags && stats.popularTags.length > 0 && (
-        <div className="bg-white p-6 rounded-lg shadow mt-6">
+        <div className="bg-app-surface p-6 rounded-lg shadow mt-6">
           <h3 className="text-lg font-semibold mb-4">Tags populaires</h3>
           <div className="flex flex-wrap gap-2">
             {stats.popularTags.slice(0, 10).map((tag) => (
               <span
                 key={tag.tag}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800"
+                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-app-surface-2 text-app-fg"
               >
                 {tag.tag}
-                <span className="ml-2 text-xs text-gray-500">({tag.count})</span>
+                <span className="ml-2 text-xs text-app-fg-muted">({tag.count})</span>
               </span>
             ))}
           </div>

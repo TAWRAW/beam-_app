@@ -227,7 +227,7 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className="text-center">
-        <p className="text-gray-600">Impossible de charger le profil</p>
+        <p className="text-app-fg-muted">Impossible de charger le profil</p>
       </div>
     )
   }
@@ -236,7 +236,7 @@ export default function ProfilePage() {
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-6">Paramètres du profil</h1>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-app-surface rounded-lg shadow p-6">
         {/* Avatar Section */}
         <div className="flex items-center gap-6 mb-8">
           <div className="relative">
@@ -247,8 +247,8 @@ export default function ProfilePage() {
                 className="w-20 h-20 rounded-full object-cover"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
-                <User className="h-10 w-10 text-gray-600" />
+              <div className="w-20 h-20 rounded-full bg-app-surface-hover flex items-center justify-center">
+                <User className="h-10 w-10 text-app-fg-muted" />
               </div>
             )}
 
@@ -271,8 +271,8 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <h3 className="font-medium text-gray-900">Photo de profil</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="font-medium text-app-fg">Photo de profil</h3>
+            <p className="text-sm text-app-fg-muted">
               Cliquez sur l'icône appareil photo pour changer votre avatar
             </p>
           </div>
@@ -281,7 +281,7 @@ export default function ProfilePage() {
         {/* Form Section */}
         <div className="space-y-6">
           <div>
-            <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="full_name" className="block text-sm font-medium text-app-fg mb-2">
               Nom complet
             </label>
             <input
@@ -289,12 +289,12 @@ export default function ProfilePage() {
               id="full_name"
               value={formData.full_name}
               onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-3 py-2 border border-app-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-app-fg mb-2">
               Email
             </label>
             <input
@@ -302,21 +302,21 @@ export default function ProfilePage() {
               id="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-3 py-2 border border-app-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-app-fg mb-2">
               Rôle
             </label>
             <input
               type="text"
               value={profile.role}
               disabled
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
+              className="w-full px-3 py-2 border border-app-border rounded-md bg-app-surface-2 text-app-fg-muted"
             />
-            <p className="text-xs text-gray-500 mt-1">Le rôle ne peut pas être modifié</p>
+            <p className="text-xs text-app-fg-muted mt-1">Le rôle ne peut pas être modifié</p>
           </div>
 
           <div className="flex justify-end">
@@ -339,9 +339,9 @@ export default function ProfilePage() {
       {/* Lien vers les réglages d'intégrations sociales */}
       {/* DEPRECATED: Old OAuth integration system removed - now using n8n webhooks */}
       {/* {profile.role === 'admin' || profile.role === 'employe' ? (
-        <div className="mt-6 bg-white rounded-lg shadow p-6">
+        <div className="mt-6 bg-app-surface rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-2">Intégrations sociales</h2>
-          <p className="text-gray-600 mb-4">
+          <p className="text-app-fg-muted mb-4">
             Connectez vos comptes sociaux et configurez la publication automatique de vos articles
           </p>
           <Link

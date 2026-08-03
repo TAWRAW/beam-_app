@@ -23,18 +23,19 @@ export function CapacityRadial({ current, max, title = 'Capacite' }: CapacityRad
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium text-app-fg-muted">{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center">
         <div className="relative w-[160px] h-[160px]">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
-            {/* Cercle de fond */}
+            {/* Cercle de fond — suit le thème : un gris clair figé formait un
+                anneau blanc éclatant sur fond sombre. */}
             <circle
               cx="80"
               cy="80"
               r={radius}
               fill="none"
-              stroke="#e5e7eb"
+              stroke="var(--app-surface-hover)"
               strokeWidth="16"
             />
             {/* Cercle de progression */}
@@ -58,8 +59,8 @@ export function CapacityRadial({ current, max, title = 'Capacite' }: CapacityRad
         </div>
         {/* Texte en dessous */}
         <div className="text-center mt-3">
-          <div className="text-sm text-gray-500">{current}/{max} copros</div>
-          <div className="text-xs text-gray-400 mt-1">{remaining} places restantes</div>
+          <div className="text-sm text-app-fg-muted">{current}/{max} copros</div>
+          <div className="text-xs text-app-fg-faint mt-1">{remaining} places restantes</div>
         </div>
       </CardContent>
     </Card>

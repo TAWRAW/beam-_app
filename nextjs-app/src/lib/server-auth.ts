@@ -27,6 +27,10 @@ const supabaseAdmin = createClient(
 )
 
 export async function requireAdmin(): Promise<RequireAdminResult> {
+  // DEV ONLY (smoke-test local) : bypass cohérent avec /api/user/role. Aucun effet en prod. [dev-bypass-venator]
+  if (process.env.NODE_ENV === 'development' && process.env.DEV_AUTH_BYPASS === '1') {
+    return { ok: true, email: 'dev@local', authType: 'legacy' }
+  }
   const cookieStore = cookies()
 
   // 1) Tentative legacy
@@ -96,6 +100,9 @@ export async function requireAdmin(): Promise<RequireAdminResult> {
  * Supabase Auth), sans la lecture du rôle.
  */
 export async function requireUser(): Promise<RequireAdminResult> {
+  if (process.env.NODE_ENV === 'development' && process.env.DEV_AUTH_BYPASS === '1') {
+    return { ok: true, email: 'dev@local', authType: 'legacy' }
+  }
   const cookieStore = cookies()
 
   const legacyToken = cookieStore.get('app_session')?.value

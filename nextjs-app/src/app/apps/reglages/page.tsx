@@ -119,7 +119,7 @@ function AddCommuneInput({
 
   return (
     <div className="flex items-center gap-3 p-3 border-2 border-dashed rounded-lg">
-      <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
+      <MapPin className="h-4 w-4 text-app-fg-faint shrink-0" />
       <div className="flex-1">
         <datalist id="reglages-condos-datalist">
           {suggestions.map(c => (
@@ -505,7 +505,7 @@ const handleDeleteCommune = (key: string) => {
   if (!loaded) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-slate-500">Chargement...</p>
+        <p className="text-app-fg-muted">Chargement...</p>
       </div>
     )
   }
@@ -517,8 +517,8 @@ const handleDeleteCommune = (key: string) => {
     <div className="max-w-4xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <Settings className="h-6 w-6 text-slate-700" />
-        <h1 className="text-2xl font-bold text-slate-900">Réglages</h1>
+        <Settings className="h-6 w-6 text-app-fg" />
+        <h1 className="text-2xl font-bold text-app-fg">Réglages</h1>
       </div>
 
       {/* Two collapsible sections */}
@@ -528,12 +528,12 @@ const handleDeleteCommune = (key: string) => {
         <AccordionItem value="reglement" className="border rounded-xl">
           <AccordionTrigger className="px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-3">
-              <FileText className="h-5 w-5 text-slate-600" />
+              <FileText className="h-5 w-5 text-app-fg-muted" />
               <span className="text-lg font-semibold">Contenu par défaut des articles</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
-            <p className="text-sm text-slate-500 mb-5">
+            <p className="text-sm text-app-fg-muted mb-5">
               Personnalisez le contenu par défaut de chaque article du Règlement Intérieur.
               Le markdown est supporté (<strong>**gras**</strong>, <em>*italique*</em>, listes...).
             </p>
@@ -543,13 +543,13 @@ const handleDeleteCommune = (key: string) => {
                 const Icon = article.icon
                 const modified = isModified(key)
                 return (
-                  <Card key={key} className="border-slate-200">
+                  <Card key={key} className="border-app-border">
                     <CardHeader className="pb-2 pt-4 px-4">
                       <div className="flex items-center gap-3">
-                        <Icon className="h-4 w-4 text-slate-600 shrink-0" />
+                        <Icon className="h-4 w-4 text-app-fg-muted shrink-0" />
                         <CardTitle className="text-sm font-semibold">{article.title}</CardTitle>
                         {modified && (
-                          <Badge className="bg-[#FFC300] text-black hover:bg-[#FFC300] text-[10px] px-1.5 py-0">
+                          <Badge className="bg-[#FFC300] text-app-accent-foreground hover:bg-[#FFC300] text-[10px] px-1.5 py-0">
                             Modifié
                           </Badge>
                         )}
@@ -586,35 +586,35 @@ const handleDeleteCommune = (key: string) => {
         <AccordionItem value="affiche" className="border rounded-xl">
           <AccordionTrigger className="px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-3">
-              <Printer className="h-5 w-5 text-slate-600" />
+              <Printer className="h-5 w-5 text-app-fg-muted" />
               <span className="text-lg font-semibold">Couleurs des affiches travaux</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
-            <p className="text-sm text-slate-500 mb-5">
+            <p className="text-sm text-app-fg-muted mb-5">
               Modifiez les couleurs associées à chaque type d'affiche ou ajoutez vos propres catégories.
             </p>
 
             {/* Existing types */}
             <div className="space-y-3 mb-6">
-              <Label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+              <Label className="text-xs font-semibold text-app-fg-muted uppercase tracking-wide">
                 Types existants
               </Label>
               {defaultTypeEntries.map(([typeKey, { bg: defaultBg, label }]) => {
                 const modified = isColorModified(typeKey)
                 const effectiveColor = getEffectiveColor(typeKey)
                 return (
-                  <div key={typeKey} className="flex items-center gap-3 p-3 border rounded-lg bg-slate-50">
+                  <div key={typeKey} className="flex items-center gap-3 p-3 border rounded-lg bg-app-surface-2">
                     <input
                       type="color"
                       value={effectiveColor}
                       onChange={(e) => handleColorChange(typeKey, e.target.value)}
-                      className="w-8 h-8 rounded cursor-pointer border border-slate-300 p-0.5"
+                      className="w-8 h-8 rounded cursor-pointer border border-app-border p-0.5"
                     />
                     <span className="text-sm font-medium flex-1">{label}</span>
                     {modified && (
                       <>
-                        <Badge className="bg-[#FFC300] text-black hover:bg-[#FFC300] text-[10px] px-1.5 py-0">
+                        <Badge className="bg-[#FFC300] text-app-accent-foreground hover:bg-[#FFC300] text-[10px] px-1.5 py-0">
                           Modifié
                         </Badge>
                         <Button
@@ -635,19 +635,19 @@ const handleDeleteCommune = (key: string) => {
 
             {/* Custom categories */}
             <div className="space-y-3">
-              <Label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+              <Label className="text-xs font-semibold text-app-fg-muted uppercase tracking-wide">
                 Catégories personnalisées
               </Label>
 
               {afficheSettings.customCategories.length > 0 && (
                 <div className="space-y-3">
                   {afficheSettings.customCategories.map((cat) => (
-                    <div key={cat.key} className="flex items-center gap-3 p-3 border rounded-lg bg-slate-50">
+                    <div key={cat.key} className="flex items-center gap-3 p-3 border rounded-lg bg-app-surface-2">
                       <input
                         type="color"
                         value={cat.bg}
                         onChange={(e) => handleCustomCategoryColorChange(cat.key, e.target.value)}
-                        className="w-8 h-8 rounded cursor-pointer border border-slate-300 p-0.5"
+                        className="w-8 h-8 rounded cursor-pointer border border-app-border p-0.5"
                       />
                       <Input
                         value={cat.label}
@@ -674,7 +674,7 @@ const handleDeleteCommune = (key: string) => {
                   type="color"
                   value={newCategoryColor}
                   onChange={(e) => setNewCategoryColor(e.target.value)}
-                  className="w-8 h-8 rounded cursor-pointer border border-slate-300 p-0.5"
+                  className="w-8 h-8 rounded cursor-pointer border border-app-border p-0.5"
                 />
                 <Input
                   value={newCategoryLabel}
@@ -702,17 +702,17 @@ const handleDeleteCommune = (key: string) => {
         <AccordionItem value="communes" className="border rounded-xl">
           <AccordionTrigger className="px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-slate-600" />
+              <MapPin className="h-5 w-5 text-app-fg-muted" />
               <span className="text-lg font-semibold">Contacts par commune</span>
               {Object.keys(communeContacts).length > 0 && (
-                <span className="text-xs bg-[#FFC300] text-black px-2 py-0.5 rounded-full">
+                <span className="text-xs bg-[#FFC300] text-app-accent-foreground px-2 py-0.5 rounded-full">
                   {Object.keys(communeContacts).length}
                 </span>
               )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
-            <p className="text-sm text-slate-500 mb-5">
+            <p className="text-sm text-app-fg-muted mb-5">
               Configurez les contacts utiles pour chaque commune (mairie, déchetterie, eau). Ces données seront utilisées automatiquement dans l'affiche &quot;Contacts Utiles&quot;. Recherchez par nom ou tag pour pré-remplir depuis Estale.
             </p>
 
@@ -726,15 +726,15 @@ const handleDeleteCommune = (key: string) => {
             {/* Existing communes */}
             <div className="space-y-4 mb-6">
               {Object.entries(communeContacts).map(([key, commune]) => (
-                <Card key={key} className="border-slate-200">
+                <Card key={key} className="border-app-border">
                   <CardHeader className="pb-2 pt-4 px-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-slate-600" />
+                          <MapPin className="h-4 w-4 text-app-fg-muted" />
                           {commune.label}
                           {commune.codePostal && (
-                            <span className="text-xs font-normal text-slate-400">({commune.codePostal})</span>
+                            <span className="text-xs font-normal text-app-fg-faint">({commune.codePostal})</span>
                           )}
                         </CardTitle>
                         {/* Copropriétés de cette ville — liaison automatique */}
@@ -744,7 +744,7 @@ const handleDeleteCommune = (key: string) => {
                           )
                           if (!matched.length) return null
                           return (
-                            <p className="text-[10px] text-slate-400 mt-0.5">
+                            <p className="text-[10px] text-app-fg-faint mt-0.5">
                               Lié à : {matched.map(c => c.name).join(', ')}
                             </p>
                           )
@@ -763,7 +763,7 @@ const handleDeleteCommune = (key: string) => {
                   <CardContent className="px-4 pb-4 space-y-4">
                     {/* Mairie */}
                     <div>
-                      <Label className="text-xs font-semibold text-slate-600">Mairie</Label>
+                      <Label className="text-xs font-semibold text-app-fg-muted">Mairie</Label>
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <Input
                           list="reglages-suppliers-datalist"
@@ -787,7 +787,7 @@ const handleDeleteCommune = (key: string) => {
 
                     {/* Déchetterie */}
                     <div>
-                      <Label className="text-xs font-semibold text-slate-600">Déchetterie</Label>
+                      <Label className="text-xs font-semibold text-app-fg-muted">Déchetterie</Label>
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <Input
                           list="reglages-suppliers-datalist"
@@ -823,7 +823,7 @@ const handleDeleteCommune = (key: string) => {
 
                     {/* Eau */}
                     <div>
-                      <Label className="text-xs font-semibold text-slate-600">Eau</Label>
+                      <Label className="text-xs font-semibold text-app-fg-muted">Eau</Label>
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <Input
                           list="reglages-suppliers-datalist"
@@ -861,7 +861,7 @@ const handleDeleteCommune = (key: string) => {
                           />
                           <button
                             type="button"
-                            className="text-slate-400 hover:text-red-500 text-xs"
+                            className="text-app-fg-faint hover:text-red-500 text-xs"
                             onClick={() => {
                               const extras = (commune.extras || []).filter((_, j) => j !== i)
                               setCommuneContacts(prev => ({ ...prev, [key]: { ...prev[key], extras } }))
@@ -935,28 +935,28 @@ const handleDeleteCommune = (key: string) => {
         <AccordionItem value="custom-blocks" className="border rounded-xl">
           <AccordionTrigger className="px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-3">
-              <Plus className="h-5 w-5 text-slate-600" />
+              <Plus className="h-5 w-5 text-app-fg-muted" />
               <span className="text-lg font-semibold">Blocs personnalisés par défaut</span>
               {customBlockDefaults.length > 0 && (
-                <span className="text-xs bg-[#FFC300] text-black px-2 py-0.5 rounded-full">
+                <span className="text-xs bg-[#FFC300] text-app-accent-foreground px-2 py-0.5 rounded-full">
                   {customBlockDefaults.length}
                 </span>
               )}
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
-            <p className="text-sm text-slate-500 mb-5">
+            <p className="text-sm text-app-fg-muted mb-5">
               Ces blocs seront pré-chargés dans chaque nouveau document &quot;Contacts Utiles&quot;. Vous pouvez les masquer ou modifier leur contenu pour chaque document.
             </p>
 
             <div className="space-y-4">
               {customBlockDefaults.map((block, idx) => (
-                <Card key={block.id} className="border-slate-200">
+                <Card key={block.id} className="border-app-border">
                   <CardContent className="p-4 space-y-3">
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        className="text-slate-400 hover:text-slate-700 shrink-0"
+                        className="text-app-fg-faint hover:text-app-fg shrink-0"
                         title={block.show ? 'Affiché par défaut' : 'Masqué par défaut'}
                         onClick={() => {
                           const updated = [...customBlockDefaults]
@@ -966,7 +966,7 @@ const handleDeleteCommune = (key: string) => {
                       >
                         {block.show
                           ? <Eye className="h-4 w-4" />
-                          : <EyeOff className="h-4 w-4 text-slate-300" />}
+                          : <EyeOff className="h-4 w-4 text-app-fg-faint" />}
                       </button>
                       <Select
                         value={block.icon}
@@ -985,7 +985,7 @@ const handleDeleteCommune = (key: string) => {
                             return (
                               <SelectItem key={ic.value} value={ic.value} className="text-xs">
                                 <div className="flex items-center gap-2">
-                                  <Icon className="h-3.5 w-3.5 shrink-0 text-slate-600" />
+                                  <Icon className="h-3.5 w-3.5 shrink-0 text-app-fg-muted" />
                                   {ic.label}
                                 </div>
                               </SelectItem>

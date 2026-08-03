@@ -148,7 +148,7 @@ export default function EditLignePage({
 
   if (!draft) {
     return (
-      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl font-bold">
+      <div className="bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5 rounded-2xl font-bold">
         Chargement…
       </div>
     )
@@ -157,9 +157,9 @@ export default function EditLignePage({
   return (
     <form
       onSubmit={save}
-      className="space-y-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] p-5 rounded-2xl"
+      className="space-y-4 bg-app-surface border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] p-5 rounded-2xl"
     >
-      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-black pb-2 mb-2">
+      <h2 className="text-lg font-black uppercase tracking-tight border-b-2 border-app-border-strong pb-2 mb-2">
         Modifier la ligne
       </h2>
       <div>
@@ -187,7 +187,7 @@ export default function EditLignePage({
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] px-3 py-2 font-medium min-h-[120px] rounded-xl focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_#000] transition"
+          className="w-full bg-app-surface border-2 border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] px-3 py-2 font-medium min-h-[120px] rounded-xl focus:outline-none focus:translate-x-[1px] focus:translate-y-[1px] focus:shadow-[2px_2px_0px_0px_var(--app-border-strong)] transition"
           required
         />
       </div>
@@ -204,13 +204,13 @@ export default function EditLignePage({
               return (
                 <div
                   key={p.id}
-                  className="relative aspect-square border-2 border-black shadow-[3px_3px_0px_0px_#000] overflow-hidden bg-white rounded-xl"
+                  className="relative aspect-square border-2 border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] overflow-hidden bg-app-surface rounded-xl"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.url} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" />
                   <span
-                    className={`absolute top-1 right-1 border-2 border-black px-1 py-0.5 text-[9px] font-bold uppercase ${
-                      synced ? 'bg-[#A8E6A1]' : 'bg-primary'
+                    className={`absolute top-1 right-1 border-2 border-app-border-strong px-1 py-0.5 text-[9px] font-bold uppercase ${
+                      synced ? 'bg-emerald-500/15' : 'bg-primary'
                     }`}
                   >
                     {synced ? '✓' : '⏳'}
@@ -222,7 +222,7 @@ export default function EditLignePage({
                         e.preventDefault()
                         exportPhoto(photo)
                       }}
-                      className="absolute bottom-1 left-1 bg-white border-2 border-black px-1.5 py-0.5 text-[9px] font-bold uppercase rounded shadow-[1px_1px_0px_0px_#000]"
+                      className="absolute bottom-1 left-1 bg-app-surface border-2 border-app-border-strong px-1.5 py-0.5 text-[9px] font-bold uppercase rounded shadow-[1px_1px_0px_0px_var(--app-border-strong)]"
                     >
                       ⬇ HD
                     </button>
@@ -242,11 +242,11 @@ export default function EditLignePage({
           {newPhotoUrls.map((p) => (
             <div
               key={p.id}
-              className="relative aspect-square border-2 border-dashed border-black shadow-[3px_3px_0px_0px_#000] overflow-hidden bg-white rounded-xl"
+              className="relative aspect-square border-2 border-dashed border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] overflow-hidden bg-app-surface rounded-xl"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={p.url} alt="Nouvelle photo" className="w-full h-full object-cover" />
-              <span className="absolute top-1 right-1 bg-primary border-2 border-black px-1 py-0.5 text-[9px] font-bold uppercase">
+              <span className="absolute top-1 right-1 bg-primary border-2 border-app-border-strong px-1 py-0.5 text-[9px] font-bold uppercase">
                 NEW
               </span>
             </div>
@@ -260,7 +260,7 @@ export default function EditLignePage({
       <button
         type="submit"
         disabled={saving}
-        className="w-full bg-primary border-2 border-black shadow-[4px_4px_0px_0px_#000] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary border-2 border-app-border-strong shadow-[4px_4px_0px_0px_var(--app-border-strong)] py-3 font-black uppercase tracking-wide rounded-full transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {saving ? 'Enregistrement…' : 'Mettre à jour'}
       </button>

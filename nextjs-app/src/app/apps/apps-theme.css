@@ -1,0 +1,221 @@
+/* Tokens de thème des applications internes (/apps/*).
+   Importé UNIQUEMENT par src/app/apps/layout.tsx — la vitrine publique ne charge
+   jamais cette feuille et reste strictement inchangée (arbitrage du 31/07/2026).
+
+   Pourquoi de nouveaux tokens plutôt que --background / --card / --border du
+   globals.css racine : ceux-là sont mappés en hsl(var(--x)) dans tailwind.config.js
+   alors que globals.css les définit en rgb(...) ou en hex. hsl(#ffffff) est
+   invalide, donc bg-card / bg-popover / border-border sont silencieusement
+   inertes dans tout le repo. Les réparer réactiverait ces classes jusque sur les
+   pages publiques ; on pose donc un namespace propre et garanti valide.
+
+   Les variables vivent sur :root et non sur .beam-apps, parce que Radix rend
+   Dialog / Select / DropdownMenu dans un portail attaché à document.body, hors
+   du sous-arbre applicatif — scopées à la classe, elles y seraient indéfinies et
+   les surfaces flottantes apparaîtraient transparentes. */
+
+:root {
+  --app-bg: #f7f7f8;
+  --app-surface: #ffffff;
+  --app-surface-2: #f1f1f3;
+  --app-surface-hover: #e8e8ec;
+
+  --app-border: rgba(0, 0, 0, 0.08);
+  --app-border-strong: rgba(0, 0, 0, 0.16);
+
+  --app-fg: #0e0e10;
+  --app-fg-muted: #5c5c66;
+  --app-fg-faint: #8a8a94;
+
+  /* Jaune Beamô — unique accent, en clair comme en sombre. */
+  --app-accent: #ffc300;
+  --app-accent-foreground: #0a0a0a;
+
+  --app-danger: #d93025;
+
+  /* Bandeaux d'état (information, succès, avertissement, erreur).
+     Un bg-blue-50 figé forme un pavé blanc-bleuté éclatant en thème sombre, et
+     le texte foncé posé dessus y devient illisible : chaque état a donc son
+     couple fond/texte, décliné par thème. */
+  --app-info-bg: #eff6ff;
+  --app-info-fg: #1d4ed8;
+  --app-success-bg: #ecfdf5;
+  --app-success-fg: #047857;
+  --app-warning-bg: #fffbeb;
+  --app-warning-fg: #b45309;
+  --app-danger-bg: #fef2f2;
+  --app-danger-fg: #b91c1c;
+
+  --app-radius-lg: 0.875rem;
+  --app-radius-md: 0.625rem;
+  --app-radius-btn: 0.5rem;
+
+  --app-shadow-soft: 0 12px 32px -20px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-app-theme='dark'] {
+  --app-bg: #08080a;
+  --app-surface: #111113;
+  --app-surface-2: #17171a;
+  --app-surface-hover: #1e1e22;
+
+  --app-border: rgba(255, 255, 255, 0.06);
+  --app-border-strong: rgba(255, 255, 255, 0.14);
+
+  --app-fg: #fafafa;
+  --app-fg-muted: #7d7d85;
+  --app-fg-faint: #5a5a61;
+
+  --app-danger: #ff6b5c;
+
+  /* Fonds très peu opaques, textes remontés en luminosité : c'est ce qui garde
+     un bandeau lisible sur du quasi-noir sans qu'il éclate à l'écran. */
+  --app-info-bg: rgba(59, 130, 246, 0.12);
+  --app-info-fg: #93c5fd;
+  --app-success-bg: rgba(16, 185, 129, 0.12);
+  --app-success-fg: #6ee7b7;
+  --app-warning-bg: rgba(245, 158, 11, 0.12);
+  --app-warning-fg: #fcd34d;
+  --app-danger-bg: rgba(239, 68, 68, 0.12);
+  --app-danger-fg: #fca5a5;
+
+  --app-shadow-soft: 0 16px 40px -24px rgba(0, 0, 0, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   Réparation des tokens shadcn, SOUS /apps UNIQUEMENT.
+
+   tailwind.config.js consomme ces variables via hsl(var(--x)), mais globals.css
+   les définit en rgb(...) : hsl(rgb(255,0,0)) est invalide, donc bg-card,
+   bg-popover, border-border, bg-sidebar… ne peignent rien dans tout le repo.
+   C'est la cause directe du décalage visuel de la barre latérale.
+
+   On redonne ici la forme attendue — un triplet « H S% L% » nu, sans fonction
+   de couleur. Cette feuille n'étant chargée que par le layout /apps, la vitrine
+   publique conserve exactement son rendu actuel.
+
+   Sélecteur doublé (:root:root) plutôt que :root : même spécificité que
+   globals.css, l'emporter reposerait sur l'ordre d'injection des feuilles, qui
+   n'est pas garanti après découpage des chunks CSS en production.
+   -------------------------------------------------------------------------- */
+
+:root:root {
+  --background: 240 5% 97%;
+  --foreground: 240 6% 6%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 6% 6%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 6% 6%;
+  --secondary: 240 5% 95%;
+  --secondary-foreground: 240 6% 6%;
+  --muted: 240 5% 95%;
+  --muted-foreground: 240 4% 38%;
+  --accent: 240 5% 95%;
+  --accent-foreground: 240 6% 6%;
+  --destructive: 4 74% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+  --ring: 45 100% 50%;
+
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 240 6% 6%;
+  --sidebar-primary: 45 100% 50%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 240 5% 95%;
+  --sidebar-accent-foreground: 240 6% 6%;
+  --sidebar-border: 240 6% 90%;
+  --sidebar-ring: 45 100% 50%;
+}
+
+:root[data-app-theme='dark'] {
+  --background: 240 6% 4%;
+  --foreground: 0 0% 98%;
+  --card: 240 5% 7%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 5% 7%;
+  --popover-foreground: 0 0% 98%;
+  --secondary: 240 5% 9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 5% 9%;
+  --muted-foreground: 240 4% 50%;
+  --accent: 240 5% 9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 5 100% 68%;
+  --destructive-foreground: 240 6% 4%;
+  --border: 240 5% 14%;
+  --input: 240 5% 14%;
+
+  /* La barre latérale partage le fond du contenu : c'est sa démarcation en
+     bloc distinct qui « faisait bizarre » à côté du module Venator. */
+  --sidebar-background: 240 6% 4%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 240 5% 9%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 240 5% 14%;
+}
+
+/* --------------------------------------------------------------------------
+   Sous-arbres non encore convertis : maintien forcé en clair.
+
+   Certaines sections (Visites, Clés, Articles…) peignent leurs fonds en dur —
+   bg-white, bg-[#F2F1E6] — tout en laissant leur texte sur les tokens partagés.
+   Ces tokens étant jusqu'ici inertes, le texte tombait sur la couleur héritée et
+   restait lisible par accident. Maintenant qu'ils fonctionnent, le mode sombre y
+   produirait du texte blanc sur fond blanc : constaté sur /apps/visites, où les
+   noms de copropriété devenaient invisibles.
+
+   Ces sections restent donc en clair jusqu'à leur conversion, plutôt que d'être
+   livrées illisibles. Retirer le marqueur, section par section, est la dernière
+   étape de chaque conversion.
+
+   Sélecteur descendant depuis :root[data-app-theme='dark'] (spécificité 0,3,0)
+   pour l'emporter sur le bloc sombre (0,2,0), quel que soit l'ordre des règles.
+   -------------------------------------------------------------------------- */
+
+:root[data-app-theme='dark'] .app-theme-light-only {
+  --app-bg: #f7f7f8;
+  --app-surface: #ffffff;
+  --app-surface-2: #f1f1f3;
+  --app-surface-hover: #e8e8ec;
+  --app-border: rgba(0, 0, 0, 0.08);
+  --app-border-strong: rgba(0, 0, 0, 0.16);
+  --app-fg: #0e0e10;
+  --app-fg-muted: #5c5c66;
+  --app-fg-faint: #8a8a94;
+  --app-danger: #d93025;
+
+  --background: 240 5% 97%;
+  --foreground: 240 6% 6%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 6% 6%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 6% 6%;
+  --secondary: 240 5% 95%;
+  --secondary-foreground: 240 6% 6%;
+  --muted: 240 5% 95%;
+  --muted-foreground: 240 4% 38%;
+  --accent: 240 5% 95%;
+  --accent-foreground: 240 6% 6%;
+  --destructive: 4 74% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+
+  color-scheme: light;
+  color: var(--app-fg);
+}
+
+/* Le fond est porté par le conteneur applicatif : `body` appartient au document
+   entier, vitrine comprise, et son fond est posé par globals.css. */
+.beam-apps {
+  min-height: 100vh;
+  background: var(--app-bg);
+  color: var(--app-fg);
+}
+
+/* Indique aux contrôles natifs (scrollbars, champs) quel mode ils habitent. */
+:root[data-app-theme='dark'] .beam-apps {
+  color-scheme: dark;
+}

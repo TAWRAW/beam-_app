@@ -36,6 +36,9 @@ import { SmartSupplierSelect } from '@/components/documents/SmartSupplierSelect'
 import { DocumentPreview } from '@/components/documents/DocumentPreview'
 import { ReglementInterieurTemplate } from '@/components/documents/templates/ReglementInterieurTemplate'
 import { ContactsUtilesTemplate } from '@/components/documents/templates/ContactsUtilesTemplate'
+import { ConstatFormSections } from '@/components/documents/constat/ConstatFormSections'
+import { ConstatDdeTemplate } from '@/components/documents/constat/ConstatDdeTemplate'
+import { ConstatFormSchema, constatDefaults } from '@/components/documents/constat/constat-schema'
 import {
   type SupplierCondo,
   type CommuneContactsMap,
@@ -48,18 +51,21 @@ import { mockSuppliers, mockAgency } from '@/lib/mock-data'
 import { computeEnedisPhone, normalizeCityKey, autoMatchContracts, EQUIPMENT_TYPES } from '@/lib/contacts-utils'
 
 // Types de modèles de documents
-type TemplateType = 'affiche' | 'reglement' | 'contacts'
+type TemplateType = 'affiche' | 'reglement' | 'contacts' | 'constat'
 
 const TEMPLATE_OPTIONS: { value: TemplateType; label: string }[] = [
   { value: 'affiche', label: 'Affiche Travaux' },
   { value: 'reglement', label: 'Règlement Intérieur' },
   { value: 'contacts', label: 'Les Contacts Utiles' },
+  { value: 'constat', label: 'Constat DDE' },
 ]
 
 // Schéma unifié pour le formulaire
 const UnifiedFormSchema = z.object({
   // Type de template
-  templateType: z.enum(['affiche', 'reglement', 'contacts']).default('affiche'),
+  templateType: z.enum(['affiche', 'reglement', 'contacts', 'constat']).default('affiche'),
+  // Champs Constat DDE (objet imbriqué unique — voir constat-schema.ts)
+  constat: ConstatFormSchema.default(constatDefaults),
   // Champs communs - Immeuble
   condoId: z.string().optional(),
   buildingNom: z.string().optional(),
@@ -293,6 +299,7 @@ export default function DocumentGeneratePage() {
     resolver: zodResolver(UnifiedFormSchema),
     defaultValues: {
       templateType: 'affiche',
+      constat: constatDefaults,
       documentType: 'general',
       titre: 'AVIS DE TRAVAUX',
       description: '',
@@ -762,6 +769,9 @@ export default function DocumentGeneratePage() {
 
   // Gérer le changement de type de template
   const handleTemplateChange = (value: TemplateType) => {
+    // Radix Select émet onValueChange('') au reload (restauration du <select> natif
+    // par le navigateur) : ignorer pour ne pas écraser le type restauré du brouillon
+    if (!value) return
     form.setValue('templateType', value)
     if (value === 'affiche') {
       form.setValue('titre', 'AVIS DE TRAVAUX')
@@ -910,11 +920,11 @@ export default function DocumentGeneratePage() {
   return (
     <div className="h-screen grid grid-cols-[35%_65%] overflow-hidden">
       {/* ========== PANNEAU GAUCHE : FORMULAIRE ========== */}
-      <div className="flex flex-col h-full border-r bg-white">
+      <div className="flex flex-col h-full border-r bg-app-surface">
         {/* Header avec titre et modèles sauvegardés */}
-        <div className="flex items-center justify-between px-4 py-2 border-b bg-slate-50">
+        <div className="flex items-center justify-between px-4 py-2 border-b bg-app-surface-2">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-slate-600" />
+            <FileText className="h-4 w-4 text-app-fg-muted" />
             <span className="font-semibold text-sm">Générateur</span>
           </div>
           <div className="flex items-center gap-1">
@@ -964,7 +974,7 @@ export default function DocumentGeneratePage() {
                 name="templateType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs text-slate-600 font-semibold">Type de document</FormLabel>
+                    <FormLabel className="text-xs text-app-fg-muted font-semibold">Type de document</FormLabel>
                     <Select value={field.value} onValueChange={(v) => handleTemplateChange(v as TemplateType)}>
                       <FormControl>
                         <SelectTrigger className="h-9 text-sm font-medium bg-[#FFC300]/10 border-[#FFC300]">
@@ -990,13 +1000,13 @@ export default function DocumentGeneratePage() {
                     name="documentType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs text-slate-600">Type d'affichage</FormLabel>
+                        <FormLabel className="text-xs text-app-fg-muted">Type d'affichage</FormLabel>
                         <Select value={field.value} onValueChange={field.onChange}>
                           <FormControl>
                             <SelectTrigger className="h-8 text-sm">
                               <div className="flex items-center gap-2">
                                 <div
-                                  className="w-3 h-3 rounded-full border border-black/20"
+                                  className="w-3 h-3 rounded-full border border-app-border-strong"
                                   style={{ backgroundColor: effectiveColorMap[field.value]?.bg || '#FFC300' }}
                                 />
                                 <SelectValue placeholder="Sélectionner un type" />
@@ -1008,7 +1018,7 @@ export default function DocumentGeneratePage() {
                               <SelectItem key={key} value={key}>
                                 <div className="flex items-center gap-2">
                                   <div
-                                    className="w-3 h-3 rounded-full border border-black/20"
+                                    className="w-3 h-3 rounded-full border border-app-border-strong"
                                     style={{ backgroundColor: bg }}
                                   />
                                   <span>{label}</span>
@@ -1028,7 +1038,7 @@ export default function DocumentGeneratePage() {
                       name="titre"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs text-slate-600">Titre du document</FormLabel>
+                          <FormLabel className="text-xs text-app-fg-muted">Titre du document</FormLabel>
                           <FormControl>
                             <Input className="h-8 text-sm" placeholder="AVIS DE TRAVAUX" {...field} />
                           </FormControl>
@@ -1040,7 +1050,7 @@ export default function DocumentGeneratePage() {
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs text-slate-600">Description des travaux</FormLabel>
+                          <FormLabel className="text-xs text-app-fg-muted">Description des travaux</FormLabel>
                           <FormControl>
                             <Textarea
                               className="min-h-[60px] text-sm resize-none"
@@ -1061,9 +1071,9 @@ export default function DocumentGeneratePage() {
                 <AccordionItem value="contexte" className="border rounded-sm px-3">
                   <AccordionTrigger className="py-2 hover:no-underline">
                     <div className="flex items-center gap-2 text-sm">
-                      <Building2 className="h-4 w-4 text-slate-500" />
+                      <Building2 className="h-4 w-4 text-app-fg-muted" />
                       <span className="font-medium">Copropriété</span>
-                      <span className="text-xs text-slate-400 ml-2 truncate max-w-[180px]">{buildingSummary}</span>
+                      <span className="text-xs text-app-fg-faint ml-2 truncate max-w-[180px]">{buildingSummary}</span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pb-3 pt-1">
@@ -1136,15 +1146,18 @@ export default function DocumentGeneratePage() {
                   </AccordionContent>
                 </AccordionItem>
 
+                {/* === SECTIONS CONSTAT DDE === */}
+                {selectedTemplate === 'constat' && <ConstatFormSections />}
+
                 {/* Accordéon Planning - AFFICHE UNIQUEMENT */}
                 {selectedTemplate === 'affiche' && (
                   <AccordionItem value="planning" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="h-4 w-4 text-slate-500" />
+                        <Calendar className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Planning</span>
                         {watchedValues.dateTravaux && (
-                          <span className="text-xs text-slate-400 ml-2">
+                          <span className="text-xs text-app-fg-faint ml-2">
                             {watchedValues.dateTravaux} • {watchedValues.heureDebut}-{watchedValues.heureFin}
                           </span>
                         )}
@@ -1157,7 +1170,7 @@ export default function DocumentGeneratePage() {
                           name="dateTravaux"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-xs text-slate-500">Date</FormLabel>
+                              <FormLabel className="text-xs text-app-fg-muted">Date</FormLabel>
                               <FormControl>
                                 <Input type="date" className="h-8 text-xs" {...field} />
                               </FormControl>
@@ -1169,7 +1182,7 @@ export default function DocumentGeneratePage() {
                           name="heureDebut"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-xs text-slate-500">Début</FormLabel>
+                              <FormLabel className="text-xs text-app-fg-muted">Début</FormLabel>
                               <FormControl>
                                 <Input type="time" className="h-8 text-xs" {...field} />
                               </FormControl>
@@ -1181,7 +1194,7 @@ export default function DocumentGeneratePage() {
                           name="heureFin"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-xs text-slate-500">Fin</FormLabel>
+                              <FormLabel className="text-xs text-app-fg-muted">Fin</FormLabel>
                               <FormControl>
                                 <Input type="time" className="h-8 text-xs" {...field} />
                               </FormControl>
@@ -1198,14 +1211,14 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="prestataire" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm">
-                        <Users className="h-4 w-4 text-slate-500" />
+                        <Users className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Prestataire</span>
-                        <span className="text-xs text-slate-400 ml-2 truncate max-w-[180px]">{supplierSummary}</span>
+                        <span className="text-xs text-app-fg-faint ml-2 truncate max-w-[180px]">{supplierSummary}</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-3 pt-1">
                       {loadingSuppliers ? (
-                        <div className="flex items-center gap-2 text-xs text-slate-500 py-2">
+                        <div className="flex items-center gap-2 text-xs text-app-fg-muted py-2">
                           <Loader2 className="h-3 w-3 animate-spin" />
                           Chargement...
                         </div>
@@ -1223,7 +1236,7 @@ export default function DocumentGeneratePage() {
                                 onCheckedChange={field.onChange}
                               />
                             </FormControl>
-                            <FormLabel className="text-xs text-slate-600 font-normal cursor-pointer">
+                            <FormLabel className="text-xs text-app-fg-muted font-normal cursor-pointer">
                               Afficher le prestataire sur le document
                             </FormLabel>
                           </FormItem>
@@ -1238,7 +1251,7 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="articles-base" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm">
-                        <FileText className="h-4 w-4 text-slate-500" />
+                        <FileText className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Articles de base</span>
                       </div>
                     </AccordionTrigger>
@@ -1257,7 +1270,7 @@ export default function DocumentGeneratePage() {
                                     onCheckedChange={field.onChange}
                                   />
                                 </FormControl>
-                                <FormLabel className="text-xs font-semibold text-slate-700 cursor-pointer">
+                                <FormLabel className="text-xs font-semibold text-app-fg cursor-pointer">
                                   Bruits & Nuisances
                                 </FormLabel>
                               </FormItem>
@@ -1294,7 +1307,7 @@ export default function DocumentGeneratePage() {
                                     onCheckedChange={field.onChange}
                                   />
                                 </FormControl>
-                                <FormLabel className="text-xs font-semibold text-slate-700 cursor-pointer">
+                                <FormLabel className="text-xs font-semibold text-app-fg cursor-pointer">
                                   Sécurité
                                 </FormLabel>
                               </FormItem>
@@ -1327,9 +1340,9 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="equipements" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm">
-                        <Settings2 className="h-4 w-4 text-slate-500" />
+                        <Settings2 className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Équipements</span>
-                        <span className="text-xs bg-[#FFC300] text-black px-2 py-0.5 rounded-full ml-2">
+                        <span className="text-xs bg-[#FFC300] text-app-accent-foreground px-2 py-0.5 rounded-full ml-2">
                           {selectedFeaturesCount}
                         </span>
                       </div>
@@ -1338,7 +1351,7 @@ export default function DocumentGeneratePage() {
                       <div className="space-y-4">
                         {Object.entries(FEATURE_CATEGORIES).map(([categoryKey, category]) => (
                           <div key={categoryKey} className="space-y-2">
-                            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-app-fg-muted uppercase tracking-wide">
                               <span>{category.icon}</span>
                               <span>{category.label}</span>
                             </div>
@@ -1349,7 +1362,7 @@ export default function DocumentGeneratePage() {
                                   control={form.control}
                                   name={`features.${feature.key}`}
                                   render={({ field }) => (
-                                    <FormItem className="flex items-center justify-between gap-2 rounded-md border p-2 bg-slate-50">
+                                    <FormItem className="flex items-center justify-between gap-2 rounded-md border p-2 bg-app-surface-2">
                                       <FormLabel className="text-xs font-normal cursor-pointer flex-1">
                                         {feature.label}
                                       </FormLabel>
@@ -1379,7 +1392,7 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="syndic-gestionnaire" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm">
-                        <Building2 className="h-4 w-4 text-slate-500" />
+                        <Building2 className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Syndic & Gestionnaire</span>
                       </div>
                     </AccordionTrigger>
@@ -1387,8 +1400,8 @@ export default function DocumentGeneratePage() {
                       <div className="space-y-3">
                         {/* Syndic (read-only from agency) */}
                         <div>
-                          <p className="text-xs font-semibold text-slate-600 mb-1">Syndic</p>
-                          <div className="bg-slate-50 rounded-md p-2 text-xs text-slate-700 space-y-0.5">
+                          <p className="text-xs font-semibold text-app-fg-muted mb-1">Syndic</p>
+                          <div className="bg-app-surface-2 rounded-md p-2 text-xs text-app-fg space-y-0.5">
                             <p>{agency?.name || 'Non connecté à l\'API'}</p>
                             {agency?.phone && <p>{agency.phone}</p>}
                             {agency?.email && <p>{agency.email}</p>}
@@ -1396,7 +1409,7 @@ export default function DocumentGeneratePage() {
                         </div>
                         {/* Gestionnaire (manual) */}
                         <div>
-                          <p className="text-xs font-semibold text-slate-600 mb-1">Gestionnaire</p>
+                          <p className="text-xs font-semibold text-app-fg-muted mb-1">Gestionnaire</p>
                           <div className="space-y-2">
                             <FormField
                               control={form.control}
@@ -1445,7 +1458,7 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="contacts-communaux" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm">
-                        <Phone className="h-4 w-4 text-slate-500" />
+                        <Phone className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Contacts communaux</span>
                       </div>
                     </AccordionTrigger>
@@ -1453,14 +1466,14 @@ export default function DocumentGeneratePage() {
                       <div className="space-y-3">
                         {/* Hint if commune not configured */}
                         {watchedValues.buildingVille && !communeContacts[normalizeCityKey(watchedValues.buildingVille)] && (
-                          <p className="text-xs text-amber-600 bg-amber-50 rounded p-2">
+                          <p className="text-xs text-amber-600 bg-app-warning-bg rounded p-2">
                             Commune &quot;{watchedValues.buildingVille}&quot; non configurée dans Réglages. Les champs ci-dessous sont à remplir manuellement.
                           </p>
                         )}
 
                         {/* Mairie */}
                         <div>
-                          <p className="text-xs font-semibold text-slate-600 mb-1">Mairie</p>
+                          <p className="text-xs font-semibold text-app-fg-muted mb-1">Mairie</p>
                           <div className="grid grid-cols-2 gap-2">
                             <FormField
                               control={form.control}
@@ -1489,7 +1502,7 @@ export default function DocumentGeneratePage() {
 
                         {/* ENEDIS (auto, read-only) */}
                         <div>
-                          <p className="text-xs font-semibold text-slate-600 mb-1 flex items-center gap-1">
+                          <p className="text-xs font-semibold text-app-fg-muted mb-1 flex items-center gap-1">
                             <Zap className="h-3 w-3" /> ENEDIS
                           </p>
                           <FormField
@@ -1498,7 +1511,7 @@ export default function DocumentGeneratePage() {
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
-                                  <Input className="h-8 text-xs bg-slate-50" placeholder="Auto-calculé depuis le code postal" readOnly {...field} />
+                                  <Input className="h-8 text-xs bg-app-surface-2" placeholder="Auto-calculé depuis le code postal" readOnly {...field} />
                                 </FormControl>
                               </FormItem>
                             )}
@@ -1508,7 +1521,7 @@ export default function DocumentGeneratePage() {
                         {/* Eau (conditional) */}
                         <div>
                           <div className="flex items-center justify-between mb-1">
-                            <p className="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                            <p className="text-xs font-semibold text-app-fg-muted flex items-center gap-1">
                               <Droplets className="h-3 w-3" /> Eau privative
                             </p>
                             <FormField
@@ -1557,7 +1570,7 @@ export default function DocumentGeneratePage() {
 
                         {/* Déchetterie */}
                         <div>
-                          <p className="text-xs font-semibold text-slate-600 mb-1">Déchetterie</p>
+                          <p className="text-xs font-semibold text-app-fg-muted mb-1">Déchetterie</p>
                           {suppliers.length > 0 && (
                             <Select
                               value=""
@@ -1570,7 +1583,7 @@ export default function DocumentGeneratePage() {
                               }}
                             >
                               <SelectTrigger className="h-7 text-xs mb-2">
-                                <div className="flex items-center gap-1.5 text-slate-500">
+                                <div className="flex items-center gap-1.5 text-app-fg-muted">
                                   <Users className="h-3 w-3" />
                                   <span>Pré-remplir depuis Estale...</span>
                                 </div>
@@ -1643,16 +1656,16 @@ export default function DocumentGeneratePage() {
                       <div className="flex items-center gap-2 text-sm flex-1">
                         <PhoneCall className="h-4 w-4 text-orange-500" />
                         <span className="font-medium">Urgences</span>
-                        <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full ml-2">
+                        <span className="text-xs bg-app-danger-bg text-app-danger-fg px-2 py-0.5 rounded-full ml-2">
                           {watchedValues.urgences?.length ?? 0}
                         </span>
                         <button
                           type="button"
-                          className="ml-auto mr-2 text-slate-400 hover:text-slate-700"
+                          className="ml-auto mr-2 text-app-fg-faint hover:text-app-fg"
                           title={watchedValues.showUrgences ? 'Masquer du document' : 'Afficher dans le document'}
                           onClick={e => { e.stopPropagation(); form.setValue('showUrgences', !watchedValues.showUrgences) }}
                         >
-                          {watchedValues.showUrgences ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-slate-300" />}
+                          {watchedValues.showUrgences ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-app-fg-faint" />}
                         </button>
                       </div>
                     </AccordionTrigger>
@@ -1682,7 +1695,7 @@ export default function DocumentGeneratePage() {
                             />
                             <button
                               type="button"
-                              className="text-slate-300 hover:text-red-500"
+                              className="text-app-fg-faint hover:text-red-500"
                               onClick={() => {
                                 const updated = (watchedValues.urgences || []).filter((_, i) => i !== idx)
                                 form.setValue('urgences', updated)
@@ -1694,7 +1707,7 @@ export default function DocumentGeneratePage() {
                         ))}
                         <button
                           type="button"
-                          className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1 mt-1"
+                          className="text-xs text-app-fg-muted hover:text-app-fg flex items-center gap-1 mt-1"
                           onClick={() => form.setValue('urgences', [...(watchedValues.urgences || []), { label: '', numero: '' }])}
                         >
                           <Plus className="h-3 w-3" /> Ajouter un numéro
@@ -1709,20 +1722,20 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="contrats" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm flex-1">
-                        <Wrench className="h-4 w-4 text-slate-500" />
+                        <Wrench className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Contrats d'entretien</span>
                         {watchedValues.contracts.length > 0 && (
-                          <span className="text-xs bg-[#FFC300] text-black px-2 py-0.5 rounded-full ml-2">
+                          <span className="text-xs bg-[#FFC300] text-app-accent-foreground px-2 py-0.5 rounded-full ml-2">
                             {watchedValues.contracts.length}
                           </span>
                         )}
                         <button
                           type="button"
-                          className="ml-auto mr-2 text-slate-400 hover:text-slate-700"
+                          className="ml-auto mr-2 text-app-fg-faint hover:text-app-fg"
                           title={watchedValues.showContracts ? 'Masquer du document' : 'Afficher dans le document'}
                           onClick={e => { e.stopPropagation(); form.setValue('showContracts', !watchedValues.showContracts) }}
                         >
-                          {watchedValues.showContracts ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-slate-300" />}
+                          {watchedValues.showContracts ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-app-fg-faint" />}
                         </button>
                       </div>
                     </AccordionTrigger>
@@ -1742,7 +1755,7 @@ export default function DocumentGeneratePage() {
 
                         {/* Contract list — 2-line layout per contract */}
                         {watchedValues.contracts.map((contract, idx) => (
-                          <div key={idx} className="border rounded-md p-2 bg-slate-50 space-y-1.5">
+                          <div key={idx} className="border rounded-md p-2 bg-app-surface-2 space-y-1.5">
                             <div className="flex items-center gap-2">
                               <Select
                                 value={contract.equipmentType}
@@ -1808,7 +1821,7 @@ export default function DocumentGeneratePage() {
                         {/* Add from suppliers list */}
                         {suppliers.length > 0 && (
                           <div>
-                            <p className="text-[10px] text-slate-500 uppercase tracking-wide font-semibold mt-3 mb-1">Ajouter un fournisseur Estale</p>
+                            <p className="text-[10px] text-app-fg-muted uppercase tracking-wide font-semibold mt-3 mb-1">Ajouter un fournisseur Estale</p>
                             <div className="max-h-[150px] overflow-y-auto space-y-1 border rounded-md p-1.5">
                               {suppliers
                                 .filter(s => !watchedValues.contracts.some(c => c.supplierName === s.nom))
@@ -1816,17 +1829,17 @@ export default function DocumentGeneratePage() {
                                   <button
                                     key={s.id}
                                     type="button"
-                                    className="flex items-center justify-between w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-100 transition-colors"
+                                    className="flex items-center justify-between w-full text-left text-xs px-2 py-1.5 rounded hover:bg-app-surface-2 transition-colors"
                                     onClick={() => handleAddSupplierAsContract(s)}
                                   >
                                     <span className="font-medium truncate">{s.nom}</span>
-                                    <span className="text-slate-400 text-[10px] ml-2 shrink-0">
+                                    <span className="text-app-fg-faint text-[10px] ml-2 shrink-0">
                                       {s.tags?.slice(0, 2).join(', ') || s.specialite || ''}
                                     </span>
                                   </button>
                                 ))}
                               {suppliers.filter(s => !watchedValues.contracts.some(c => c.supplierName === s.nom)).length === 0 && (
-                                <p className="text-[10px] text-slate-400 italic py-1 text-center">Tous les fournisseurs ont été ajoutés</p>
+                                <p className="text-[10px] text-app-fg-faint italic py-1 text-center">Tous les fournisseurs ont été ajoutés</p>
                               )}
                             </div>
                           </div>
@@ -1858,27 +1871,27 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="conseillers" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm flex-1">
-                        <Users className="h-4 w-4 text-slate-500" />
+                        <Users className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Conseillers travaux</span>
                         {watchedValues.conseillers.length > 0 && (
-                          <span className="text-xs bg-[#FFC300] text-black px-2 py-0.5 rounded-full ml-2">
+                          <span className="text-xs bg-[#FFC300] text-app-accent-foreground px-2 py-0.5 rounded-full ml-2">
                             {watchedValues.conseillers.length}
                           </span>
                         )}
                         <button
                           type="button"
-                          className="ml-auto mr-2 text-slate-400 hover:text-slate-700"
+                          className="ml-auto mr-2 text-app-fg-faint hover:text-app-fg"
                           title={watchedValues.showConseillers ? 'Masquer du document' : 'Afficher dans le document'}
                           onClick={e => { e.stopPropagation(); form.setValue('showConseillers', !watchedValues.showConseillers) }}
                         >
-                          {watchedValues.showConseillers ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-slate-300" />}
+                          {watchedValues.showConseillers ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-app-fg-faint" />}
                         </button>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-3 pt-1">
                       <div className="space-y-2">
                         {watchedValues.conseillers.map((conseiller, idx) => (
-                          <div key={idx} className="flex items-center gap-2 border rounded-md p-2 bg-slate-50">
+                          <div key={idx} className="flex items-center gap-2 border rounded-md p-2 bg-app-surface-2">
                             <Input
                               className="h-7 text-xs flex-1"
                               placeholder="Spécialité"
@@ -1955,10 +1968,10 @@ export default function DocumentGeneratePage() {
                   <AccordionItem value="custom-blocks" className="border rounded-sm px-3">
                     <AccordionTrigger className="py-2 hover:no-underline">
                       <div className="flex items-center gap-2 text-sm flex-1">
-                        <Plus className="h-4 w-4 text-slate-500" />
+                        <Plus className="h-4 w-4 text-app-fg-muted" />
                         <span className="font-medium">Blocs personnalisés</span>
                         {(watchedValues.customBlocks?.length ?? 0) > 0 && (
-                          <span className="text-xs bg-[#FFC300] text-black px-2 py-0.5 rounded-full ml-2">
+                          <span className="text-xs bg-[#FFC300] text-app-accent-foreground px-2 py-0.5 rounded-full ml-2">
                             {watchedValues.customBlocks.length}
                           </span>
                         )}
@@ -1967,11 +1980,11 @@ export default function DocumentGeneratePage() {
                     <AccordionContent className="pb-3 pt-1">
                       <div className="space-y-3">
                         {watchedValues.customBlocks?.map((block, idx) => (
-                          <div key={block.id} className="border rounded-md p-2 bg-slate-50 space-y-2">
+                          <div key={block.id} className="border rounded-md p-2 bg-app-surface-2 space-y-2">
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                className="text-slate-400 hover:text-slate-700 shrink-0"
+                                className="text-app-fg-faint hover:text-app-fg shrink-0"
                                 title={block.show ? 'Masquer du document' : 'Afficher dans le document'}
                                 onClick={() => {
                                   const updated = [...watchedValues.customBlocks]
@@ -1979,7 +1992,7 @@ export default function DocumentGeneratePage() {
                                   form.setValue('customBlocks', updated)
                                 }}
                               >
-                                {block.show ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-slate-300" />}
+                                {block.show ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4 text-app-fg-faint" />}
                               </button>
                               <Select
                                 value={block.icon}
@@ -2069,7 +2082,7 @@ export default function DocumentGeneratePage() {
                   name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs text-slate-600">Notes (optionnel)</FormLabel>
+                      <FormLabel className="text-xs text-app-fg-muted">Notes (optionnel)</FormLabel>
                       <FormControl>
                         <Textarea
                           className="min-h-[40px] text-sm resize-none"
@@ -2086,21 +2099,21 @@ export default function DocumentGeneratePage() {
         </div>
 
         {/* Footer avec bouton */}
-        <div className="px-4 py-3 border-t bg-slate-50">
+        <div className="px-4 py-3 border-t bg-app-surface-2">
           {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
-          <Button onClick={handleGeneratePDF} className="w-full h-9 bg-[#FFC300] text-black hover:bg-[#e6b000]">
+          <Button onClick={handleGeneratePDF} className="w-full h-9 bg-[#FFC300] text-app-accent-foreground hover:bg-[#e6b000]">
             <ExternalLink className="h-4 w-4 mr-2" />
-            {selectedTemplate === 'affiche' ? 'Ouvrir et imprimer PDF' : selectedTemplate === 'contacts' ? 'Générer les Contacts Utiles' : 'Générer le Règlement'}
+            {selectedTemplate === 'affiche' ? 'Ouvrir et imprimer PDF' : selectedTemplate === 'contacts' ? 'Générer les Contacts Utiles' : selectedTemplate === 'constat' ? 'Générer le Constat DDE' : 'Générer le Règlement'}
           </Button>
         </div>
       </div>
 
       {/* ========== PANNEAU DROIT : APERÇU ========== */}
-      <div ref={previewContainerRef} className="flex-1 bg-slate-100 overflow-y-auto p-8">
+      <div ref={previewContainerRef} className="flex-1 bg-app-surface-2 overflow-y-auto p-8">
         <div style={{ width: 794 * previewScale, margin: '0 auto' }}>
           {selectedTemplate === 'affiche' ? (
             <div
-              className="shadow-2xl bg-white"
+              className="shadow-2xl bg-app-surface"
               style={{
                 width: '794px',
                 minHeight: '1123px',
@@ -2119,6 +2132,16 @@ export default function DocumentGeneratePage() {
                 agency={mappedAgency || mockAgency}
                 colorOverrides={effectiveColorMap}
               />
+            </div>
+          ) : selectedTemplate === 'constat' ? (
+            <div
+              style={{
+                transform: `scale(${previewScale})`,
+                transformOrigin: 'top left',
+              }}
+            >
+              {/* Aperçu = exemplaire A ; l'export produit les 3 exemplaires */}
+              <ConstatDdeTemplate data={watchedValues.constat} pageIndex={0} />
             </div>
           ) : selectedTemplate === 'contacts' ? (
             <div

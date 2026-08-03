@@ -23,7 +23,7 @@ export function PhotoSlot({ label, onCapture }: Props) {
     <button
       type="button"
       onClick={() => ref.current?.click()}
-      className="aspect-square bg-white border-2 border-dashed border-black shadow-[3px_3px_0px_0px_#000] flex flex-col items-center justify-center text-black font-semibold transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#000] overflow-hidden"
+      className="aspect-square bg-app-surface border-2 border-dashed border-app-border-strong shadow-[3px_3px_0px_0px_var(--app-border-strong)] flex flex-col items-center justify-center text-app-fg font-semibold transition active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_var(--app-border-strong)] overflow-hidden"
     >
       {preview ? (
         // eslint-disable-next-line @next/next/no-img-element

@@ -1,0 +1,11 @@
+-- supabase/migrations/20260802_venator_type_contrat.sql
+-- Ajoute 'contrat' aux types de dossier (banque, électricité, ménage, ascenseur…).
+--
+-- Un contrat a bien un cycle de vie propre — consultation, signature, échéance,
+-- renouvellement, résiliation — ce qui en fait un dossier à part entière. Les
+-- équipements, eux, n'en ont pas : la porte d'entrée voit passer un contrat de
+-- maintenance, puis des travaux, puis un sinistre. Ils relèveront d'un étiquetage
+-- transverse, pas d'un type de dossier.
+--
+-- ADD VALUE ne s'exécute pas dans une transaction : à passer seul dans le SQL editor.
+alter type venator_dossier_type add value if not exists 'contrat' after 'travaux';
