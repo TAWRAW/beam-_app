@@ -319,7 +319,11 @@ export default function DossierPage({ params }: { params: { id: string } }) {
               <EtapesTimeline dossierId={dossierId} dossier={dossier} etapes={etapes} />
             </TabsContent>
             <TabsContent value="fil">
-              <FilPanel parentType="dossier" parentId={dossierId} />
+              <FilPanel
+                parentType="dossier"
+                parentId={dossierId}
+                labelChemin={dossier?.gmail_label_chemin ?? null}
+              />
             </TabsContent>
           </Tabs>
         </div>

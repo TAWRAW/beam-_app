@@ -2,11 +2,13 @@
 
 import { useState } from 'react'
 import { mutate } from 'swr'
+import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { keys, useFil } from '@/lib/venator/useVenator'
 import type { FilMessage, FilSource } from '@/lib/venator/types'
+import ApercuMailDialog from './ApercuMailDialog'
 import { venatorButtonNeutral, venatorMicroLabel } from './venator-ui-classes'
 
 const SOURCE_LABELS: Record<FilSource, string> = {
@@ -41,9 +43,12 @@ function FilSkeleton() {
 export default function FilPanel({
   parentType,
   parentId,
+  labelChemin = null,
 }: {
   parentType: 'dossier' | 'ticket'
   parentId: string
+  /** Libellé Gmail du dossier : alimente le bouton « Ouvrir le libellé » de l'aperçu. */
+  labelChemin?: string | null
 }) {
   const key = keys.fil(parentType, parentId)
   const { data, isLoading } = useFil(parentType, parentId)
@@ -51,6 +56,7 @@ export default function FilPanel({
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [apercu, setApercu] = useState<FilMessage | null>(null)
 
   // Ajout de note optimiste : le message apparaît tout de suite, rollback si l'appel échoue.
   async function handleAjouter() {
@@ -113,25 +119,47 @@ export default function FilPanel({
         <p className="text-sm text-venator-fg-muted">Aucun message pour l&apos;instant.</p>
       ) : (
         <ul className="flex flex-col gap-1.5">
-          {sorted.map((m) => (
-            <li key={m.id} className="rounded-[var(--venator-radius-lg)] bg-venator-surface px-4 py-3">
-              <div className={cn(venatorMicroLabel, 'mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1')}>
-                <span>
-                  {SOURCE_LABELS[m.source]} · {DIRECTION_LABELS[m.direction]}
-                </span>
-                <span className="tabular-nums font-normal normal-case tracking-normal text-venator-fg-faint">
-                  {formatDate(m.created_at)}
-                </span>
-                {m.from_email && (
-                  <span className="font-normal normal-case tracking-normal text-venator-fg-faint">{m.from_email}</span>
+          {sorted.map((m) => {
+            // Seuls les messages venus de Gmail ont un aperçu : une note prise
+            // dans Venator n'existe nulle part ailleurs, il n'y a rien à ouvrir.
+            const ouvrable = m.source === 'gmail' && !!m.gmail_message_id
+            const Contenu = (
+              <>
+                <div className={cn(venatorMicroLabel, 'mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1')}>
+                  <span>
+                    {SOURCE_LABELS[m.source]} · {DIRECTION_LABELS[m.direction]}
+                  </span>
+                  <span className="tabular-nums font-normal normal-case tracking-normal text-venator-fg-faint">
+                    {formatDate(m.created_at)}
+                  </span>
+                  {m.from_email && (
+                    <span className="font-normal normal-case tracking-normal text-venator-fg-faint">{m.from_email}</span>
+                  )}
+                  {ouvrable && <Mail className="h-3.5 w-3.5 shrink-0 text-venator-fg-faint" />}
+                </div>
+                {m.sujet && <p className="text-[13px] font-semibold text-venator-fg">{m.sujet}</p>}
+                <p className="whitespace-pre-wrap text-[13px] font-normal leading-relaxed text-venator-fg">
+                  {m.contenu}
+                </p>
+              </>
+            )
+
+            return (
+              <li key={m.id}>
+                {ouvrable ? (
+                  <button
+                    type="button"
+                    onClick={() => setApercu(m)}
+                    className="w-full rounded-[var(--venator-radius-lg)] bg-venator-surface px-4 py-3 text-left transition-colors hover:bg-venator-surface-hover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-venator-border-strong"
+                  >
+                    {Contenu}
+                  </button>
+                ) : (
+                  <div className="rounded-[var(--venator-radius-lg)] bg-venator-surface px-4 py-3">{Contenu}</div>
                 )}
-              </div>
-              {m.sujet && <p className="text-[13px] font-semibold text-venator-fg">{m.sujet}</p>}
-              <p className="whitespace-pre-wrap text-[13px] font-normal leading-relaxed text-venator-fg">
-                {m.contenu}
-              </p>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
       )}
 
@@ -152,6 +180,15 @@ export default function FilPanel({
           {submitting ? 'Ajout…' : 'Ajouter une note'}
         </Button>
       </div>
+
+      <ApercuMailDialog
+        open={!!apercu}
+        onOpenChange={(o) => !o && setApercu(null)}
+        gmailMessageId={apercu?.gmail_message_id ?? null}
+        labelChemin={labelChemin}
+        sujetConnu={apercu?.sujet ?? null}
+        fromConnu={apercu?.from_email ?? null}
+      />
     </div>
   )
 }
