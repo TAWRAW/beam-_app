@@ -75,14 +75,16 @@ export function mapConstatFromEstale(
   }
 
   // Colonne B = la copropriété représentée par son syndic
-  entries.push(['partieB.nom', `SDC ${condo.name}`])
+  const sdcName = /^SDC\b/i.test(condo.name.trim()) ? condo.name.trim() : `SDC ${condo.name.trim()}`
+  entries.push(['partieB.nom', sdcName])
   entries.push(['partieB.adresse', condoAddress])
   entries.push(['partieB.vousEtes', 'syndic'])
   entries.push(['partieB.usageHabitation', 'oui'])
   applyInsurance(entries, insurance)
 
   // Pied
-  entries.push(['pied.faitA', agency?.city || ''])
+  const faitA = (agency?.city || '').replace(/\s*CEDEX\s*\d*/i, '').trim()
+  entries.push(['pied.faitA', faitA])
   entries.push(['pied.faitLe', today])
 
   return entries
@@ -91,7 +93,7 @@ export function mapConstatFromEstale(
 export function applyInsurance(entries: ConstatFieldEntries, insurance: ConstatContract | null): ConstatFieldEntries {
   entries.push(['partieB.assureur', insurance?.supplier?.name || ''])
   entries.push(['partieB.contratNo', insurance?.reference || ''])
-  entries.push(['partieB.agentTel', insurance?.supplier?.contact?.phone || ''])
+  entries.push(['partieB.agentTel', insurance?.supplier?.contacts?.[0]?.phone || ''])
   return entries
 }
 

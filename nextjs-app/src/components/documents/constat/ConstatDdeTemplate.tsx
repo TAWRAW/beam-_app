@@ -22,8 +22,17 @@ const pctX = (v: number) => `${(v / PAGE_W) * 100}%`
 const pctY = (v: number) => `${(v / PAGE_H) * 100}%`
 
 function TextItem({ spec, value }: { spec: TextSpec; value: string }) {
-  const size = spec.size ?? 11
+  const baseSize = spec.size ?? 11
   const lines = spec.lines ?? 1
+  // Rétrécit la police pour que le texte tienne dans la largeur du champ
+  // (Helvetica : largeur moyenne ≈ 0,52 em par caractère), plancher lisible à 6,5px.
+  let size = baseSize
+  if (spec.w && lines === 1 && value.length > 0) {
+    const estimated = value.length * baseSize * 0.52
+    if (estimated > spec.w) {
+      size = Math.max(6.5, spec.w / (value.length * 0.52))
+    }
+  }
   return (
     <div
       style={{

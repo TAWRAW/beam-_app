@@ -22,7 +22,8 @@ export interface ConstatContract {
   reference?: string | null
   supplier?: {
     name?: string | null
-    contact?: { phone?: string | null } | null
+    // NB : `supplier.contact` (singulier) renvoie 422 dans ce contexte — utiliser la liste
+    contacts?: { phone?: string | null }[] | null
   } | null
 }
 
@@ -66,7 +67,7 @@ export async function getCondoConstatData(condoId: string): Promise<ConstatCondo
               reference
               supplier {
                 name
-                contact { phone }
+                contacts { phone }
               }
             }
             serviceBook {

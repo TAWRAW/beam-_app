@@ -769,6 +769,9 @@ export default function DocumentGeneratePage() {
 
   // Gérer le changement de type de template
   const handleTemplateChange = (value: TemplateType) => {
+    // Radix Select émet onValueChange('') au reload (restauration du <select> natif
+    // par le navigateur) : ignorer pour ne pas écraser le type restauré du brouillon
+    if (!value) return
     form.setValue('templateType', value)
     if (value === 'affiche') {
       form.setValue('titre', 'AVIS DE TRAVAUX')
