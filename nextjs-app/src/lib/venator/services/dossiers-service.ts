@@ -1,6 +1,7 @@
 // src/lib/venator/services/dossiers-service.ts — cœur métier : dossiers + étapes (gabarits).
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Dossier, DossierCreateInput, DossierType, Etape } from '../types'
+import type { Dossier, DossierCreateInput, DossierType, Etape, VoteStatut } from '../types'
+import { VOTE_STATUT_LABELS, VOTE_STATUTS_PROCHAINE_AG } from '../types'
 import { resumerChangements } from '../dossier-diff'
 import { instancierGabarit } from '../gabarits'
 import { lireGabarit } from './gabarits-service'
@@ -28,11 +29,14 @@ export async function creerDossier(db: SupabaseClient, input: DossierCreateInput
   return { dossier, etapes }
 }
 
-export async function listerDossiers(db: SupabaseClient, f: { copro_id?: string; type?: string; statut?: string } = {}): Promise<Dossier[]> {
+export async function listerDossiers(db: SupabaseClient, f: { copro_id?: string; type?: string; statut?: string; prochaine_ag?: boolean } = {}): Promise<Dossier[]> {
   let q = db.from('venator_dossiers').select('*')
   if (f.copro_id) q = q.eq('copro_id', f.copro_id)
   if (f.type) q = q.eq('type', f.type)
   if (f.statut) q = q.eq('statut', f.statut)
+  // « Prochaine AG » couvre à voter ET reporté : un sujet reporté revient de
+  // lui-même à l'assemblée suivante, sans manipulation.
+  if (f.prochaine_ag) q = q.in('vote_statut', [...VOTE_STATUTS_PROCHAINE_AG])
   const { data } = await q.order('created_at', { ascending: false })
   return data ?? []
 }
@@ -133,21 +137,24 @@ export async function majLabelGmail(
 }
 
 /**
- * Marché de travaux : simple projet, ou voté en assemblée générale.
+ * Pose l'état de vote d'un dossier, quel que soit son type.
  *
- * Le passage à « voté » est journalisé — c'est la date de vote qui fait courir
- * les délais de contestation et qui autorise l'engagement de la dépense, donc
+ * Chaque changement est journalisé : c'est la date de vote qui fait courir les
+ * délais de contestation et qui autorise l'engagement de la dépense, donc
  * l'information doit rester traçable au-delà du seul état courant.
+ *
+ * Le journal nomme le dossier concerné : relue six mois plus tard, une entrée
+ * « inscrit à l'ordre du jour » sans son objet ne vaut rien.
  */
-export async function majVoteTravaux(db: SupabaseClient, id: string, vote: boolean): Promise<Dossier> {
+export async function majVoteStatut(db: SupabaseClient, id: string, statut: VoteStatut): Promise<Dossier> {
   const { data, error } = await db.from('venator_dossiers')
-    .update({ travaux_vote: vote }).eq('id', id).select().single()
+    .update({ vote_statut: statut }).eq('id', id).select().single()
   if (error || !data) throw new VenatorError('not_found', error?.message ?? 'Dossier introuvable')
   await logJournal(db, {
     copro_id: data.copro_id,
     dossier_id: id,
-    type_evenement: vote ? 'travaux_vote' : 'travaux_projet',
-    contenu: vote ? `Travaux votés en AG : ${data.titre}` : `Travaux repassés en projet : ${data.titre}`,
+    type_evenement: 'vote_statut',
+    contenu: `${VOTE_STATUT_LABELS[statut]} — ${data.titre}`,
   })
   return data
 }

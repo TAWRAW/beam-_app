@@ -1,7 +1,7 @@
 // src/lib/venator/__tests__/dossiers.test.ts
 import { describe, it, expect } from 'vitest'
 import { createFakeDb } from '../services/_fake-db'
-import { creerDossier, listerDossiers, detailDossier, majEtape, ajouterEtape, cloreDossier, majStatutDossier, majVoteTravaux } from '../services/dossiers-service'
+import { creerDossier, listerDossiers, detailDossier, majEtape, ajouterEtape, cloreDossier, majStatutDossier, majVoteStatut } from '../services/dossiers-service'
 import { remplacerGabarit } from '../services/gabarits-service'
 
 async function seedCopro(client: any) {
@@ -65,21 +65,64 @@ describe('dossiers-service', () => {
     expect(maj.statut).toBe('en_cours')
     expect(maj.closed_at).toBeNull()
   })
-  it('travaux : bascule projet ⇄ voté, journalisée dans les deux sens', async () => {
+  it('l’état de vote se pose sur n’importe quel type de dossier', async () => {
+    // Un contrat se vote aussi bien qu'un marché de travaux : l'état de vote
+    // n'est plus réservé aux travaux, contrairement au booléen qu'il remplace.
+    const { client } = createFakeDb()
+    const copro = await seedCopro(client)
+    const { dossier } = await creerDossier(client, { copro_id: copro.id, type: 'contrat', titre: 'Assurance', priorite: 2 })
+    expect(dossier.vote_statut).toBe('sans_objet')
+
+    const aVoter = await majVoteStatut(client, dossier.id, 'a_voter')
+    expect(aVoter.vote_statut).toBe('a_voter')
+  })
+
+  it('un dossier reporté reste à voter, sans manipulation', async () => {
+    // Le report est l'intérêt du modèle : la vue « Prochaine AG » se vide seule
+    // après l'assemblée, mais un sujet reporté doit y revenir de lui-même.
+    const { client } = createFakeDb()
+    const copro = await seedCopro(client)
+    const { dossier } = await creerDossier(client, { copro_id: copro.id, type: 'travaux', titre: 'Toiture', priorite: 2 })
+    await majVoteStatut(client, dossier.id, 'a_voter')
+    await majVoteStatut(client, dossier.id, 'reporte')
+
+    const aVoter = await listerDossiers(client, { copro_id: copro.id, prochaine_ag: true })
+    expect(aVoter.map((d) => d.id)).toContain(dossier.id)
+  })
+
+  it('la vue « Prochaine AG » ne retient que les dossiers à voter', async () => {
+    const { client } = createFakeDb()
+    const copro = await seedCopro(client)
+    const { dossier: aVoter } = await creerDossier(client, { copro_id: copro.id, type: 'travaux', titre: 'Ravalement', priorite: 2 })
+    const { dossier: vote } = await creerDossier(client, { copro_id: copro.id, type: 'travaux', titre: 'Portail', priorite: 2 })
+    const { dossier: neutre } = await creerDossier(client, { copro_id: copro.id, type: 'sinistre', titre: 'Dégât des eaux', priorite: 2 })
+    await majVoteStatut(client, aVoter.id, 'a_voter')
+    await majVoteStatut(client, vote.id, 'vote')
+
+    const liste = await listerDossiers(client, { copro_id: copro.id, prochaine_ag: true })
+    const ids = liste.map((d) => d.id)
+    expect(ids).toContain(aVoter.id)
+    expect(ids).not.toContain(vote.id)
+    expect(ids).not.toContain(neutre.id)
+  })
+
+  it('chaque changement d’état de vote est journalisé', async () => {
     const { client } = createFakeDb()
     const copro = await seedCopro(client)
     const { dossier } = await creerDossier(client, { copro_id: copro.id, type: 'travaux', titre: 'Ravalement', priorite: 2 })
-    expect(dossier.travaux_vote).toBe(false)
 
-    const vote = await majVoteTravaux(client, dossier.id, true)
-    expect(vote.travaux_vote).toBe(true)
-    const projet = await majVoteTravaux(client, dossier.id, false)
-    expect(projet.travaux_vote).toBe(false)
+    const vote = await majVoteStatut(client, dossier.id, 'a_voter')
+    expect(vote.vote_statut).toBe('a_voter')
+    const projet = await majVoteStatut(client, dossier.id, 'sans_objet')
+    expect(projet.vote_statut).toBe('sans_objet')
 
     const { data: journal } = await client.from('venator_journal').select('*').eq('dossier_id', dossier.id)
-    // 1 création + 2 bascules
+    // 1 création + 2 changements d'état
     expect(journal).toHaveLength(3)
-    expect(journal.map((j: any) => j.type_evenement)).toContain('travaux_vote')
-    expect(journal.map((j: any) => j.type_evenement)).toContain('travaux_projet')
+    const votes = journal.filter((j: any) => j.type_evenement === 'vote_statut')
+    expect(votes).toHaveLength(2)
+    // Le journal doit dire l'état atteint : « inscrit à l'ordre du jour » ne se
+    // relit pas dans six mois si l'entrée ne nomme pas le dossier concerné.
+    expect(votes[0].contenu).toContain('Ravalement')
   })
 })

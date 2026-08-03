@@ -13,6 +13,7 @@ import CreateDossierDialog from './_components/CreateDossierDialog'
 import TicketExpressDialog from './_components/TicketExpressDialog'
 import EmettreOsDialog, { type OsTicket } from './_components/EmettreOsDialog'
 import ChecklistPanel from './_components/ChecklistPanel'
+import ProchaineAgPanel from './_components/ProchaineAgPanel'
 import DndBoard from './_components/DndBoard'
 import { JOURNAL_EVENT_FALLBACK, JOURNAL_EVENT_META } from './_components/journal-event-meta'
 import { useVenatorNavState } from './_components/nav/useVenatorNavState'
@@ -410,6 +411,8 @@ export default function VenatorDashboardPage() {
               </Button>
             </div>
           </div>
+
+          <ProchaineAgPanel coproId={copro.id} />
 
           <ChecklistPanel coproId={copro.id} />
         </section>

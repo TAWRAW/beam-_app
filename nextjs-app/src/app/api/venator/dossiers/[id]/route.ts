@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { requireVenatorRole } from '@/lib/venator/auth-guard'
 import { createVenatorAdminClient } from '@/lib/venator/services/_supabase-admin'
-import { detailDossier, cloreDossier, majDossier, majLabelGmail, majStatutDossier, majVoteTravaux, supprimerDossier } from '@/lib/venator/services/dossiers-service'
-import { DOSSIER_TYPES } from '@/lib/venator/types'
+import { detailDossier, cloreDossier, majDossier, majLabelGmail, majStatutDossier, majVoteStatut, supprimerDossier } from '@/lib/venator/services/dossiers-service'
+import { DOSSIER_TYPES, VOTE_STATUTS } from '@/lib/venator/types'
 import { VenatorError, httpStatus } from '@/lib/venator/services/errors'
 
 const patchSchema = z
   .object({ action: z.literal('clore') })
   .or(z.object({ statut: z.enum(['ouvert', 'en_cours', 'en_attente']) }))
-  .or(z.object({ travaux_vote: z.boolean() }))
+  .or(z.object({ vote_statut: z.enum(VOTE_STATUTS) }))
   // Identité du dossier : au moins un champ, tous facultatifs.
   .or(
     z
@@ -49,7 +49,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const db = createVenatorAdminClient()
     let dossier
     if ('action' in parsed.data) dossier = await cloreDossier(db, params.id)
-    else if ('travaux_vote' in parsed.data) dossier = await majVoteTravaux(db, params.id, parsed.data.travaux_vote)
+    else if ('vote_statut' in parsed.data) dossier = await majVoteStatut(db, params.id, parsed.data.vote_statut)
     else if ('gmail_label_id' in parsed.data)
       dossier = await majLabelGmail(db, params.id, parsed.data.gmail_label_id, parsed.data.gmail_label_chemin)
     else if ('statut' in parsed.data) dossier = await majStatutDossier(db, params.id, parsed.data.statut)

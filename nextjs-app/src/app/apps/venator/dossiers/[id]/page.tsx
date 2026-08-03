@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -35,7 +34,7 @@ import {
   venatorSelectTrigger,
 } from '../../_components/venator-ui-classes'
 import { fetcher, keys, useCopros, useDossier } from '@/lib/venator/useVenator'
-import { TICKET_TYPES, type Ticket, type TicketType } from '@/lib/venator/types'
+import { TICKET_TYPES, VOTE_STATUTS, VOTE_STATUT_LABELS, type Ticket, type TicketType, type VoteStatut } from '@/lib/venator/types'
 import { TICKET_TYPE_LABELS } from '@/lib/venator/labels'
 
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
@@ -124,19 +123,19 @@ export default function DossierPage({ params }: { params: { id: string } }) {
     }
   }
 
-  // Bascule projet ⇄ voté (marchés de travaux). Optimiste : l'interrupteur suit
-  // le doigt, on recharge derrière et on revient en arrière si l'appel échoue.
-  async function handleVoteChange(vote: boolean) {
+  // État de vote du dossier. Optimiste : le choix s'affiche aussitôt, on
+  // recharge derrière et on revient en arrière si l'appel échoue.
+  async function handleVoteChange(vote: VoteStatut) {
     if (votePending) return
     setVotePending(true)
     setError(null)
     const previous = data
-    if (data) mutate(keys.dossier(dossierId), { ...data, dossier: { ...data.dossier, travaux_vote: vote } }, { revalidate: false })
+    if (data) mutate(keys.dossier(dossierId), { ...data, dossier: { ...data.dossier, vote_statut: vote } }, { revalidate: false })
     try {
       const res = await fetch(`/api/venator/dossiers/${dossierId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ travaux_vote: vote }),
+        body: JSON.stringify({ vote_statut: vote }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => null)
@@ -236,36 +235,40 @@ export default function DossierPage({ params }: { params: { id: string } }) {
                   {dossier.titre}
                 </h1>
 
-                {/* Un marché de travaux n'engage la copropriété qu'une fois voté
-                    en AG : l'information conditionne l'émission des OS, elle est
-                    donc portée par le dossier lui-même et non par une étape. */}
-                {dossier.type === 'travaux' && (
-                  <div className="mt-1 flex items-center gap-2.5">
-                    <span
+                {/* L'état de vote vaut pour tous les types — un contrat se vote
+                    comme un marché de travaux. « À voter » inscrit le dossier à
+                    la prochaine assemblée de la copropriété ; après l'AG, le
+                    passage à voté ou refusé l'en retire de lui-même. */}
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className={venatorMicroLabel}>Vote</span>
+                  <Select
+                    value={dossier.vote_statut}
+                    onValueChange={(v) => handleVoteChange(v as VoteStatut)}
+                    disabled={votePending}
+                  >
+                    <SelectTrigger
+                      aria-label="État de vote du dossier"
                       className={cn(
-                        'text-[12px] font-medium transition-colors',
-                        dossier.travaux_vote ? 'text-venator-fg-faint' : 'text-venator-fg'
+                        venatorSelectTrigger,
+                        'h-7 w-auto gap-1.5 border-0 px-2 text-[12px] font-medium',
+                        // Seul « à voter » se signale : c'est le seul état qui
+                        // appelle une action. Les autres restent en retrait.
+                        dossier.vote_statut === 'a_voter'
+                          ? 'bg-venator-accent/15 text-venator-accent'
+                          : 'bg-venator-surface-2 text-venator-fg-muted'
                       )}
                     >
-                      Projet
-                    </span>
-                    <Switch
-                      checked={dossier.travaux_vote}
-                      onCheckedChange={handleVoteChange}
-                      disabled={votePending}
-                      aria-label="Travaux votés en assemblée générale"
-                      className="h-5 w-9 border-0 !bg-venator-surface-hover data-[state=checked]:!bg-venator-accent [&>span]:h-4 [&>span]:w-4 [&>span]:data-[state=checked]:translate-x-4"
-                    />
-                    <span
-                      className={cn(
-                        'text-[12px] font-medium transition-colors',
-                        dossier.travaux_vote ? 'text-venator-accent' : 'text-venator-fg-faint'
-                      )}
-                    >
-                      Voté en AG
-                    </span>
-                  </div>
-                )}
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className={venatorSelectContent}>
+                      {VOTE_STATUTS.map((v) => (
+                        <SelectItem key={v} value={v} className={venatorSelectItem}>
+                          {VOTE_STATUT_LABELS[v]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <Button

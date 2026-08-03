@@ -7,7 +7,7 @@ type Row = Record<string, any>
 // Défauts de colonnes DB (cf. supabase/migrations/20260716_venator_initial.sql) que Postgres
 // appliquerait via `default '...'` et que ce fake doit reproduire pour rester fidèle.
 const TABLE_DEFAULTS: Record<string, Row> = {
-  venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {}, travaux_vote: false, closed_at: null },
+  venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {}, vote_statut: 'sans_objet', closed_at: null },
   venator_dossier_etapes: { statut: 'a_faire' },
   venator_tickets: { statut: 'nouveau', type: 'intervention', closed_at: null },
   venator_checklist_items: { fait: false },
@@ -26,12 +26,16 @@ class DeleteQuery {
 
 class Query {
   private filters: [string, any][] = []
+  private dans: [string, any[]][] = []
   private orderBy: { col: string; asc: boolean } | null = null
   constructor(private rows: Row[]) {}
   eq(col: string, val: any) { this.filters.push([col, val]); return this }
+  in(col: string, vals: any[]) { this.dans.push([col, vals]); return this }
   order(col: string, opts?: { ascending?: boolean }) { this.orderBy = { col, asc: opts?.ascending !== false }; return this }
   private result(): Row[] {
-    let r = this.rows.filter(row => this.filters.every(([c, v]) => row[c] === v))
+    let r = this.rows.filter(row =>
+      this.filters.every(([c, v]) => row[c] === v) && this.dans.every(([c, vs]) => vs.includes(row[c])),
+    )
     if (this.orderBy) { const { col, asc } = this.orderBy; r = [...r].sort((a, b) => (a[col] < b[col] ? -1 : 1) * (asc ? 1 : -1)) }
     return r
   }

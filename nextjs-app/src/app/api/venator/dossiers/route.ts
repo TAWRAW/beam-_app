@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
     copro_id: sp.get('copro_id') ?? undefined,
     type: sp.get('type') ?? undefined,
     statut: sp.get('statut') ?? undefined,
+    prochaine_ag: sp.get('prochaine_ag') === '1',
   })
   return NextResponse.json({ dossiers })
 }
