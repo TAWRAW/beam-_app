@@ -15,7 +15,11 @@ import type {
   CleMontants,
 } from './cles-types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// `any` assumé : le client est passé par l'appelant, déjà typé de son côté, et
+// paramétrer ce type ici imposerait le schéma généré à tous les usages.
+// Pas de eslint-disable : le projet n'étend que next/core-web-vitals, la règle
+// @typescript-eslint/no-explicit-any n'y est pas chargée — la désactiver la
+// rendait introuvable, et next build échouait dessus.
 type DB = SupabaseClient<any, any, any>
 
 export class CleError extends Error {}
