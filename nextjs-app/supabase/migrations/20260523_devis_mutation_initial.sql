@@ -232,16 +232,17 @@ alter table devis_signatures        enable row level security;
 alter table devis_signature_events  enable row level security;
 alter table devis_signature_otps    enable row level security;
 
--- devis_mutation_settings : lecture pour tout user authentifié
--- (pré-remplissage du formulaire), modification pour tout user authentifié
--- aussi (la page /apps/reglages est déjà protégée par le middleware admin).
-create policy "auth user reads settings"
-  on devis_mutation_settings for select
-  using (auth.uid() is not null);
-
-create policy "auth user updates settings"
-  on devis_mutation_settings for update
-  using (auth.uid() is not null);
+-- devis_mutation_settings : AUCUNE policy — deny-by-default, accès service-role
+-- uniquement, comme toutes les tables venator_*.
+--
+-- Deux policies « tout utilisateur authentifié » (`auth.uid() is not null`) ont
+-- été retirées d'ici le 03/08/2026, avant que cette migration n'ait jamais été
+-- appliquée. Leur commentaire d'origine invoquait la protection du middleware sur
+-- /apps/reglages — raisonnement faux : la RLS s'applique à PostgREST, que le
+-- navigateur atteint directement avec l'anon key, sans passer par aucune page.
+-- L'inscription publique étant ouverte, tout compte auto-inscrit aurait pu lire et
+-- écrire ces réglages. Les mêmes policies existaient sur les tables cles_* et y ont
+-- été supprimées (cf. 20260803_rls_cles_deny_by_default.sql).
 
 -- devis_signatures
 create policy "auth user reads own devis"
