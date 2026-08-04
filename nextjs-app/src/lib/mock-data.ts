@@ -39,7 +39,7 @@ export const mockBuilding: BuildingInfo = {
 
 export const mockAgency: AgencyInfo = {
   nom: 'Beamô',
-  adresse: '2 Place Jean Paul II',
+  adresse: '2 Place d\'Evreux, BP 110',
   codePostal: '27200',
   ville: 'Vernon',
   telephone: '02 32 71 23 90',
@@ -83,7 +83,7 @@ export const BEAMO_LEGAL_INFO: BeamoLegalInfo = {
   formeJuridique: 'SASU',
   capital: '2 500 €',
   siegeSocial: '8 rue du général Leclerc 27950 Saint-Marcel',
-  cabinetAdresse: '2 Place Jean Paul II 27200 Vernon',
+  cabinetAdresse: '2 Place d\'Evreux, BP 110, 27201 Vernon Cedex',
   siren: '989 101 829 Évreux',
   tvaIntracommunautaire: 'FR33989101829',
   carteProfessionnelle: {

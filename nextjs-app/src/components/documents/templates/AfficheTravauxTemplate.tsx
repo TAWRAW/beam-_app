@@ -62,8 +62,8 @@ export const AfficheTravauxTemplate = ({ data }: { data: AfficheTravauxData }) =
 
             {/* Adresse à droite */}
             <div className="absolute right-4 text-right text-[10px] leading-tight text-black">
-              <p>2 Place Jean Paul II</p>
-              <p>27200 Vernon</p>
+              <p>2 Place d&apos;Evreux, BP 110</p>
+              <p>27201 Vernon Cedex</p>
               <p>{data.agencyPhone || "02 32 71 23 90"}</p>
             </div>
           </div>

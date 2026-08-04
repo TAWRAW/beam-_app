@@ -8,7 +8,7 @@ import { BEAMO_LEGAL_INFO, generateLegalMentions as generateStaticLegalMentions 
 // Fallbacks Beamô — utilisés uniquement si Estale ne fournit pas la donnée.
 const FALLBACK = {
   siegeSocial: '8 rue du général Leclerc 27950 Saint-Marcel',
-  postalAddress: '2 Place d\'Evreux BP 110 27200 Vernon',
+  postalAddress: '2 Place d\'Evreux BP 110 27201 Vernon Cedex',
   raisonSociale: 'SASU BEAMO IMMOBILIER',
   capital: '2 500',
   rcs: 'Évreux',

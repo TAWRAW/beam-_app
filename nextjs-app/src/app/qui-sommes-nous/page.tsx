@@ -31,9 +31,9 @@ export default function AboutPage() {
     logo: 'https://xn--beam-yqa.fr/favicon.ico',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Manufacture des Capucins, Place Jean Paul II',
-      addressLocality: 'Vernon',
-      postalCode: '27200',
+      streetAddress: '2 Place d\'Evreux, BP 110',
+      addressLocality: 'Vernon Cedex',
+      postalCode: '27201',
       addressCountry: 'FR'
     },
     geo: {
@@ -185,7 +185,7 @@ export default function AboutPage() {
             <figure className="overflow-hidden p-0 rounded-2xl border-0">
               <Image
                 src="/images/about/portrait.jpg"
-                alt="Tom Lemeille, fondateur Beamô syndic copropriété Vernon - Portrait professionnel au bureau Place Jean Paul II"
+                alt="Tom Lemeille, fondateur Beamô syndic copropriété Vernon - Portrait professionnel"
                 width={886}
                 height={886}
                 className="h-full w-full object-cover"

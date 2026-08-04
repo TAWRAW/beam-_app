@@ -106,7 +106,7 @@ export function DocumentPreview({
 
           {/* Adresse à droite */}
           <div className="absolute right-4 text-right text-[10px] leading-tight text-black">
-            <p>{agency.adresse || '2 Place Jean Paul II'}</p>
+            <p>{agency.adresse || '2 Place d\'Evreux, BP 110'}</p>
             {agency.adresseL2 && <p>{agency.adresseL2}</p>}
             {agency.adresseL3 && <p>{agency.adresseL3}</p>}
             <p>{[agency.codePostal || '27200', agency.ville || 'Vernon'].join(' ')}</p>

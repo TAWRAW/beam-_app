@@ -49,9 +49,9 @@ export default function ContactPage() {
       name: 'Beamô',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Manufacture des Capucins, Place Jean Paul II',
-        addressLocality: 'Vernon',
-        postalCode: '27200',
+        streetAddress: '2 Place d\'Evreux, BP 110',
+        addressLocality: 'Vernon Cedex',
+        postalCode: '27201',
         addressCountry: 'FR'
       },
       geo: {

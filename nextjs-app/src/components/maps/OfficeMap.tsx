@@ -3,7 +3,10 @@ import { Card, CardContent } from '@/components/ui/card'
 export default function OfficeMap() {
   // Lien direct vers la fiche Google My Business de Beamô
   // Place ID: 0x47e6cb7c4ce8bd77:0xc55ae46bcb08f2f1
-  // Utilise la fiche GMB pour booster le référencement de Beamô (pas celui de la Manufacture)
+  // Utilise la fiche GMB pour booster le référencement de Beamô.
+  // ⚠️ L'iframe pointe sur la fiche Google Business (Place ID), pas sur l'adresse
+  // affichée ci-dessous : changer le texte ne déplace PAS le repère. L'adresse de
+  // la fiche GMB se met à jour depuis Google Business Profile, hors de ce dépôt.
   const mapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d164.82487719288778!2d1.4748482!3d49.0970241!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6cb7c4ce8bd77%3A0xc55ae46bcb08f2f1!2sBeam%C3%B4!5e0!3m2!1sfr!2sfr!4v1234567890!5m2!1sfr!2sfr'
 
   return (
@@ -12,7 +15,7 @@ export default function OfficeMap() {
         <div className="grid md:grid-cols-2 gap-0">
           {/* Informations */}
           <div className="p-8 bg-white">
-            <h3 className="text-2xl font-semibold text-neutral mb-4">Venez nous rencontrer</h3>
+            <h3 className="text-2xl font-semibold text-neutral mb-4">Nous joindre</h3>
             <div className="space-y-4 text-muted-foreground">
               <div className="flex items-start gap-3">
                 <svg
@@ -31,10 +34,10 @@ export default function OfficeMap() {
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
                 <div>
-                  <p className="font-medium text-neutral">Notre bureau</p>
-                  <p>Manufacture des Capucins</p>
-                  <p>Place Jean Paul II</p>
-                  <p>27200 Vernon</p>
+                  <p className="font-medium text-neutral">Courrier</p>
+                  <p>2 Place d&apos;Evreux</p>
+                  <p>BP 110</p>
+                  <p>27201 Vernon Cedex</p>
                 </div>
               </div>
 
@@ -55,8 +58,8 @@ export default function OfficeMap() {
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
                 <div>
-                  <p className="font-medium text-neutral">Horaires</p>
-                  <p>Sur rendez-vous uniquement</p>
+                  <p className="font-medium text-neutral">Rendez-vous</p>
+                  <p>Toujours au plus près de votre copropriété</p>
                 </div>
               </div>
 
@@ -85,9 +88,9 @@ export default function OfficeMap() {
 
               <div className="mt-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
                 <p className="text-sm">
-                  <strong>📍 Accueil sur rendez-vous</strong>
+                  <strong>📍 Nous venons à vous</strong>
                   <br />
-                  Contactez-nous par téléphone ou via notre formulaire pour convenir d'un rendez-vous à notre bureau de Vernon.
+                  Nous nous déplaçons dans votre copropriété. Appelez-nous ou utilisez le formulaire pour convenir d&apos;un rendez-vous sur place.
                 </p>
               </div>
             </div>
@@ -103,7 +106,7 @@ export default function OfficeMap() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Localisation du bureau Beamô à Vernon - Manufacture des Capucins"
+              title="Localisation de Beamô, syndic de copropriété à Vernon"
               className="absolute inset-0"
             />
           </div>

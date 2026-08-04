@@ -14,8 +14,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { DOSSIER_TYPES, EQUIPEMENT_CATEGORIES, type Copro, type Dossier, type DossierType, type Equipement, type EquipementCategorie } from '@/lib/venator/types'
-import { DOSSIER_TYPE_LABELS, EQUIPEMENT_CATEGORIE_LABELS } from '@/lib/venator/labels'
+import { DOSSIER_TYPES, type Copro, type Dossier, type DossierType, type Equipement } from '@/lib/venator/types'
+import { DOSSIER_TYPE_LABELS, EQUIPEMENT_CATEGORIE_SUGGESTIONS } from '@/lib/venator/labels'
 import { useEquipements } from '@/lib/venator/useVenator'
 import {
   venatorButtonPrimary,
@@ -61,7 +61,7 @@ export default function CreateDossierDialog({
   // gestion dédié, il n'y a donc aucun autre moyen de le peupler que depuis ici.
   const [creationEquipement, setCreationEquipement] = useState(false)
   const [nouvelEquipementNom, setNouvelEquipementNom] = useState('')
-  const [nouvelleCategorie, setNouvelleCategorie] = useState<EquipementCategorie>('autre')
+  const [nouvelleCategorie, setNouvelleCategorie] = useState('')
   const [creationSubmitting, setCreationSubmitting] = useState(false)
   const [creationError, setCreationError] = useState<string | null>(null)
 
@@ -69,14 +69,14 @@ export default function CreateDossierDialog({
   const equipements = equipementsData?.equipements ?? []
 
   async function handleCreerEquipement() {
-    if (!nouvelEquipementNom.trim() || creationSubmitting) return
+    if (!nouvelEquipementNom.trim() || !nouvelleCategorie.trim() || creationSubmitting) return
     setCreationSubmitting(true)
     setCreationError(null)
     try {
       const res = await fetch('/api/venator/equipements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ copro_id: coproId, nom: nouvelEquipementNom.trim(), categorie: nouvelleCategorie }),
+        body: JSON.stringify({ copro_id: coproId, nom: nouvelEquipementNom.trim(), categorie: nouvelleCategorie.trim() }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => null)
@@ -87,7 +87,7 @@ export default function CreateDossierDialog({
       setEquipementId(equipement.id)
       setCreationEquipement(false)
       setNouvelEquipementNom('')
-      setNouvelleCategorie('autre')
+      setNouvelleCategorie('')
     } catch (e) {
       setCreationError(e instanceof Error ? e.message : 'Erreur inconnue')
     } finally {
@@ -111,7 +111,7 @@ export default function CreateDossierDialog({
     setError(null)
     setCreationEquipement(false)
     setNouvelEquipementNom('')
-    setNouvelleCategorie('autre')
+    setNouvelleCategorie('')
     setCreationError(null)
   }, [open, defaultCoproId])
 
@@ -252,24 +252,23 @@ export default function CreateDossierDialog({
                       maxLength={200}
                       className={venatorInput}
                     />
-                    <Select value={nouvelleCategorie} onValueChange={(v) => setNouvelleCategorie(v as EquipementCategorie)}>
-                      <SelectTrigger className={venatorSelectTrigger}>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className={venatorSelectContent}>
-                        {EQUIPEMENT_CATEGORIES.map((c) => (
-                          <SelectItem key={c} value={c} className={venatorSelectItem}>
-                            {EQUIPEMENT_CATEGORIE_LABELS[c]}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      value={nouvelleCategorie}
+                      onChange={(e) => setNouvelleCategorie(e.target.value)}
+                      placeholder="Ex : VMC, Chauffage…"
+                      maxLength={100}
+                      list="equipement-categorie-suggestions"
+                      className={venatorInput}
+                    />
+                    <datalist id="equipement-categorie-suggestions">
+                      {EQUIPEMENT_CATEGORIE_SUGGESTIONS.map((c) => <option key={c} value={c} />)}
+                    </datalist>
                     {creationError && <p className="text-sm font-medium text-venator-danger">{creationError}</p>}
                     <div className="flex justify-end gap-1.5">
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => { setCreationEquipement(false); setNouvelEquipementNom(''); setCreationError(null) }}
+                        onClick={() => { setCreationEquipement(false); setNouvelEquipementNom(''); setNouvelleCategorie(''); setCreationError(null) }}
                         className={cn(venatorButtonSecondary, 'h-8 px-3')}
                       >
                         Annuler
@@ -277,7 +276,7 @@ export default function CreateDossierDialog({
                       <Button
                         type="button"
                         onClick={handleCreerEquipement}
-                        disabled={!nouvelEquipementNom.trim() || creationSubmitting}
+                        disabled={!nouvelEquipementNom.trim() || !nouvelleCategorie.trim() || creationSubmitting}
                         className={cn(venatorButtonPrimary, 'h-8 px-3')}
                       >
                         {creationSubmitting ? 'Ajout…' : 'Ajouter'}

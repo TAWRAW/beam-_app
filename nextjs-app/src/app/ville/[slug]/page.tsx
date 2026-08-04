@@ -144,9 +144,9 @@ export default async function CityPage({ params }: { params: Params }) {
     email: 'contact@xn--beam-yqa.fr',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '2 Place Jean Paul II',
-      addressLocality: 'Vernon',
-      postalCode: '27200',
+      streetAddress: '2 Place d\'Evreux, BP 110',
+      addressLocality: 'Vernon Cedex',
+      postalCode: '27201',
       addressRegion: 'Normandie',
       addressCountry: 'FR',
     },

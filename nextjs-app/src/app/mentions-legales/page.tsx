@@ -49,7 +49,7 @@ export default function MentionsLegalesPage() {
                 <p><strong>SIREN :</strong> 989 101 829 Évreux</p>
                 <p><strong>Président :</strong> Tom LEMEILLE - Gestionnaire de Copropriétés</p>
                 <p><strong>Siège social :</strong> 8 rue du général Leclerc, 27950 Saint-Marcel</p>
-                <p><strong>Cabinet :</strong> La Manufacture des Capucins, 2 Place Jean Paul II, 27200 Vernon</p>
+                <p><strong>Courrier :</strong> 2 Place d&apos;Evreux, BP 110, 27201 Vernon Cedex</p>
                 <p><strong>Téléphone :</strong> 07 75 70 70 99</p>
                 <p><strong>Email :</strong> bonjour@beamo-copro.fr</p>
                 <p><strong>Site web :</strong> www.beamô.fr</p>
@@ -211,7 +211,7 @@ export default function MentionsLegalesPage() {
                 <p><strong>Email :</strong> bonjour@beamo-copro.fr</p>
                 <p><strong>Téléphone :</strong> 07 75 70 70 99</p>
                 <p><strong>Siège social :</strong> 8 rue du général Leclerc, 27950 Saint-Marcel</p>
-                <p><strong>Cabinet :</strong> La Manufacture des Capucins, 2 Place Jean Paul II, 27200 Vernon</p>
+                <p><strong>Courrier :</strong> 2 Place d&apos;Evreux, BP 110, 27201 Vernon Cedex</p>
               </div>
 
               <p className="text-sm text-muted-foreground mt-8">
