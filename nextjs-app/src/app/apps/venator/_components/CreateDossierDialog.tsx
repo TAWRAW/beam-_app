@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
 import {
   Dialog,
   DialogContent,
@@ -13,10 +14,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { DOSSIER_TYPES, type Copro, type Dossier, type DossierType } from '@/lib/venator/types'
-import { DOSSIER_TYPE_LABELS } from '@/lib/venator/labels'
+import { DOSSIER_TYPES, EQUIPEMENT_CATEGORIES, type Copro, type Dossier, type DossierType, type Equipement, type EquipementCategorie } from '@/lib/venator/types'
+import { DOSSIER_TYPE_LABELS, EQUIPEMENT_CATEGORIE_LABELS } from '@/lib/venator/labels'
+import { useEquipements } from '@/lib/venator/useVenator'
 import {
   venatorButtonPrimary,
+  venatorButtonSecondary,
   venatorDialogContent,
   venatorInput,
   venatorLabel,
@@ -49,8 +52,48 @@ export default function CreateDossierDialog({
   const [type, setType] = useState<DossierType>('sinistre')
   const [titre, setTitre] = useState('')
   const [priorite, setPriorite] = useState<number>(2)
+  const [equipementId, setEquipementId] = useState('')
+  const [echeance, setEcheance] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Création d'un équipement à la volée : le référentiel n'a pas d'écran de
+  // gestion dédié, il n'y a donc aucun autre moyen de le peupler que depuis ici.
+  const [creationEquipement, setCreationEquipement] = useState(false)
+  const [nouvelEquipementNom, setNouvelEquipementNom] = useState('')
+  const [nouvelleCategorie, setNouvelleCategorie] = useState<EquipementCategorie>('autre')
+  const [creationSubmitting, setCreationSubmitting] = useState(false)
+  const [creationError, setCreationError] = useState<string | null>(null)
+
+  const { data: equipementsData, mutate: mutateEquipements } = useEquipements(type === 'entretien' ? coproId : '')
+  const equipements = equipementsData?.equipements ?? []
+
+  async function handleCreerEquipement() {
+    if (!nouvelEquipementNom.trim() || creationSubmitting) return
+    setCreationSubmitting(true)
+    setCreationError(null)
+    try {
+      const res = await fetch('/api/venator/equipements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ copro_id: coproId, nom: nouvelEquipementNom.trim(), categorie: nouvelleCategorie }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.error ?? `Erreur ${res.status}`)
+      }
+      const { equipement }: { equipement: Equipement } = await res.json()
+      await mutateEquipements()
+      setEquipementId(equipement.id)
+      setCreationEquipement(false)
+      setNouvelEquipementNom('')
+      setNouvelleCategorie('autre')
+    } catch (e) {
+      setCreationError(e instanceof Error ? e.message : 'Erreur inconnue')
+    } finally {
+      setCreationSubmitting(false)
+    }
+  }
 
   // Le dialog reste monté entre deux ouvertures : sans cette remise à zéro, le
   // useState ci-dessus fige la copro du tout premier rendu (souvent aucune) et
@@ -63,7 +106,13 @@ export default function CreateDossierDialog({
     setType('sinistre')
     setTitre('')
     setPriorite(2)
+    setEquipementId('')
+    setEcheance('')
     setError(null)
+    setCreationEquipement(false)
+    setNouvelEquipementNom('')
+    setNouvelleCategorie('autre')
+    setCreationError(null)
   }, [open, defaultCoproId])
 
   const canSubmit = coproId && titre.trim().length > 0 && !submitting
@@ -76,7 +125,14 @@ export default function CreateDossierDialog({
       const res = await fetch('/api/venator/dossiers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ copro_id: coproId, type, titre: titre.trim(), priorite }),
+        body: JSON.stringify({
+          copro_id: coproId,
+          type,
+          titre: titre.trim(),
+          priorite,
+          equipement_id: equipementId || null,
+          echeance: echeance || null,
+        }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => null)
@@ -159,6 +215,90 @@ export default function CreateDossierDialog({
               </SelectContent>
             </Select>
           </div>
+
+          {type === 'entretien' && (
+            <>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="dossier-equipement" className={venatorLabel}>Équipement</Label>
+                <Select
+                  value={equipementId}
+                  onValueChange={(v) => {
+                    if (v === '__nouveau__') { setCreationEquipement(true); return }
+                    setCreationEquipement(false)
+                    setEquipementId(v === '__aucun__' ? '' : v)
+                  }}
+                  disabled={!coproId}
+                >
+                  <SelectTrigger id="dossier-equipement" className={venatorSelectTrigger}>
+                    <SelectValue placeholder="Aucun équipement lié" />
+                  </SelectTrigger>
+                  <SelectContent className={venatorSelectContent}>
+                    <SelectItem value="__aucun__" className={venatorSelectItem}>Aucun équipement lié</SelectItem>
+                    {equipements.map((eq) => (
+                      <SelectItem key={eq.id} value={eq.id} className={venatorSelectItem}>
+                        {eq.nom}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="__nouveau__" className={venatorSelectItem}>+ Nouvel équipement…</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {creationEquipement && (
+                  <div className="flex flex-col gap-2 rounded-[var(--venator-radius-md)] bg-venator-surface-2 p-3">
+                    <Input
+                      value={nouvelEquipementNom}
+                      onChange={(e) => setNouvelEquipementNom(e.target.value)}
+                      placeholder="Ex : Interphone Bât A"
+                      maxLength={200}
+                      className={venatorInput}
+                    />
+                    <Select value={nouvelleCategorie} onValueChange={(v) => setNouvelleCategorie(v as EquipementCategorie)}>
+                      <SelectTrigger className={venatorSelectTrigger}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className={venatorSelectContent}>
+                        {EQUIPEMENT_CATEGORIES.map((c) => (
+                          <SelectItem key={c} value={c} className={venatorSelectItem}>
+                            {EQUIPEMENT_CATEGORIE_LABELS[c]}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {creationError && <p className="text-sm font-medium text-venator-danger">{creationError}</p>}
+                    <div className="flex justify-end gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => { setCreationEquipement(false); setNouvelEquipementNom(''); setCreationError(null) }}
+                        className={cn(venatorButtonSecondary, 'h-8 px-3')}
+                      >
+                        Annuler
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleCreerEquipement}
+                        disabled={!nouvelEquipementNom.trim() || creationSubmitting}
+                        className={cn(venatorButtonPrimary, 'h-8 px-3')}
+                      >
+                        {creationSubmitting ? 'Ajout…' : 'Ajouter'}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="dossier-echeance" className={venatorLabel}>Échéance</Label>
+                <Input
+                  id="dossier-echeance"
+                  type="date"
+                  value={echeance}
+                  onChange={(e) => setEcheance(e.target.value)}
+                  className={venatorInput}
+                />
+              </div>
+            </>
+          )}
 
           {error && <p className="text-sm font-medium text-venator-danger">{error}</p>}
         </div>

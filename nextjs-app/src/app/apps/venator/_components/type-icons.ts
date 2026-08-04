@@ -11,6 +11,7 @@
 
 import {
   AlertTriangle,
+  CalendarClock,
   CheckCircle2,
   Circle,
   CircleDashed,
@@ -33,6 +34,9 @@ import type { DossierStatut, DossierType, TicketType } from '@/lib/venator/types
 export const DOSSIER_TYPE_ICONS: Record<DossierType, LucideIcon> = {
   sinistre: ShieldAlert,
   travaux: Hammer,
+  // Distincte de Wrench (déjà pris par TICKET_TYPE_ICONS.intervention) : l'échéance
+  // est le trait caractéristique du type entretien, pas juste "un outil".
+  entretien: CalendarClock,
   contrat: FileSignature,
   procedure: Scale,
   mutation: Repeat,
@@ -56,6 +60,8 @@ export const DOSSIER_TYPE_ICONS: Record<DossierType, LucideIcon> = {
 export const DOSSIER_TYPE_COULEURS: Record<DossierType, string> = {
   sinistre: 'text-slate-400',
   travaux: 'text-orange-500',
+  // Sarcelle : dernière teinte encore libre parmi la palette des 9 types précédents.
+  entretien: 'text-teal-500',
   // Vert : la couleur que Tom associait aux contrats dès le départ.
   contrat: 'text-emerald-500',
   procedure: 'text-violet-500',
@@ -80,6 +86,7 @@ export const DOSSIER_TYPE_COULEURS: Record<DossierType, string> = {
 export const DOSSIER_TYPE_COULEURS_BARRE: Record<DossierType, string> = {
   sinistre: 'after:bg-slate-400',
   travaux: 'after:bg-orange-500',
+  entretien: 'after:bg-teal-500',
   contrat: 'after:bg-emerald-500',
   procedure: 'after:bg-violet-500',
   mutation: 'after:bg-cyan-500',

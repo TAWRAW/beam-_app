@@ -1,14 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { ChevronRight, ListChecks, Palette, Plug } from 'lucide-react'
+import { BellRing, ChevronRight, ListChecks, Palette, Plug } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { useGabarits } from '@/lib/venator/useVenator'
+import { useCadences, useGabarits } from '@/lib/venator/useVenator'
 import { DOSSIER_TYPES } from '@/lib/venator/labels'
+import { CADENCE_PROFILS } from '@/lib/venator/types'
 
 interface Rubrique {
   href:
     | '/apps/venator/reglages/dossiers'
+    | '/apps/venator/reglages/cadences'
     | '/apps/venator/reglages/apparence'
     | '/apps/venator/reglages/connexions'
   titre: string
@@ -20,8 +22,10 @@ interface Rubrique {
 /** Index des réglages : une entrée par domaine, l'édition vit dans les sous-pages. */
 export default function ReglagesIndexPage() {
   const { data } = useGabarits()
+  const { data: cadencesData } = useCadences()
 
   const typesRegles = DOSSIER_TYPES.filter((t) => (data?.gabarits?.[t]?.length ?? 0) > 0).length
+  const seuilsRegles = CADENCE_PROFILS.reduce((n, p) => n + (cadencesData?.cadences?.[p]?.length ?? 0), 0)
 
   const rubriques: Rubrique[] = [
     {
@@ -33,6 +37,13 @@ export default function ReglagesIndexPage() {
         typesRegles === 0
           ? 'Aucun gabarit défini'
           : `${typesRegles} type${typesRegles > 1 ? 's' : ''} sur ${DOSSIER_TYPES.length} réglé${typesRegles > 1 ? 's' : ''}`,
+    },
+    {
+      href: '/apps/venator/reglages/cadences',
+      titre: 'Cadences de relance',
+      description: "Seuils d'alerte avant échéance, par profil de priorité (urgent / normal).",
+      Icon: BellRing,
+      etat: `${seuilsRegles} seuil${seuilsRegles > 1 ? 's' : ''} réglé${seuilsRegles > 1 ? 's' : ''}`,
     },
     {
       href: '/apps/venator/reglages/connexions',

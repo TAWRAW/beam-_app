@@ -2,7 +2,7 @@
 'use client'
 
 import useSWR from 'swr'
-import type { Checklist, ChecklistItem, Copro, Dossier, DossierType, Etape, FilMessage, JournalEntry, Ticket } from '@/lib/venator/types'
+import type { CadenceProfil, Checklist, ChecklistItem, Copro, Dossier, DossierType, Equipement, Etape, FilMessage, JournalEntry, Ticket } from '@/lib/venator/types'
 import type { GabaritEtape } from '@/lib/venator/gabarits'
 
 export const fetcher = (url: string) =>
@@ -22,6 +22,8 @@ export const keys = {
   journal: (coproId: string) => `/api/venator/journal?copro_id=${coproId}`,
   checklist: (coproId: string) => `/api/venator/checklists?copro_id=${coproId}`,
   gabarits: () => '/api/venator/gabarits',
+  equipements: (coproId: string) => `/api/venator/equipements?copro_id=${coproId}`,
+  cadences: () => '/api/venator/reglages/cadences',
 }
 
 export function useCopros() {
@@ -58,4 +60,15 @@ export function useChecklist(coproId: string) {
     coproId ? keys.checklist(coproId) : null,
     fetcher
   )
+}
+
+/** Référentiel d'équipements de la copropriété (interphone, portail, toiture…). */
+export function useEquipements(coproId: string) {
+  return useSWR<{ equipements: Equipement[] }>(coproId ? keys.equipements(coproId) : null, fetcher)
+}
+
+/** Seuils d'alerte (heures avant échéance) des deux profils de cadence, avec
+ *  repli sur DEFAULT_CADENCES tant que la migration/le seed ne sont pas passés. */
+export function useCadences() {
+  return useSWR<{ cadences: Record<CadenceProfil, number[]> }>(keys.cadences(), fetcher)
 }

@@ -1,7 +1,7 @@
 // src/lib/venator/types.ts — types partagés Venator (AUCUN import next/*)
 import { z } from 'zod'
 
-export const DOSSIER_TYPES = ['sinistre','travaux','contrat','procedure','mutation','ag','conseil_syndical','vie_copro','autre'] as const
+export const DOSSIER_TYPES = ['sinistre','travaux','entretien','contrat','procedure','mutation','ag','conseil_syndical','vie_copro','autre'] as const
 export type DossierType = (typeof DOSSIER_TYPES)[number]
 export const DOSSIER_STATUTS = ['ouvert','en_cours','en_attente','clos'] as const
 /** État de vote d'un dossier. `a_voter` alimente la vue « Prochaine AG » ;
@@ -28,13 +28,25 @@ export type VenatorRole = 'admin' | 'gestionnaire' | 'invite'
 export type FilDirection = 'entrant' | 'sortant' | 'note'
 export type FilSource = 'gmail' | 'manuel' | 'ia' | 'venator'
 
+export const EQUIPEMENT_CATEGORIES = ['interphone', 'portail', 'toiture', 'menage', 'autre'] as const
+export type EquipementCategorie = (typeof EQUIPEMENT_CATEGORIES)[number]
+
+/** Deux profils de cadence de relance visuelle (dashboard « Suivi Entretien »).
+ *  Pas de champ `urgence` dédié : priorite=1 → 'urgent', 2 ou 3 → 'normal'. */
+export const CADENCE_PROFILS = ['urgent', 'normal'] as const
+export type CadenceProfil = (typeof CADENCE_PROFILS)[number]
+
 export interface Copro { id: string; estale_id: string; reference: string; nom: string; drive_folder_id?: string | null }
 export interface Etape { id: string; dossier_id: string; ordre: number; titre: string; statut: EtapeStatut; echeance: string | null; done_at: string | null; notes: string | null }
 /**
  * `vote_statut` vaut pour TOUS les types (un contrat se vote aussi) : 'a_voter' inscrit le dossier à la prochaine assemblée, et 'reporte' l'y laisse.
  * `gmail_label_id` : libellé Gmail rattaché (id stable au renommage) ; `gmail_label_chemin` conserve le chemin complet pour désambiguïser, l'UI n'affichant que le dernier segment.
  */
-export interface Dossier { id: string; copro_id: string; type: DossierType; titre: string; statut: DossierStatut; priorite: number; gabarit_key: string | null; vote_statut: VoteStatut; gmail_label_id: string | null; gmail_label_chemin: string | null; gmail_last_sync: string | null; gmail_label_erreur: string | null; drive_folder_id: string | null; drive_folder_url: string | null; estale_refs: Record<string, unknown>; created_at: string; closed_at: string | null }
+export interface Dossier { id: string; copro_id: string; type: DossierType; titre: string; statut: DossierStatut; priorite: number; gabarit_key: string | null; vote_statut: VoteStatut; gmail_label_id: string | null; gmail_label_chemin: string | null; gmail_last_sync: string | null; gmail_label_erreur: string | null; drive_folder_id: string | null; drive_folder_url: string | null; estale_refs: Record<string, unknown>; created_at: string; closed_at: string | null; equipement_id: string | null; echeance: string | null }
+/** Référentiel d'équipements par copropriété (interphone, portail, toiture…).
+ *  `equipement_id` sur `Dossier` est générique (pas réservé au type 'entretien') :
+ *  sert la continuité de suivi d'un même équipement à travers plusieurs dossiers. */
+export interface Equipement { id: string; copro_id: string; nom: string; categorie: EquipementCategorie; created_at: string }
 export interface Ticket { id: string; copro_id: string; dossier_id: string | null; type: TicketType; titre: string; description: string | null; statut: TicketStatut; prestataire_nom: string | null; created_at: string; closed_at: string | null }
 export interface FilMessage { id: string; parent_type: 'dossier' | 'ticket'; parent_id: string; direction: FilDirection; source: FilSource; from_email: string | null; sujet: string | null; contenu: string; gmail_message_id: string | null; created_at: string }
 export interface Checklist { id: string; copro_id: string; created_at: string }
@@ -47,8 +59,31 @@ export const dossierCreateSchema = z.object({
   type: z.enum(DOSSIER_TYPES),
   titre: z.string().min(1).max(200),
   priorite: z.number().int().min(1).max(3).default(2),
+  equipement_id: z.string().uuid().nullish(),
+  echeance: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullish(),
 })
 export type DossierCreateInput = z.infer<typeof dossierCreateSchema>
+
+export const equipementCreateSchema = z.object({
+  copro_id: z.string().uuid(),
+  nom: z.string().min(1).max(200),
+  categorie: z.enum(EQUIPEMENT_CATEGORIES),
+})
+export type EquipementCreateInput = z.infer<typeof equipementCreateSchema>
+
+export const equipementUpdateSchema = z.object({
+  nom: z.string().min(1).max(200).optional(),
+  categorie: z.enum(EQUIPEMENT_CATEGORIES).optional(),
+}).refine((v) => v.nom !== undefined || v.categorie !== undefined, {
+  message: 'Au moins un champ à modifier',
+})
+export type EquipementUpdateInput = z.infer<typeof equipementUpdateSchema>
+
+export const cadenceReglageUpdateSchema = z.object({
+  profil: z.enum(CADENCE_PROFILS),
+  seuilsHeures: z.array(z.number().int().min(1).max(8760)).max(10),
+})
+export type CadenceReglageUpdateInput = z.infer<typeof cadenceReglageUpdateSchema>
 
 export const ticketCreateSchema = z.object({
   copro_id: z.string().uuid(),

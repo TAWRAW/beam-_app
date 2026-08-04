@@ -125,4 +125,43 @@ describe('dossiers-service', () => {
     // relit pas dans six mois si l'entrée ne nomme pas le dossier concerné.
     expect(votes[0].contenu).toContain('Ravalement')
   })
+
+  it('un dossier entretien persiste equipement_id/echeance et applique son gabarit', async () => {
+    // Rien de spécifique à coder pour 'entretien' : le spread `...input` de
+    // creerDossier porte déjà ces deux champs, comme pour n'importe quel type.
+    const { client } = createFakeDb()
+    const copro = await seedCopro(client)
+    const { data: equipement } = await client
+      .from('venator_equipements')
+      .insert({ copro_id: copro.id, nom: 'Interphone Bât A', categorie: 'interphone' })
+      .select()
+      .single()
+    await remplacerGabarit(client, 'entretien', [
+      { titre: 'Signalement' },
+      { titre: 'Devis / RDV' },
+      { titre: 'Réalisation' },
+      { titre: 'Clôture' },
+    ])
+
+    const { dossier, etapes } = await creerDossier(client, {
+      copro_id: copro.id,
+      type: 'entretien',
+      titre: 'Interphone en panne',
+      priorite: 1,
+      equipement_id: equipement.id,
+      echeance: '2026-08-15',
+    })
+
+    expect(dossier.equipement_id).toBe(equipement.id)
+    expect(dossier.echeance).toBe('2026-08-15')
+    expect(etapes.map((e) => e.titre)).toEqual(['Signalement', 'Devis / RDV', 'Réalisation', 'Clôture'])
+  })
+
+  it('un dossier sans equipement_id/echeance les porte à null (comme les autres types)', async () => {
+    const { client } = createFakeDb()
+    const copro = await seedCopro(client)
+    const { dossier } = await creerDossier(client, { copro_id: copro.id, type: 'sinistre', titre: 'DDE', priorite: 2 })
+    expect(dossier.equipement_id).toBeNull()
+    expect(dossier.echeance).toBeNull()
+  })
 })

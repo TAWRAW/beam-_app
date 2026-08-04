@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { DOSSIER_TYPES, TICKET_TYPES, DOSSIER_TYPE_LABELS, TICKET_TYPE_LABELS } from '../labels'
+import { DOSSIER_TYPES, TICKET_TYPES, DOSSIER_TYPE_LABELS, TICKET_TYPE_LABELS, CADENCE_PROFIL_LABELS, EQUIPEMENT_CATEGORIE_LABELS } from '../labels'
+import { CADENCE_PROFILS, EQUIPEMENT_CATEGORIES } from '../types'
 
 describe('labels', () => {
-  it("DOSSIER_TYPE_LABELS couvre exactement les 8 DOSSIER_TYPES, y compris 'autre'", () => {
+  it("DOSSIER_TYPE_LABELS couvre exactement les 10 DOSSIER_TYPES, y compris 'autre'", () => {
     for (const t of DOSSIER_TYPES) {
       expect(DOSSIER_TYPE_LABELS[t]).toBeTruthy()
     }
@@ -21,5 +22,13 @@ describe('labels', () => {
     const dossierKeys = new Set(Object.keys(DOSSIER_TYPE_LABELS))
     const ticketKeys = new Set(Object.keys(TICKET_TYPE_LABELS))
     for (const k of ticketKeys) expect(dossierKeys.has(k)).toBe(false)
+  })
+
+  it('CADENCE_PROFIL_LABELS couvre exactement les 2 CADENCE_PROFILS', () => {
+    expect(Object.keys(CADENCE_PROFIL_LABELS).sort()).toEqual([...CADENCE_PROFILS].sort())
+  })
+
+  it('EQUIPEMENT_CATEGORIE_LABELS couvre exactement les 5 EQUIPEMENT_CATEGORIES', () => {
+    expect(Object.keys(EQUIPEMENT_CATEGORIE_LABELS).sort()).toEqual([...EQUIPEMENT_CATEGORIES].sort())
   })
 })

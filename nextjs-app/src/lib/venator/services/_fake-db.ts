@@ -7,7 +7,7 @@ type Row = Record<string, any>
 // Défauts de colonnes DB (cf. supabase/migrations/20260716_venator_initial.sql) que Postgres
 // appliquerait via `default '...'` et que ce fake doit reproduire pour rester fidèle.
 const TABLE_DEFAULTS: Record<string, Row> = {
-  venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {}, vote_statut: 'sans_objet', closed_at: null },
+  venator_dossiers: { statut: 'ouvert', priorite: 2, estale_refs: {}, vote_statut: 'sans_objet', closed_at: null, equipement_id: null, echeance: null },
   venator_dossier_etapes: { statut: 'a_faire' },
   venator_tickets: { statut: 'nouveau', type: 'intervention', closed_at: null },
   venator_checklist_items: { fait: false },
