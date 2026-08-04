@@ -43,7 +43,9 @@ export function useVenatorHotkey(key: string, handler: () => void, options: Hotk
     if (!enabled) return
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key.toLowerCase() !== key.toLowerCase()) return
+      // e.key est parfois absent (autofill, IME, certaines extensions) : sans
+      // cette garde, la moindre frappe hors clavier "normal" plantait la page.
+      if (!e.key || e.key.toLowerCase() !== key.toLowerCase()) return
 
       const hasMeta = e.metaKey || e.ctrlKey
       if (meta !== hasMeta) return
