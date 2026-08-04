@@ -28,7 +28,7 @@ import VenatorMobileNav from './VenatorMobileNav'
  */
 export default function VenatorShell({ children }: { children: React.ReactNode }) {
   const { nav, setCoproId, setType, setVue } = useVenatorNavState()
-  const { counts, total } = useDossierTypeCounts(nav.coproId)
+  const { counts, total, prochaineAg } = useDossierTypeCounts(nav.coproId)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const pathname = usePathname()
   const surReglages = pathname?.startsWith('/apps/venator/reglages') ?? false
@@ -46,6 +46,8 @@ export default function VenatorShell({ children }: { children: React.ReactNode }
           onSelect={setType}
           counts={counts}
           total={total}
+          prochaineAg={prochaineAg}
+          coproSelectionnee={nav.coproId !== 'all'}
           orientation="horizontal"
           className="min-w-0 flex-1"
         />
@@ -67,7 +69,7 @@ export default function VenatorShell({ children }: { children: React.ReactNode }
 
       <main className="min-w-0 px-4 py-5 pb-24 md:px-10 md:pb-10 md:pt-4">{children}</main>
 
-      <VenatorMobileNav typeCounts={counts} typeTotal={total} />
+      <VenatorMobileNav typeCounts={counts} typeTotal={total} typeProchaineAg={prochaineAg} />
       <VenatorCommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </div>
   )

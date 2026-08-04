@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutGrid } from 'lucide-react'
+import { LayoutGrid, Gavel } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { DOSSIER_TYPES, DOSSIER_TYPE_LABELS } from '@/lib/venator/labels'
 import type { DossierType } from '@/lib/venator/types'
@@ -13,6 +13,10 @@ interface TypeNavPanelProps {
   /** Nombre de dossiers par type, calculés sur la copro sélectionnée (ou toutes) — non filtrés par type. */
   counts: Partial<Record<DossierType, number>>
   total: number
+  /** Nombre de dossiers inscrits à la prochaine assemblée. */
+  prochaineAg?: number
+  /** Une assemblée appartient à UNE copropriété : hors sélection, l'entrée n'a pas d'objet. */
+  coproSelectionnee?: boolean
   /**
    * `horizontal` : barre de filtres posée au-dessus du contenu (desktop).
    * `vertical` : liste empilée, pour le Sheet mobile où la largeur est comptée
@@ -33,14 +37,24 @@ export default function TypeNavPanel({
   onSelect,
   counts,
   total,
+  prochaineAg = 0,
+  coproSelectionnee = false,
   orientation = 'vertical',
   className,
 }: TypeNavPanelProps) {
   const horizontal = orientation === 'horizontal'
   const itemClass = horizontal ? venatorNavChip : venatorNavItem
 
+  // « Prochaine AG » n'est PAS un type de dossier : c'est une sélection qui les
+  // traverse — des travaux, une procédure, un contrat, une autorisation donnée à
+  // un copropriétaire peuvent tous attendre le même vote. Elle n'apparaît que sur
+  // une copropriété sélectionnée : une assemblée n'existe que pour l'une d'elles,
+  // et l'afficher en permanence allongerait la barre sans rien vouloir dire.
   const entries = [
     { key: 'all', label: 'Tous les types', Icon: LayoutGrid, barre: '', count: total },
+    ...(coproSelectionnee
+      ? [{ key: 'prochaine_ag', label: 'Prochaine AG', Icon: Gavel, barre: 'after:bg-venator-accent', count: prochaineAg }]
+      : []),
     ...DOSSIER_TYPES.map((t) => ({
       key: t,
       label: DOSSIER_TYPE_LABELS[t],

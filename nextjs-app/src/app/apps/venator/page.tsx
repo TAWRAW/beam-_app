@@ -21,7 +21,7 @@ import { useVenatorNavState } from './_components/nav/useVenatorNavState'
 import { useVenatorHotkey } from './_components/nav/useVenatorHotkey'
 import { useDossierTypeCounts } from './_components/nav/useDossierTypeCounts'
 import { useCopros, useJournal, useTickets } from '@/lib/venator/useVenator'
-import { DOSSIER_STATUTS, type DossierStatut, type Ticket } from '@/lib/venator/types'
+import { DOSSIER_STATUTS, VOTE_STATUTS_PROCHAINE_AG, type DossierStatut, type Ticket } from '@/lib/venator/types'
 import { DOSSIER_TYPE_LABELS } from '@/lib/venator/labels'
 import {
   venatorButtonNeutral,
@@ -91,16 +91,21 @@ export default function VenatorDashboardPage() {
   // Copro-filtrée uniquement (jamais par type) — sert au calcul des compteurs
   // par type (panneaux de nav) ET à la liste affichée ci-dessous, filtrée par
   // type côté client. Un seul appel réseau (cache SWR partagé avec VenatorShell).
-  const { dossiers, isLoading: dossiersLoading } = useDossierTypeCounts(nav.coproId)
+  const { dossiers, prochaineAg, isLoading: dossiersLoading } = useDossierTypeCounts(nav.coproId)
   const { data: ticketsData, isLoading: ticketsLoading } = useTickets(ticketsQuery)
   const loading = dossiersLoading || ticketsLoading
 
   const copros = coprosData?.copros ?? []
   const copro = nav.coproId !== 'all' ? copros.find((c) => c.id === nav.coproId) ?? null : null
-  const filteredDossiers = useMemo(
-    () => (nav.type === 'all' ? dossiers : dossiers.filter((d) => d.type === nav.type)),
-    [dossiers, nav.type]
-  )
+  const filteredDossiers = useMemo(() => {
+    if (nav.type === 'all') return dossiers
+    // « Prochaine AG » traverse les types : elle retient les dossiers qui attendent
+    // un vote, quel que soit leur sujet.
+    if (nav.type === 'prochaine_ag') {
+      return dossiers.filter((d) => VOTE_STATUTS_PROCHAINE_AG.includes(d.vote_statut))
+    }
+    return dossiers.filter((d) => d.type === nav.type)
+  }, [dossiers, nav.type])
   // Les tickets ont leur propre taxonomie (intervention/demande/signalement),
   // sans rapport avec les types de dossier — on ne les affiche que dans la vue
   // "Tous les types", pour éviter de les confronter à un filtre qui ne les concerne pas.

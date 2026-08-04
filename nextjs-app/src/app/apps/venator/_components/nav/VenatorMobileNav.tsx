@@ -12,6 +12,7 @@ import type { DossierType } from '@/lib/venator/types'
 interface VenatorMobileNavProps {
   typeCounts: Partial<Record<DossierType, number>>
   typeTotal: number
+  typeProchaineAg?: number
 }
 
 type MobileSheet = 'copro' | 'type' | null
@@ -20,7 +21,7 @@ type MobileSheet = 'copro' | 'type' | null
  * Navigation basse (mobile, < md) : icônes Lucide uniquement, jamais d'émoji.
  * Remplace les 2 panneaux desktop par des Sheet plein-largeur en bas d'écran.
  */
-export default function VenatorMobileNav({ typeCounts, typeTotal }: VenatorMobileNavProps) {
+export default function VenatorMobileNav({ typeCounts, typeTotal, typeProchaineAg = 0 }: VenatorMobileNavProps) {
   const { nav, setCoproId, setType, setVue } = useVenatorNavState()
   const [openSheet, setOpenSheet] = useState<MobileSheet>(null)
 
@@ -84,6 +85,7 @@ export default function VenatorMobileNav({ typeCounts, typeTotal }: VenatorMobil
             type={nav.type}
             counts={typeCounts}
             total={typeTotal}
+            prochaineAg={typeProchaineAg}
             onSelect={(t) => {
               setType(t)
               setOpenSheet(null)

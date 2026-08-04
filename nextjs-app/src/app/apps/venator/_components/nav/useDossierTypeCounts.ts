@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import { useDossiers } from '@/lib/venator/useVenator'
+import { VOTE_STATUTS_PROCHAINE_AG } from '@/lib/venator/types'
 import type { Dossier, DossierType } from '@/lib/venator/types'
 
 /**
@@ -15,6 +16,8 @@ export function useDossierTypeCounts(coproId: string): {
   dossiers: Dossier[]
   counts: Partial<Record<DossierType, number>>
   total: number
+  /** Dossiers inscrits à la prochaine assemblée — un filtre, pas un type. */
+  prochaineAg: number
   isLoading: boolean
 } {
   const query = coproId !== 'all' ? `copro_id=${coproId}` : ''
@@ -27,5 +30,10 @@ export function useDossierTypeCounts(coproId: string): {
     return map
   }, [dossiers])
 
-  return { dossiers, counts, total: dossiers.length, isLoading }
+  const prochaineAg = useMemo(
+    () => dossiers.filter((d) => VOTE_STATUTS_PROCHAINE_AG.includes(d.vote_statut)).length,
+    [dossiers]
+  )
+
+  return { dossiers, counts, total: dossiers.length, prochaineAg, isLoading }
 }

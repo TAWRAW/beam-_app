@@ -34,7 +34,7 @@ import {
   venatorSelectTrigger,
 } from '../../_components/venator-ui-classes'
 import { fetcher, keys, useCopros, useDossier } from '@/lib/venator/useVenator'
-import { TICKET_TYPES, VOTE_STATUTS, VOTE_STATUT_LABELS, type Ticket, type TicketType, type VoteStatut } from '@/lib/venator/types'
+import { TICKET_TYPES, VOTE_STATUTS_PROCHAINE_AG, type Ticket, type TicketType, type VoteStatut } from '@/lib/venator/types'
 import { TICKET_TYPE_LABELS } from '@/lib/venator/labels'
 
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
@@ -235,40 +235,32 @@ export default function DossierPage({ params }: { params: { id: string } }) {
                   {dossier.titre}
                 </h1>
 
-                {/* L'état de vote vaut pour tous les types — un contrat se vote
-                    comme un marché de travaux. « À voter » inscrit le dossier à
-                    la prochaine assemblée de la copropriété ; après l'AG, le
-                    passage à voté ou refusé l'en retire de lui-même. */}
-                <div className="mt-1.5 flex items-center gap-2">
-                  <span className={venatorMicroLabel}>Vote</span>
-                  <Select
-                    value={dossier.vote_statut}
-                    onValueChange={(v) => handleVoteChange(v as VoteStatut)}
+                {/* Une case, pas un menu : inscrire un sujet à l'assemblée est un
+                    geste qu'on répète toute l'année, il doit coûter un clic. Les
+                    états voté/refusé/reporté restent en base pour la suite, mais
+                    l'interface ne demande que la seule question utile ici. */}
+                <label className="mt-1.5 inline-flex cursor-pointer items-center gap-2 select-none">
+                  <input
+                    type="checkbox"
+                    checked={VOTE_STATUTS_PROCHAINE_AG.includes(dossier.vote_statut)}
                     disabled={votePending}
+                    onChange={(e) => handleVoteChange(e.target.checked ? 'a_voter' : 'sans_objet')}
+                    className="h-4 w-4 shrink-0 cursor-pointer accent-venator-accent"
+                  />
+                  <span
+                    className={cn(
+                      'text-[12.5px] font-medium transition-colors',
+                      VOTE_STATUTS_PROCHAINE_AG.includes(dossier.vote_statut)
+                        ? 'text-venator-fg'
+                        : 'text-venator-fg-muted'
+                    )}
                   >
-                    <SelectTrigger
-                      aria-label="État de vote du dossier"
-                      className={cn(
-                        venatorSelectTrigger,
-                        'h-7 w-auto gap-1.5 border-0 px-2 text-[12px] font-medium',
-                        // Seul « à voter » se signale : c'est le seul état qui
-                        // appelle une action. Les autres restent en retrait.
-                        dossier.vote_statut === 'a_voter'
-                          ? 'bg-venator-accent/15 text-venator-accent'
-                          : 'bg-venator-surface-2 text-venator-fg-muted'
-                      )}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className={venatorSelectContent}>
-                      {VOTE_STATUTS.map((v) => (
-                        <SelectItem key={v} value={v} className={venatorSelectItem}>
-                          {VOTE_STATUT_LABELS[v]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                    Prochaine AG
+                  </span>
+                  {dossier.vote_statut === 'reporte' && (
+                    <span className={venatorMicroLabel}>reporté</span>
+                  )}
+                </label>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <Button
