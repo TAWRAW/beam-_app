@@ -6,7 +6,7 @@
 // échoue — garde-fou structurel contre l'oubli qui existait avant (TYPE_META ne
 // couvrait pas 'autre', et mélangeait à tort DossierType/TicketType).
 
-import { DOSSIER_TYPES, TICKET_TYPES, type CadenceProfil, type DossierType, type EquipementCategorie, type TicketType } from './types'
+import { DOSSIER_TYPES, EQUIPEMENT_CATEGORIE_SUGGESTIONS, TICKET_TYPES, type CadenceProfil, type DossierType, type TicketType } from './types'
 
 export const DOSSIER_TYPE_LABELS: Record<DossierType, string> = {
   sinistre: 'Sinistre',
@@ -27,13 +27,9 @@ export const TICKET_TYPE_LABELS: Record<TicketType, string> = {
   signalement: 'Signalement',
 }
 
-export const EQUIPEMENT_CATEGORIE_LABELS: Record<EquipementCategorie, string> = {
-  interphone: 'Interphone',
-  portail: 'Portail',
-  toiture: 'Toiture',
-  menage: 'Ménage',
-  autre: 'Autre',
-}
+// Ré-export pratique : suggestions de saisie pour la catégorie d'équipement,
+// PAS une liste fermée — categorie est du texte libre (cf. types.ts).
+export { EQUIPEMENT_CATEGORIE_SUGGESTIONS }
 
 export const CADENCE_PROFIL_LABELS: Record<CadenceProfil, string> = {
   urgent: 'Urgent',

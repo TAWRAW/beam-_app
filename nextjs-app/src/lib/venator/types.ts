@@ -28,8 +28,9 @@ export type VenatorRole = 'admin' | 'gestionnaire' | 'invite'
 export type FilDirection = 'entrant' | 'sortant' | 'note'
 export type FilSource = 'gmail' | 'manuel' | 'ia' | 'venator'
 
-export const EQUIPEMENT_CATEGORIES = ['interphone', 'portail', 'toiture', 'menage', 'autre'] as const
-export type EquipementCategorie = (typeof EQUIPEMENT_CATEGORIES)[number]
+/** Simples suggestions de saisie (datalist), PAS une liste fermée : une taxonomie
+ *  figée manque toujours un cas (VMC, chauffage…). `categorie` est du texte libre. */
+export const EQUIPEMENT_CATEGORIE_SUGGESTIONS = ['Interphone', 'Portail', 'Toiture', 'Ménage', 'VMC', 'Chauffage', 'Ascenseur', 'Digicode', 'Éclairage'] as const
 
 /** Deux profils de cadence de relance visuelle (dashboard « Suivi Entretien »).
  *  Pas de champ `urgence` dédié : priorite=1 → 'urgent', 2 ou 3 → 'normal'. */
@@ -46,7 +47,7 @@ export interface Dossier { id: string; copro_id: string; type: DossierType; titr
 /** Référentiel d'équipements par copropriété (interphone, portail, toiture…).
  *  `equipement_id` sur `Dossier` est générique (pas réservé au type 'entretien') :
  *  sert la continuité de suivi d'un même équipement à travers plusieurs dossiers. */
-export interface Equipement { id: string; copro_id: string; nom: string; categorie: EquipementCategorie; created_at: string }
+export interface Equipement { id: string; copro_id: string; nom: string; categorie: string; created_at: string }
 export interface Ticket { id: string; copro_id: string; dossier_id: string | null; type: TicketType; titre: string; description: string | null; statut: TicketStatut; prestataire_nom: string | null; created_at: string; closed_at: string | null }
 export interface FilMessage { id: string; parent_type: 'dossier' | 'ticket'; parent_id: string; direction: FilDirection; source: FilSource; from_email: string | null; sujet: string | null; contenu: string; gmail_message_id: string | null; created_at: string }
 export interface Checklist { id: string; copro_id: string; created_at: string }
@@ -66,14 +67,14 @@ export type DossierCreateInput = z.infer<typeof dossierCreateSchema>
 
 export const equipementCreateSchema = z.object({
   copro_id: z.string().uuid(),
-  nom: z.string().min(1).max(200),
-  categorie: z.enum(EQUIPEMENT_CATEGORIES),
+  nom: z.string().trim().min(1).max(200),
+  categorie: z.string().trim().min(1).max(100),
 })
 export type EquipementCreateInput = z.infer<typeof equipementCreateSchema>
 
 export const equipementUpdateSchema = z.object({
-  nom: z.string().min(1).max(200).optional(),
-  categorie: z.enum(EQUIPEMENT_CATEGORIES).optional(),
+  nom: z.string().trim().min(1).max(200).optional(),
+  categorie: z.string().trim().min(1).max(100).optional(),
 }).refine((v) => v.nom !== undefined || v.categorie !== undefined, {
   message: 'Au moins un champ à modifier',
 })

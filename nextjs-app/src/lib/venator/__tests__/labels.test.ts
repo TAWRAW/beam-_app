@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { DOSSIER_TYPES, TICKET_TYPES, DOSSIER_TYPE_LABELS, TICKET_TYPE_LABELS, CADENCE_PROFIL_LABELS, EQUIPEMENT_CATEGORIE_LABELS } from '../labels'
-import { CADENCE_PROFILS, EQUIPEMENT_CATEGORIES } from '../types'
+import { DOSSIER_TYPES, TICKET_TYPES, DOSSIER_TYPE_LABELS, TICKET_TYPE_LABELS, CADENCE_PROFIL_LABELS, EQUIPEMENT_CATEGORIE_SUGGESTIONS } from '../labels'
+import { CADENCE_PROFILS } from '../types'
 
 describe('labels', () => {
   it("DOSSIER_TYPE_LABELS couvre exactement les 10 DOSSIER_TYPES, y compris 'autre'", () => {
@@ -28,7 +28,9 @@ describe('labels', () => {
     expect(Object.keys(CADENCE_PROFIL_LABELS).sort()).toEqual([...CADENCE_PROFILS].sort())
   })
 
-  it('EQUIPEMENT_CATEGORIE_LABELS couvre exactement les 5 EQUIPEMENT_CATEGORIES', () => {
-    expect(Object.keys(EQUIPEMENT_CATEGORIE_LABELS).sort()).toEqual([...EQUIPEMENT_CATEGORIES].sort())
+  // categorie est du texte libre (plus de liste fermée) : seule garantie utile,
+  // les suggestions ne sont pas vides.
+  it('EQUIPEMENT_CATEGORIE_SUGGESTIONS propose au moins quelques valeurs', () => {
+    expect(EQUIPEMENT_CATEGORIE_SUGGESTIONS.length).toBeGreaterThan(0)
   })
 })
