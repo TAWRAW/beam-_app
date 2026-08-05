@@ -48,6 +48,18 @@ function needsRevive(
   return false
 }
 
+/** Identifiant du collaborateur Estale connecté, ou null s'il est injoignable. */
+async function collaborateurCourant(): Promise<string | null> {
+  try {
+    const r = await fetch('/api/estale/me')
+    if (!r.ok) return null
+    const j = await r.json()
+    return j?.collaborator?.id ?? null
+  } catch {
+    return null
+  }
+}
+
 async function pushVisit(localId: string): Promise<string | null> {
   const drafts = await getAllVisitDrafts()
   const draft = drafts.find((d) => d.localId === localId)
@@ -63,10 +75,18 @@ async function pushVisit(localId: string): Promise<string | null> {
     syncAttempts: attempts,
   })
 
+  // L'organisateur est estampillé À L'ENVOI, pas à la saisie. Celui enregistré
+  // dans le brouillon peut dater d'une session précédente ; s'il n'est plus valide,
+  // Estale refuse la création (« path: createVisit.input.organiserID ») et la visite
+  // — avec toutes ses photos — reste bloquée jusqu'à épuisement des tentatives.
+  // En cas d'échec de la lecture (hors-ligne), on tente avec la valeur enregistrée
+  // plutôt que de renoncer : elle était peut-être bonne.
+  const entete = { ...draft.entete, organiserID: (await collaborateurCourant()) ?? draft.entete.organiserID }
+
   const res = await fetch('/api/estale/visits', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(draft.entete),
+    body: JSON.stringify(entete),
   })
   if (!res.ok) {
     const err = await res.text().catch(() => '')
