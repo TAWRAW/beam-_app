@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import useSWR, { mutate } from 'swr'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Send, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -263,6 +263,24 @@ export default function DossierPage({ params }: { params: { id: string } }) {
                 </label>
               </div>
               <div className="flex shrink-0 items-center gap-2">
+                {/* Mailing ciblé pré-rattaché au dossier : la note envoyée alimentera le
+                    journal du dossier et portera son id dans la trace mailing_notes. */}
+                {copro && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      router.push(
+                        `/apps/mailings?copro=${encodeURIComponent(copro.reference)}&dossier=${dossier.id}`,
+                      )
+                    }
+                    title="Créer un mailing rattaché à ce dossier"
+                    className={cn(venatorButtonSecondary, 'h-8 shrink-0 px-3')}
+                  >
+                    <Send className="mr-1.5 h-3.5 w-3.5" />
+                    Mailing
+                  </Button>
+                )}
                 <Button
                   type="button"
                   size="icon"
