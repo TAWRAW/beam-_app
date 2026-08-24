@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
-import { getCitySlugs } from '@/lib/cities'
+import { cities, getCitySlugs } from '@/lib/cities'
+import { dateTrimestre, listerCommunesObservatoire } from '@/lib/marche-copro'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -146,6 +147,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: isMainCity ? 'weekly' : 'monthly',
       priority: isMainCity ? 0.85 : 0.6
     })
+  }
+
+  // Observatoire de la copropriété : sommaire + une page de chiffres par commune.
+  // Contenu de données, régénéré chaque jour à partir du registre national.
+  entries.push({
+    url: `${base}/observatoire`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.85
+  })
+  // Seules les communes au-dessus du seuil ont une page : les autres renvoient un
+  // 404, il ne faut donc pas les déclarer ici.
+  try {
+    const communes = await listerCommunesObservatoire(cities)
+    for (const { slug, trimestre } of communes) {
+      entries.push({
+        url: `${base}/observatoire/${slug}`,
+        lastModified: dateTrimestre(trimestre),
+        changeFrequency: 'monthly',
+        priority: mainCities.includes(slug) ? 0.75 : 0.55
+      })
+    }
+    console.log(`✅ Sitemap: ${communes.length} pages observatoire`)
+  } catch (error) {
+    console.error('❌ Sitemap: observatoire indisponible:', error)
   }
 
   // Articles publiés - priorité haute pour le contenu

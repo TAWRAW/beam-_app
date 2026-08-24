@@ -43,6 +43,7 @@ import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { getCityBySlug, getCitySlugs } from '@/lib/cities'
 import { getFormattedVilleStats } from '@/lib/ville-stats'
+import { getMarcheCommune, marcheVersStatsVille } from '@/lib/marche-copro'
 
 type Params = { slug: string }
 
@@ -127,7 +128,20 @@ export default async function CityPage({ params }: { params: Params }) {
   const label = city.displayName || city.name
 
   // Fetch stats API avec ISR (revalidate tous les 3 mois)
-  const stats = await getFormattedVilleStats(city.slug, city.postalCode)
+  const anciennesStats = await getFormattedVilleStats(city.slug, city.postalCode)
+
+  // Le relevé de l'observatoire fait foi quand il existe : l'ancienne source est
+  // restée au 4ᵉ trimestre 2025 et filtre par nom de commune, ce qui sous-compte.
+  // Sans ça, cette page et /observatoire/<ville> annonçaient deux nombres différents
+  // pour la même commune tout en se liant l'une à l'autre.
+  const marche = city.inseeCode ? await getMarcheCommune(city.inseeCode) : null
+  const stats = marche
+    ? marcheVersStatsVille(marche, label, {
+        departement: anciennesStats?.departement,
+        rangDepartemental: anciennesStats?.rangDepartemental,
+        rangNational: anciennesStats?.rangNational,
+      })
+    : anciennesStats
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -254,9 +268,35 @@ export default async function CityPage({ params }: { params: Params }) {
       </section>
       <Services />
 
-      {/* Stats copropriétés ANAH - Contenu unique vs concurrence */}
-      {/* Masqué pour Rouen car données API incorrectes (en attente correction API) */}
-      {stats && city.slug !== 'rouen' && <CityStats stats={stats} ville={label} />}
+      {/* Stats copropriétés ANAH - Contenu unique vs concurrence.
+          Rouen était masqué depuis novembre 2025 (« données API incorrectes ») : le
+          relevé de l'observatoire, filtré par code INSEE, corrige la cause. */}
+      {stats && (marche || city.slug !== 'rouen') && <CityStats stats={stats} ville={label} />}
+
+      {/* Renvoi vers le relevé détaillé : maillage réciproque avec l'observatoire,
+          qui porte les chiffres complets (tranches, syndics, plus grandes copros). */}
+      {city.inseeCode && (
+        <section className="section">
+          <div className="container">
+            <div className="mx-auto max-w-3xl border-2 border-black bg-white p-6 text-center shadow-lg">
+              <h2 className="text-xl font-bold text-neutral">
+                Le parc de copropriétés {prep} {label}, en détail
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                Nombre de copropriétés, taille médiane, répartition par tranche, syndics déclarés
+                et plus grandes résidences : notre relevé du registre national, mis à jour chaque
+                trimestre.
+              </p>
+              <Link
+                href={`/observatoire/${city.slug}`}
+                className="mt-5 inline-block border-2 border-black bg-primary px-6 py-3 font-bold text-primary-foreground shadow-[4px_4px_0_#000] transition-transform hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#000]"
+              >
+                Voir les chiffres {prep} {label}
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Contenu enrichi SEO - 800-1000 mots */}
       <CityDetailedContent ville={label} prep={prep} neighborhoods={city.neighborhoods} citySlug={city.slug} />

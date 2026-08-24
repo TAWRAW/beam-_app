@@ -30,6 +30,8 @@ export default function Footer() {
             <h3 className="text-primary relative mb-6 text-lg font-semibold after:absolute after:-bottom-2 after:left-0 after:h-[3px] after:w-10 after:bg-primary">À propos</h3>
             <ul className="space-y-3 text-[#ccc]">
               <li><a href="/qui-sommes-nous" className="hover:text-primary">Notre histoire</a></li>
+              {/* Lien présent sur tout le site : c'est ce qui donne son autorité à l'observatoire. */}
+              <li><a href="/observatoire" className="hover:text-primary">Observatoire de la copropriété</a></li>
               <li><a href="/ressources/origine-nom-beamo" className="hover:text-primary">D'où vient le nom Beamô ?</a></li>
               <li><a href="#" className="hover:text-primary">Notre approche</a></li>
               <li><a href="#" className="hover:text-primary">Actualités</a></li>

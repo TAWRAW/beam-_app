@@ -11,6 +11,9 @@ export type City = {
   showInFooter?: boolean
   // Code postal pour API stats copropriétés
   postalCode?: string
+  // Code INSEE — seule clé fiable pour l'API marché (les noms de communes du RNC
+  // ne sont pas normalisés : « Évreux »/« Evreux », « Mont St Aignan »…)
+  inseeCode?: string
   // Quartiers couverts pour SEO local
   neighborhoods?: string[]
 }
@@ -19,52 +22,72 @@ export const cities: City[] = [
   // ═══════════════════════════════════════════════════════════════════════════
   // VILLES PRINCIPALES (affichées dans le footer)
   // ═══════════════════════════════════════════════════════════════════════════
-  { slug: 'vernon', name: 'Vernon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27200', neighborhoods: ['Vernonnet', 'Les Blanchères', 'Les Boutardes', 'Le Moussel', 'Le Parc', 'Glatigny', 'Fieschi', 'Le Petit Val', 'Ma Campagne', 'Valmeux'] },
-  { slug: 'evreux', name: 'Évreux', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27000', neighborhoods: ['Centre-ville', 'La Madeleine', 'Nétreville', 'Saint-Michel', 'Saint-Léger', 'Navarre', 'Clos au Duc', 'La Poterie'] },
-  { slug: 'rouen', name: 'Rouen', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76000', neighborhoods: ['Vieux-Marché', 'Saint-Sever', 'Grammont', 'Pasteur', 'Jardin des Plantes', 'Beauvoisine', 'Jouvenet', 'Grand Mare', 'Quartier Sud', 'Quartier Ouest', 'Centre Historique', 'Rive Gauche'] },
-  { slug: 'les-andelys', name: 'Les Andelys', displayName: 'Andelys', displayPrep: 'Aux', department: 'Eure (27)', region: 'Normandie', prep: 'aux', postalCode: '27700', neighborhoods: ['Grand Andely', 'Petit Andely', 'Centre historique'] },
-  { slug: 'louviers', name: 'Louviers', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27400', neighborhoods: ['Centre-ville', 'Les Oiseaux', 'Maison Rouge'] },
-  { slug: 'gaillon', name: 'Gaillon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27600', neighborhoods: ['Quartier Nord', 'Quartier Sud-Ouest', 'Aubevoye', 'Saint-Aubin-sur-Gaillon'] },
-  { slug: 'gasny', name: 'Gasny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27620' },
-  { slug: 'pacy-sur-eure', name: 'Pacy-sur-Eure', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27120' },
+  { slug: 'vernon', name: 'Vernon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27200', neighborhoods: ['Vernonnet', 'Les Blanchères', 'Les Boutardes', 'Le Moussel', 'Le Parc', 'Glatigny', 'Fieschi', 'Le Petit Val', 'Ma Campagne', 'Valmeux'], inseeCode: '27681' },
+  { slug: 'evreux', name: 'Évreux', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27000', neighborhoods: ['Centre-ville', 'La Madeleine', 'Nétreville', 'Saint-Michel', 'Saint-Léger', 'Navarre', 'Clos au Duc', 'La Poterie'], inseeCode: '27229' },
+  { slug: 'rouen', name: 'Rouen', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76000', neighborhoods: ['Vieux-Marché', 'Saint-Sever', 'Grammont', 'Pasteur', 'Jardin des Plantes', 'Beauvoisine', 'Jouvenet', 'Grand Mare', 'Quartier Sud', 'Quartier Ouest', 'Centre Historique', 'Rive Gauche'], inseeCode: '76540' },
+  { slug: 'les-andelys', name: 'Les Andelys', displayName: 'Andelys', displayPrep: 'Aux', department: 'Eure (27)', region: 'Normandie', prep: 'aux', postalCode: '27700', neighborhoods: ['Grand Andely', 'Petit Andely', 'Centre historique'], inseeCode: '27016' },
+  { slug: 'louviers', name: 'Louviers', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27400', neighborhoods: ['Centre-ville', 'Les Oiseaux', 'Maison Rouge'], inseeCode: '27375' },
+  { slug: 'gaillon', name: 'Gaillon', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27600', neighborhoods: ['Quartier Nord', 'Quartier Sud-Ouest', 'Aubevoye', 'Saint-Aubin-sur-Gaillon'], inseeCode: '27275' },
+  { slug: 'gasny', name: 'Gasny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27620', inseeCode: '27279' },
+  { slug: 'pacy-sur-eure', name: 'Pacy-sur-Eure', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27120', inseeCode: '27448' },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // MÉTROPOLE DE ROUEN (7 villes - ~180 copropriétés)
   // ═══════════════════════════════════════════════════════════════════════════
-  { slug: 'mont-saint-aignan', name: 'Mont-Saint-Aignan', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76130', showInFooter: false },
-  { slug: 'darnetal', name: 'Darnétal', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76160', showInFooter: false },
-  { slug: 'le-mesnil-esnard', name: 'Le Mesnil-Esnard', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76240', showInFooter: false },
-  { slug: 'saint-etienne-du-rouvray', name: 'Saint-Étienne-du-Rouvray', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76800', showInFooter: false },
-  { slug: 'notre-dame-de-bondeville', name: 'Notre-Dame-de-Bondeville', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76960', showInFooter: false },
-  { slug: 'franqueville-saint-pierre', name: 'Franqueville-Saint-Pierre', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76520', showInFooter: false },
-  { slug: 'saint-leger-du-bourg-denis', name: 'Saint-Léger-du-Bourg-Denis', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76160', showInFooter: false },
+  { slug: 'mont-saint-aignan', name: 'Mont-Saint-Aignan', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76130', showInFooter: false, inseeCode: '76451' },
+  { slug: 'darnetal', name: 'Darnétal', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76160', showInFooter: false, inseeCode: '76212' },
+  { slug: 'le-mesnil-esnard', name: 'Le Mesnil-Esnard', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76240', showInFooter: false, inseeCode: '76429' },
+  { slug: 'saint-etienne-du-rouvray', name: 'Saint-Étienne-du-Rouvray', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76800', showInFooter: false, inseeCode: '76575' },
+  { slug: 'notre-dame-de-bondeville', name: 'Notre-Dame-de-Bondeville', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76960', showInFooter: false, inseeCode: '76474' },
+  { slug: 'franqueville-saint-pierre', name: 'Franqueville-Saint-Pierre', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76520', showInFooter: false, inseeCode: '76475' },
+  { slug: 'saint-leger-du-bourg-denis', name: 'Saint-Léger-du-Bourg-Denis', department: 'Seine-Maritime (76)', region: 'Normandie', prep: 'à', postalCode: '76160', showInFooter: false, inseeCode: '76599' },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // ZONE VERNON / EURE (villes secondaires)
   // ═══════════════════════════════════════════════════════════════════════════
-  { slug: 'saint-marcel', name: 'Saint-Marcel', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27950', showInFooter: false },
-  { slug: 'la-chapelle-longueville', name: 'La Chapelle-Longueville', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false },
-  { slug: 'giverny', name: 'Giverny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27620', showInFooter: false },
-  { slug: 'bueil', name: 'Bueil', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false },
+  { slug: 'saint-marcel', name: 'Saint-Marcel', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27950', showInFooter: false, inseeCode: '27562' },
+  { slug: 'la-chapelle-longueville', name: 'La Chapelle-Longueville', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false, inseeCode: '27554' },
+  { slug: 'giverny', name: 'Giverny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27620', showInFooter: false, inseeCode: '27285' },
+  { slug: 'bueil', name: 'Bueil', department: 'Eure (27)', region: 'Normandie', prep: 'à', showInFooter: false, inseeCode: '27119' },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // AXE VERNON - ÉVREUX (villes intermédiaires)
   // ═══════════════════════════════════════════════════════════════════════════
-  { slug: 'val-de-reuil', name: 'Val-de-Reuil', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27100', showInFooter: false },
-  { slug: 'le-vaudreuil', name: 'Le Vaudreuil', displayName: 'Vaudreuil', displayPrep: 'Au', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27100', showInFooter: false },
-  { slug: 'etrepagny', name: 'Étrépagny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27150', showInFooter: false },
-  { slug: 'ivry-la-bataille', name: 'Ivry-la-Bataille', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27540', showInFooter: false },
+  { slug: 'val-de-reuil', name: 'Val-de-Reuil', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27100', showInFooter: false, inseeCode: '27701' },
+  { slug: 'le-vaudreuil', name: 'Le Vaudreuil', displayName: 'Vaudreuil', displayPrep: 'Au', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27100', showInFooter: false, inseeCode: '27528' },
+  { slug: 'etrepagny', name: 'Étrépagny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27150', showInFooter: false, inseeCode: '27226' },
+  { slug: 'ivry-la-bataille', name: 'Ivry-la-Bataille', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27540', showInFooter: false, inseeCode: '27355' },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // COURONNE ÉBROÏCIENNE (satellites d'Évreux)
   // ═══════════════════════════════════════════════════════════════════════════
-  { slug: 'gravigny', name: 'Gravigny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27930', showInFooter: false },
-  { slug: 'saint-sebastien-de-morsent', name: 'Saint-Sébastien-de-Morsent', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27180', showInFooter: false },
-  { slug: 'saint-andre-de-l-eure', name: "Saint-André-de-l'Eure", department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27220', showInFooter: false },
-  { slug: 'le-vieil-evreux', name: 'Le Vieil-Évreux', displayName: 'Vieil-Évreux', displayPrep: 'Au', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27930', showInFooter: false },
-  { slug: 'la-couture-boussey', name: 'La Couture-Boussey', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27750', showInFooter: false },
-  { slug: 'angerville-la-campagne', name: 'Angerville-la-Campagne', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27930', showInFooter: false },
+  { slug: 'gravigny', name: 'Gravigny', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27930', showInFooter: false, inseeCode: '27299' },
+  { slug: 'saint-sebastien-de-morsent', name: 'Saint-Sébastien-de-Morsent', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27180', showInFooter: false, inseeCode: '27602' },
+  { slug: 'saint-andre-de-l-eure', name: "Saint-André-de-l'Eure", department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27220', showInFooter: false, inseeCode: '27507' },
+  { slug: 'le-vieil-evreux', name: 'Le Vieil-Évreux', displayName: 'Vieil-Évreux', displayPrep: 'Au', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27930', showInFooter: false, inseeCode: '27684' },
+  { slug: 'la-couture-boussey', name: 'La Couture-Boussey', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27750', showInFooter: false, inseeCode: '27183' },
+  { slug: 'angerville-la-campagne', name: 'Angerville-la-Campagne', department: 'Eure (27)', region: 'Normandie', prep: 'à', postalCode: '27930', showInFooter: false, inseeCode: '27017' },
 ]
+
+/**
+ * Contractions françaises devant un nom de commune. Sans elles on écrit
+ * « de Les Andelys » ou « à Le Vaudreuil » — les noms à article défini sont
+ * nombreux dans l'Eure et en métropole rouennaise.
+ */
+export function deLaVille(name: string): string {
+  if (name.startsWith('Les ')) return `des ${name.slice(4)}`
+  if (name.startsWith('Le ')) return `du ${name.slice(3)}`
+  if (name.startsWith('La ')) return `de la ${name.slice(3)}`
+  if (/^[AEIOUYÉÈÊÂÎÔÛ]/i.test(name)) return `d’${name}`
+  return `de ${name}`
+}
+
+export function aLaVille(name: string): string {
+  if (name.startsWith('Les ')) return `aux ${name.slice(4)}`
+  if (name.startsWith('Le ')) return `au ${name.slice(3)}`
+  if (name.startsWith('La ')) return `à la ${name.slice(3)}`
+  return `à ${name}`
+}
 
 export function getCityBySlug(slug: string): City | undefined {
   return cities.find((c) => c.slug === slug)
