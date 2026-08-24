@@ -115,6 +115,26 @@ export async function lireNote(id: string): Promise<NoteEnregistree | null> {
   return (data as NoteEnregistree) ?? null
 }
 
+/**
+ * Rattache (ou détache, avec null) une note déjà envoyée à un dossier Venator.
+ * Utile quand l'envoi a été fait sans passer par le bouton « Mailing » du dossier :
+ * le rattachement reste possible après coup, sans renvoyer quoi que ce soit.
+ */
+export async function rattacherNote(
+  id: string,
+  dossierId: string | null,
+): Promise<{ ok: boolean; erreur?: string }> {
+  const { error } = await db()
+    .from('mailing_notes')
+    .update({ dossier_id: dossierId })
+    .eq('id', id)
+  if (error) {
+    console.error('mailing_notes — rattachement impossible:', error.message)
+    return { ok: false, erreur: error.message }
+  }
+  return { ok: true }
+}
+
 /** Écrit les statuts relus depuis Resend (delivered, bounced…). */
 export async function majStatutsNote(
   id: string,

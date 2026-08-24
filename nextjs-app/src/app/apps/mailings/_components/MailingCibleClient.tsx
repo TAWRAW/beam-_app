@@ -74,8 +74,15 @@ interface NoteResume {
   cible: string | null
   type_note: string
   objet: string
+  dossier_id: string | null
   nb_destinataires: number
   nb_echecs: number
+}
+interface DossierRef {
+  id: string
+  titre: string
+  type: string
+  statut: string
 }
 interface EnvoiNote {
   email: string
@@ -198,6 +205,11 @@ export default function MailingCibleClient() {
   const [notes, setNotes] = useState<NoteResume[]>([])
   const [noteOuverte, setNoteOuverte] = useState<NoteDetail | null>(null)
   const [noteChargement, setNoteChargement] = useState(false)
+
+  // Rattachement après coup d'une note à un dossier Venator (envoi fait hors du bouton du dossier)
+  const [dossiers, setDossiers] = useState<DossierRef[]>([])
+  const [rattachement, setRattachement] = useState<string>('')
+  const [rattachementEnCours, setRattachementEnCours] = useState(false)
 
   // --- Copropriétés + présélection éventuelle (?copro=REF depuis un dossier Venator)
   useEffect(() => {
@@ -359,11 +371,68 @@ export default function MailingCibleClient() {
     try {
       const r = await fetch(`/api/mailings/notes/${id}${refresh ? '?refresh=1' : ''}`)
       const d = await r.json()
-      if (d.note) setNoteOuverte(d.note)
+      if (d.note) {
+        setNoteOuverte(d.note)
+        setRattachement(d.note.dossier_id ?? '')
+      }
     } finally {
       setNoteChargement(false)
     }
   }, [])
+
+  // Dossiers de la copropriété de la note ouverte, pour le rattachement après coup.
+  // La note porte la référence Estale ; Venator travaille en uuid → une résolution par référence.
+  useEffect(() => {
+    const ref = noteOuverte?.copro_ref
+    if (!ref) {
+      setDossiers([])
+      return
+    }
+    let annule = false
+    ;(async () => {
+      try {
+        const rc = await fetch('/api/venator/copros')
+        const dc = await rc.json()
+        const copro = (dc.copros ?? []).find(
+          (c: { id: string; reference: string }) => c.reference === ref,
+        )
+        if (!copro || annule) return setDossiers([])
+        const rd = await fetch(`/api/venator/dossiers?copro_id=${encodeURIComponent(copro.id)}`)
+        const dd = await rd.json()
+        if (!annule) setDossiers(dd.dossiers ?? [])
+      } catch {
+        if (!annule) setDossiers([])
+      }
+    })()
+    return () => {
+      annule = true
+    }
+  }, [noteOuverte?.copro_ref])
+
+  const rattacher = useCallback(async () => {
+    if (!noteOuverte) return
+    setRattachementEnCours(true)
+    try {
+      const r = await fetch(`/api/mailings/notes/${noteOuverte.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dossierId: rattachement || null }),
+      })
+      const d = await r.json()
+      if (d.ok) {
+        setNoteOuverte({ ...noteOuverte, dossier_id: rattachement || null })
+        setNotes((prev) =>
+          prev.map((n) =>
+            n.id === noteOuverte.id ? { ...n, dossier_id: rattachement || null } : n,
+          ),
+        )
+      } else {
+        setErreur(d.error ?? 'Rattachement impossible')
+      }
+    } finally {
+      setRattachementEnCours(false)
+    }
+  }, [noteOuverte, rattachement])
 
   return (
     <div className="min-h-screen bg-app-bg">
@@ -894,8 +963,41 @@ export default function MailingCibleClient() {
                     ))}
                   </ul>
                   <p className="mt-2 text-[11px] text-app-fg-faint">
-                    Statuts relus chez Resend à l&apos;ouverture.{' '}
-                    {noteChargement ? 'Actualisation…' : ''}
+                    Statut au moment de l&apos;envoi. La relecture chez Resend (remis, rejeté)
+                    demande une clé API autorisée en lecture ; la clé d&apos;envoi actuelle ne
+                    l&apos;est pas. {noteChargement ? 'Actualisation…' : ''}
+                  </p>
+                </div>
+                <div>
+                  <Micro>Dossier Venator</Micro>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <select
+                      value={rattachement}
+                      onChange={(e) => setRattachement(e.target.value)}
+                      className="h-9 min-w-0 flex-1 rounded-md border border-app-border bg-app-surface px-2.5 text-[13px] text-app-fg"
+                    >
+                      <option value="">Aucun dossier</option>
+                      {dossiers.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.titre}
+                        </option>
+                      ))}
+                    </select>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={
+                        rattachementEnCours || rattachement === (noteOuverte.dossier_id ?? '')
+                      }
+                      onClick={rattacher}
+                    >
+                      {rattachementEnCours ? 'Rattachement…' : 'Rattacher'}
+                    </Button>
+                  </div>
+                  <p className="mt-2 text-[11px] text-app-fg-faint">
+                    {dossiers.length === 0
+                      ? 'Aucun dossier pour cette copropriété.'
+                      : 'Le rattachement ajoute une entrée au journal du dossier. Rien n’est renvoyé.'}
                   </p>
                 </div>
                 <div>
