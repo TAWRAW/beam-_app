@@ -95,6 +95,54 @@ export async function getMarcheCommune(insee: string): Promise<MarcheCommune | n
   return null
 }
 
+/** Version compacte d'un relevé, telle que renvoyée par l'appel groupé. */
+export interface MarcheResume {
+  insee: string
+  total: {
+    coproprietes: number
+    lots: number
+    taille_mediane: number
+    taille_moyenne: number
+  }
+  petites_coproprietes: MarcheCommune['petites_coproprietes']
+}
+
+/**
+ * Relevés de plusieurs communes en UN SEUL appel.
+ *
+ * À utiliser partout où l'on a besoin de toutes les communes à la fois (sommaire,
+ * sitemap). Appeler `getMarcheCommune()` en boucle déclenchait 29 requêtes
+ * simultanées, chacune lourde côté base ; le pool PostgreSQL du Comptoir étant
+ * borné à 10 connexions, la plupart échouaient, et comme un échec est
+ * indistinguable d'une commune sans copropriété, la liste se réduisait
+ * silencieusement à 3 ou 10 communes selon les régénérations (24/08/2026).
+ */
+export async function getMarcheGroupe(
+  insees: string[],
+): Promise<{ communes: MarcheResume[]; trimestre: string | null }> {
+  const codes = [...new Set(insees.filter(Boolean))]
+  if (codes.length === 0) return { communes: [], trimestre: null }
+  try {
+    const r = await fetch(`${API}/api/beamo/marche?insee=${codes.join(',')}`, {
+      next: { revalidate: 86400 },
+    })
+    if (!r.ok) {
+      console.error(`marché groupé — API indisponible (${r.status})`)
+      return { communes: [], trimestre: null }
+    }
+    const data = (await r.json()) as {
+      communes?: MarcheResume[]
+      trimestre?: string
+      error?: string
+    }
+    if (data.error || !data.communes) return { communes: [], trimestre: null }
+    return { communes: data.communes, trimestre: data.trimestre ?? null }
+  } catch (e) {
+    console.error('marché groupé — appel impossible:', e)
+    return { communes: [], trimestre: null }
+  }
+}
+
 /**
  * En dessous de ce nombre de copropriétés, une commune n'a pas de page dédiée :
  * les parts n'y veulent plus rien dire (« 50 % » sur deux copropriétés) et la page
@@ -110,14 +158,13 @@ export const SEUIL_PAGE_DEDIEE = 10
 export async function listerCommunesObservatoire(
   villes: Array<{ slug: string; inseeCode?: string }>,
 ): Promise<Array<{ slug: string; trimestre: string }>> {
-  const releves = await Promise.all(
-    villes
-      .filter((v) => v.inseeCode)
-      .map(async (v) => ({ slug: v.slug, marche: await getMarcheCommune(v.inseeCode!) })),
-  )
-  return releves
-    .filter((r) => r.marche && r.marche.total.coproprietes >= SEUIL_PAGE_DEDIEE)
-    .map((r) => ({ slug: r.slug, trimestre: r.marche!.trimestre.actuel }))
+  const cibles = villes.filter((v) => v.inseeCode)
+  const { communes, trimestre } = await getMarcheGroupe(cibles.map((v) => v.inseeCode!))
+  const parInsee = new Map(communes.map((r) => [r.insee, r]))
+
+  return cibles
+    .filter((v) => (parInsee.get(v.inseeCode!)?.total.coproprietes ?? 0) >= SEUIL_PAGE_DEDIEE)
+    .map((v) => ({ slug: v.slug, trimestre: trimestre ?? '' }))
 }
 
 /**

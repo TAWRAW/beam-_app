@@ -11,10 +11,11 @@ import type { Metadata } from 'next'
 import { cities } from '@/lib/cities'
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import {
-  getMarcheCommune,
+  getMarcheGroupe,
   libelleTrimestre,
   formatNombre,
   SEUIL_PAGE_DEDIEE,
+  type MarcheResume,
 } from '@/lib/marche-copro'
 
 export const revalidate = 86400
@@ -46,20 +47,22 @@ export const metadata: Metadata = {
 export default async function ObservatoirePage() {
   const cibles = cities.filter((c) => c.inseeCode)
 
-  const releves = (
-    await Promise.all(
-      cibles.map(async (c) => ({ city: c, marche: await getMarcheCommune(c.inseeCode!) })),
-    )
-  )
-    .filter((r) => r.marche !== null)
-    .sort((a, b) => b.marche!.total.coproprietes - a.marche!.total.coproprietes)
+  // UN SEUL appel pour les 29 communes (cf. getMarcheCommunes) : la boucle
+  // d'appels unitaires saturait le pool PostgreSQL du Comptoir et faisait
+  // disparaître silencieusement les deux tiers des communes du tableau.
+  const { communes, trimestre } = await getMarcheGroupe(cibles.map((c) => c.inseeCode!))
+  const parInsee = new Map(communes.map((r) => [r.insee, r]))
 
-  const trimestre = releves[0]?.marche?.trimestre.actuel ?? null
-  const totalCopros = releves.reduce((a, r) => a + r.marche!.total.coproprietes, 0)
-  const totalLots = releves.reduce((a, r) => a + r.marche!.total.lots, 0)
+  const releves = cibles
+    .map((city) => ({ city, marche: parInsee.get(city.inseeCode!) }))
+    .filter((r): r is { city: (typeof cibles)[number]; marche: MarcheResume } => !!r.marche)
+    .sort((a, b) => b.marche.total.coproprietes - a.marche.total.coproprietes)
+
+  const totalCopros = releves.reduce((a, r) => a + r.marche.total.coproprietes, 0)
+  const totalLots = releves.reduce((a, r) => a + r.marche.total.lots, 0)
   // Communes qui ont réellement une page : la liste structurée ne doit pointer que vers elles.
   const liens = releves
-    .filter((r) => r.marche!.total.coproprietes >= SEUIL_PAGE_DEDIEE)
+    .filter((r) => r.marche.total.coproprietes >= SEUIL_PAGE_DEDIEE)
     .map((r) => ({ slug: r.city.slug, nom: r.city.name }))
 
   return (
@@ -133,7 +136,7 @@ export default async function ObservatoirePage() {
                 {releves.map(({ city, marche }, i) => (
                   <tr key={city.slug} className={i % 2 ? 'bg-[#F2F1E6]' : 'bg-white'}>
                     <td className="px-4 py-3">
-                      {marche!.total.coproprietes >= SEUIL_PAGE_DEDIEE ? (
+                      {marche.total.coproprietes >= SEUIL_PAGE_DEDIEE ? (
                         <Link
                           href={`/observatoire/${city.slug}`}
                           className="font-bold underline decoration-[#FFC300] decoration-4 underline-offset-2 hover:text-[#0F4D0F]"
@@ -147,18 +150,18 @@ export default async function ObservatoirePage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right font-bold tabular-nums">
-                      {formatNombre(marche!.total.coproprietes)}
+                      {formatNombre(marche.total.coproprietes)}
                     </td>
                     <td className="px-4 py-3 text-right tabular-nums text-[#5b5b52]">
-                      {marche!.total.taille_mediane} lots
+                      {marche.total.taille_mediane} lots
                     </td>
                     <td className="px-4 py-3 text-right tabular-nums text-[#5b5b52]">
-                      {formatNombre(marche!.petites_coproprietes.nb)} ({marche!.petites_coproprietes.part} %)
+                      {formatNombre(marche.petites_coproprietes.nb)} ({marche.petites_coproprietes.part} %)
                     </td>
                     <td className="px-4 py-3 text-right font-bold tabular-nums">
                       {/* Une part sur moins de dix copropriétés ne veut rien dire. */}
-                      {marche!.total.coproprietes >= SEUIL_PAGE_DEDIEE ? (
-                        `${marche!.petites_coproprietes.part_avec_syndic_professionnel} %`
+                      {marche.total.coproprietes >= SEUIL_PAGE_DEDIEE ? (
+                        `${marche.petites_coproprietes.part_avec_syndic_professionnel} %`
                       ) : (
                         <span className="text-[#5b5b52]">—</span>
                       )}
