@@ -13,7 +13,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
-import { aLaVille, cities, deLaVille, getCityBySlug, getNearbyCities } from '@/lib/cities'
+import { aLaVille, deLaVille, getCityBySlug, getNearbyCities } from '@/lib/cities'
 import {
   getMarcheCommune,
   libelleTrimestre,
@@ -28,11 +28,14 @@ import QuestionsChiffrees from './_components/QuestionsChiffrees'
 
 type Params = { ville: string }
 
-// Les communes sous le seuil sont écartées au rendu (cf. SEUIL_PAGE_DEDIEE) ;
-// on les pré-génère quand même pour que Next serve un 404 propre et stable.
-export async function generateStaticParams() {
-  return cities.filter((c) => c.inseeCode).map((c) => ({ ville: c.slug }))
-}
+// Volontairement PAS de generateStaticParams().
+//
+// Ces pages dépendent d'une API externe (le Comptoir). Pré-générer au build
+// signifie que si l'API est indisponible à cet instant précis, `notFound()` est
+// figé dans le build et les 20 pages restent en 404 jusqu'au build suivant.
+// C'est exactement ce qui s'est produit le 24/08/2026 : le déploiement de
+// beam-app est tombé pendant un redéploiement du Comptoir. En rendu à la
+// demande avec ISR, une panne passagère ne coûte qu'une requête.
 
 // Le registre est publié chaque trimestre : une régénération quotidienne suffit.
 export const revalidate = 86400
