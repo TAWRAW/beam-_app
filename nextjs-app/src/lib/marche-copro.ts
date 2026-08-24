@@ -67,17 +67,32 @@ export interface MarcheCommune {
  * immatriculée ou si l'API est indisponible — l'appelant décide quoi afficher.
  */
 export async function getMarcheCommune(insee: string): Promise<MarcheCommune | null> {
-  try {
-    const r = await fetch(`${API}/api/beamo/marche/${insee}`, {
-      next: { revalidate: 86400 },
-    })
-    if (!r.ok) return null
-    const data = (await r.json()) as MarcheCommune | { error: string }
-    if ('error' in data) return null
-    return data
-  } catch {
-    return null
+  // Une seule reprise, car l'appelant ne peut pas distinguer « commune sans
+  // copropriété » d'« API momentanément indisponible » : les deux donnent null.
+  // Un redéploiement du Comptoir pendant la régénération du sitemap avait ainsi
+  // silencieusement ramené la liste des communes de 20 à 3 (constaté le 24/08/2026).
+  for (let essai = 0; essai < 2; essai++) {
+    try {
+      const r = await fetch(`${API}/api/beamo/marche/${insee}`, {
+        next: { revalidate: 86400 },
+      })
+      // 404 = commune sans copropriété immatriculée : réponse légitime, pas une panne.
+      if (r.status === 404) return null
+      if (!r.ok) {
+        if (essai === 0) continue
+        console.error(`marché ${insee} — API indisponible (${r.status})`)
+        return null
+      }
+      const data = (await r.json()) as MarcheCommune | { error: string }
+      if ('error' in data) return null
+      return data
+    } catch (e) {
+      if (essai === 0) continue
+      console.error(`marché ${insee} — appel impossible:`, e)
+      return null
+    }
   }
+  return null
 }
 
 /**
