@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
 import { cn } from '@/lib/utils'
 import AppThemeToggle from '@/components/apps/AppThemeToggle'
-import { ChevronsLeft, ChevronsRight, LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket, KeyRound } from 'lucide-react'
+import { ChevronsLeft, ChevronsRight, LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket, KeyRound, Send } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -83,6 +83,12 @@ const adminItems: NavItem[] = [
     href: '/apps/devis-mutation',
     label: 'Devis mutation',
     icon: ScrollText,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/mailings',
+    label: 'Mailing ciblé',
+    icon: Send,
     adminOnly: true,
   },
   {
