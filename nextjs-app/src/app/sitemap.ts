@@ -36,6 +36,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0
     },
 
+    // Landings scrollytelling « petites copropriétés » (HTML autonome, cf. next.config rewrites)
+    {
+      url: `${base}/copropriete-rouen`,
+      lastModified: new Date('2026-08-24'),
+      changeFrequency: 'monthly',
+      priority: 0.9 // objectif commercial 2026 : Rouen
+    },
+    {
+      url: `${base}/copropriete-eure`,
+      lastModified: new Date('2026-08-24'),
+      changeFrequency: 'monthly',
+      priority: 0.9
+    },
+
     // Pages principales - haute priorité
     {
       url: `${base}/offres`,

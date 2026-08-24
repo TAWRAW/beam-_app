@@ -22,6 +22,12 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      // Landings scrollytelling « petites copropriétés » (HTML autonome dans public/landings/,
+      // même mécanique que les pages Oignon ci-dessous). Formulaire branché sur /api/contact.
+      { source: '/copropriete-eure', destination: '/landings/petites-coproprietes-eure.html' },
+      { source: '/copropriete-eure/', destination: '/landings/petites-coproprietes-eure.html' },
+      { source: '/copropriete-rouen', destination: '/landings/petites-coproprietes-rouen.html' },
+      { source: '/copropriete-rouen/', destination: '/landings/petites-coproprietes-rouen.html' },
       // Pages standalone Oignon (HTML statique dans public/)
       { source: '/oignon', destination: '/oignon/index.html' },
       { source: '/oignon/', destination: '/oignon/index.html' },
