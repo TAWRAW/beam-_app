@@ -4,6 +4,7 @@ import { AppSidebar } from '@/components/AppSidebar'
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { AlignJustify } from 'lucide-react'
 import { appThemeInitScript } from '@/components/apps/AppThemeToggle'
+import { ModeConfidentielProvider } from '@/components/apps/ModeConfidentiel'
 import './apps-theme.css'
 
 // Bloquer l'indexation de toutes les pages admin
@@ -22,6 +23,7 @@ export default function AppsLayout({ children }: { children: ReactNode }) {
           donnée utilisateur n'y transite. */}
       <script dangerouslySetInnerHTML={{ __html: appThemeInitScript }} />
 
+      <ModeConfidentielProvider>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="bg-app-bg">
@@ -36,6 +38,7 @@ export default function AppsLayout({ children }: { children: ReactNode }) {
           <main className="h-[calc(100vh-4rem)] flex-1 overflow-auto lg:h-screen">{children}</main>
         </SidebarInset>
       </SidebarProvider>
+      </ModeConfidentielProvider>
     </div>
   )
 }

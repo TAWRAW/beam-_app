@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import { useUserRole } from '@/hooks/useUserRole'
 import { cn } from '@/lib/utils'
 import AppThemeToggle from '@/components/apps/AppThemeToggle'
-import { ChevronsLeft, ChevronsRight, LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket, KeyRound, Send } from 'lucide-react'
+import { ModeConfidentielToggle } from '@/components/apps/ModeConfidentiel'
+import { ChartSpline, ChevronsLeft, ChevronsRight, LogOut, LayoutDashboard, FileText, Users, User, Settings, Settings2, Printer, ClipboardList, ScrollText, Rocket, KeyRound, Send } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -71,6 +72,12 @@ const adminItems: NavItem[] = [
     href: '/apps/venator',
     label: 'Venator',
     icon: Rocket,
+    adminOnly: true,
+  },
+  {
+    href: '/apps/budgets',
+    label: 'Budgets',
+    icon: ChartSpline,
     adminOnly: true,
   },
   {
@@ -140,6 +147,7 @@ export function AppSidebar() {
         >
           {!replie && <h2 className="truncate text-lg font-semibold">Beamô Apps</h2>}
           <div className={cn('flex items-center gap-0.5', replie && 'flex-col')}>
+            <ModeConfidentielToggle />
             <AppThemeToggle />
             <button
               type="button"

@@ -11,9 +11,12 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   const isAuthPage = pathname.startsWith('/auth')
   const isAppsPage = pathname.startsWith('/apps')
   const isDocumentsPage = pathname.startsWith('/documents')
+  // Rapport budgétaire : la page EST un document A4 imprimable, le chrome du
+  // site public n'a rien à y faire (ni à l'écran, ni surtout à l'impression).
+  const isRapportPage = pathname.startsWith('/rapport-budget')
 
-  if (isAuthPage || isDocumentsPage || isAppsPage) {
-    // Pages d'authentification, documents et apps : pas de header/footer, plein écran
+  if (isAuthPage || isDocumentsPage || isAppsPage || isRapportPage) {
+    // Pages d'authentification, documents, apps et rapports : pas de header/footer, plein écran
     return <>{children}</>
   }
 

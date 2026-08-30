@@ -159,11 +159,17 @@ export async function POST(request: NextRequest) {
       // Convertir en Buffer pour NextResponse
       const buffer = Buffer.from(pdfBuffer)
 
+      // Les en-têtes HTTP n'acceptent que du latin-1 : un titre contenant un
+      // caractère hors plage (tiret cadratin, ô…) faisait planter la réponse
+      // (TypeError ByteString, constaté 29/08). filename = repli ASCII,
+      // filename* = version UTF-8 exacte (RFC 5987), les deux cohabitent.
+      const titre = `${body.metadata?.title || 'document'}.pdf`
+      const filenameAscii = titre.normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^\x20-\x7E]/g, '-')
       return new NextResponse(buffer, {
         status: 200,
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="${body.metadata?.title || 'document'}.pdf"`,
+          'Content-Disposition': `attachment; filename="${filenameAscii}"; filename*=UTF-8''${encodeURIComponent(titre)}`,
           'Cache-Control': 'no-store',
         },
       })

@@ -38,6 +38,14 @@ let sessionCookie: string | null = null
 let lastLoginAttempt = 0
 const LOGIN_COOLDOWN = 5000 // 5 seconds between login attempts
 
+// Single-flight : deux requêtes concurrentes sur un cookie froid déclenchaient
+// deux parcours de login — le premier partait, le second tombait dans le
+// cooldown qui renvoyait le cookie encore null, et sa requête échouait en
+// « Impossible de se connecter à Estale » (constaté sur /apps/budgets, où le
+// double-effect React de dev tire deux fetches simultanés). Les appels
+// concurrents attendent désormais la même promesse de login.
+let loginInFlight: Promise<string | null> | null = null
+
 export interface EstaleSupplier {
   id: string
   name: string
@@ -106,6 +114,12 @@ async function login(): Promise<string | null> {
     return null
   }
 
+  // Un login est déjà en cours : on attend son résultat au lieu d'en lancer
+  // un deuxième (ou de renvoyer un cookie encore null via le cooldown).
+  if (loginInFlight) {
+    return loginInFlight
+  }
+
   // Cooldown to avoid hammering the API
   const now = Date.now()
   if (now - lastLoginAttempt < LOGIN_COOLDOWN) {
@@ -113,9 +127,23 @@ async function login(): Promise<string | null> {
   }
   lastLoginAttempt = now
 
+  loginInFlight = doLogin()
   try {
+    return await loginInFlight
+  } finally {
+    loginInFlight = null
+  }
+}
+
+async function doLogin(): Promise<string | null> {
+  try {
+    // no-store : le fetch patché de Next peut resservir une réponse de login
+    // mise en cache — même Set-Cookie périmé à chaque appel, en ~45 ms au lieu
+    // de ~300 (constaté le 29/08/2026 : la session resservie était invalidée,
+    // GraphQL répondait 401 en boucle alors que le même code marchait en CLI).
     const response = await fetch(`${ESTALE_API_BASE_URL}/api/login`, {
       method: 'POST',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -168,7 +196,7 @@ async function ensureAuthenticated(): Promise<boolean> {
 /**
  * Exécute une requête GraphQL vers l'API Estale
  */
-async function executeQuery<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+async function executeQuery<T>(query: string, variables?: Record<string, unknown>, isRetry = false): Promise<T> {
   const isAuth = await ensureAuthenticated()
   if (!isAuth) {
     throw new Error('Impossible de se connecter à Estale')
@@ -185,19 +213,29 @@ async function executeQuery<T>(query: string, variables?: Record<string, unknown
 
   const response = await fetch(`${ESTALE_API_BASE_URL}/graphql/intranet`, {
     method: 'POST',
+    cache: 'no-store',
     headers,
     body: JSON.stringify({ query, variables }),
     credentials: 'include',
   })
 
   if (!response.ok) {
-    // Session might have expired, clear and retry once
-    if (response.status === 401 || response.status === 403) {
+    // Session might have expired, clear and retry ONCE (isRetry borne la
+    // récursion : sans elle, un 401 persistant — session refusée malgré un
+    // login réussi — boucle indéfiniment en re-logins, constaté le 29/08).
+    // lastLoginAttempt est remis à zéro : une session invalidée par Estale
+    // justifie un re-login immédiat, le cooldown ne doit pas le bloquer.
+    if ((response.status === 401 || response.status === 403) && !isRetry) {
       sessionCookie = null
+      lastLoginAttempt = 0
       const retryAuth = await ensureAuthenticated()
       if (retryAuth) {
-        return executeQuery(query, variables)
+        return executeQuery(query, variables, true)
       }
+    }
+    if (response.status === 401 || response.status === 403) {
+      const corps = await response.text().catch(() => '')
+      console.error('[estale] auth refusée malgré login — cookie:', sessionCookie ? sessionCookie.slice(0, 24) + '…' : 'null', '— corps:', corps.slice(0, 300))
     }
     throw new Error(`Erreur API Estale: ${response.status} ${response.statusText}`)
   }
