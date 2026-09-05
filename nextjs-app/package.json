@@ -10,7 +10,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "create:admin": "node scripts/create-admin.js",
-    "refresh-tokens": "ts-node scripts/refresh-expired-tokens.ts"
+    "refresh-tokens": "ts-node scripts/refresh-expired-tokens.ts",
+    "indexnow": "node scripts/submit-to-indexnow.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
